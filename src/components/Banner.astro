@@ -1,0 +1,60 @@
+---
+// Banner corporativo Census · presente en todas las páginas
+---
+
+<header class="banner">
+  <table>
+    <tr>
+      <td class="logo-cell">
+        <img
+          class="logo-img"
+          src="/logo-census.svg"
+          alt="Census Consultores"
+        />
+      </td>
+      <td class="meta-cell">
+        <img
+          class="alert-icon"
+          src="/alert-icon.png"
+          alt="Alerta"
+        />
+        <span class="sub">MONITOREO INTEGRAL 360°</span>
+      </td>
+    </tr>
+  </table>
+</header>
+<div class="gold-bar"></div>
+
+<style>
+  .banner {
+    background: var(--c-bg-dark);
+    padding: 18px 24px;
+  }
+  .banner table { width: 100%; border-collapse: collapse; }
+  .banner td { vertical-align: middle; }
+  .logo-img { height: 80px; display: block; }
+  .meta-cell {
+    text-align: right;
+    color: var(--c-gold);
+    font-family: Arial, sans-serif;
+  }
+  .alert-icon {
+    height: 72px;
+    width: auto;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .sub {
+    display: block;
+    color: var(--c-gold);
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    .logo-img { height: 56px; }
+    .alert-icon { height: 50px; }
+    .sub { font-size: 10px; letter-spacing: 1.2px; }
+  }
+</style>

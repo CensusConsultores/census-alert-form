@@ -1,0 +1,98 @@
+---
+// Splash de carga: logo Census centrado + barra dorada animada.
+// Se autodescarga 1.2s después de window.load.
+---
+
+<div id="loading-splash" class="splash" role="status" aria-label="Cargando">
+  <img
+    src="/logo-census.svg"
+    alt="Census Consultores"
+    class="splash-logo"
+  />
+  <div class="splash-bar" aria-hidden="true"></div>
+</div>
+
+<style>
+  .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--c-bg-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    transition: opacity 400ms ease;
+  }
+  .splash.fade-out { opacity: 0; pointer-events: none; }
+
+  .splash-logo {
+    height: 110px;
+    width: auto;
+    animation: splash-logo-in 600ms ease-out both;
+  }
+
+  .splash-bar {
+    position: relative;
+    width: 240px;
+    height: 3px;
+    background: rgba(201, 168, 76, 0.18);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .splash-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--c-gold), var(--c-gold-dark));
+    transform: translateX(-100%);
+    animation: splash-bar-fill 1100ms cubic-bezier(0.4, 0, 0.2, 1) 200ms forwards;
+  }
+
+  @keyframes splash-logo-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  }
+  @keyframes splash-bar-fill {
+    to { transform: translateX(0); }
+  }
+
+  @media (max-width: 600px) {
+    .splash-logo { height: 80px; }
+    .splash-bar  { width: 180px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .splash-logo, .splash-bar::after { animation-duration: 1ms; }
+  }
+</style>
+
+<script>
+  const MIN_VISIBLE_MS = 1300;
+  const FADE_MS = 400;
+  const start = performance.now();
+
+  function dismiss() {
+    const splash = document.getElementById("loading-splash");
+    if (!splash) return;
+    const elapsed = performance.now() - start;
+    const wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
+    setTimeout(() => {
+      splash.classList.add("fade-out");
+      setTimeout(() => splash.remove(), FADE_MS);
+    }, wait);
+  }
+
+  if (document.readyState === "complete") dismiss();
+  else window.addEventListener("load", dismiss, { once: true });
+
+  // Fallback de seguridad: nunca dejar el splash más de 4s
+  setTimeout(() => {
+    const splash = document.getElementById("loading-splash");
+    if (splash) {
+      splash.classList.add("fade-out");
+      setTimeout(() => splash.remove(), FADE_MS);
+    }
+  }, 4000);
+</script>

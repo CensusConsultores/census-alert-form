@@ -1,0 +1,504 @@
+---
+// Componente principal del formulario Census Alert.
+// La lógica vive en src/scripts/form.js y se inicializa con initCensusForm().
+---
+
+<main class="form-main">
+  <div id="form-container">
+    <h1>Solicitud de servicio · Census Alert</h1>
+    <p class="intro">
+      Census Alert monitorea diariamente las fuentes oficiales del Estado ecuatoriano
+      (SATJE, SRI, IESS, Supercías, ANT, GADs municipales, Fiscalía, Ministerio del Trabajo)
+      y le notifica por correo cualquier novedad relevante para su empresa. Complete este
+      formulario en pocos minutos. Lo contactaremos en menos de 24 horas hábiles.
+    </p>
+
+    <form id="census-form" novalidate autocomplete="on">
+      <!-- Honeypot anti-bot -->
+      <div class="hp" aria-hidden="true">
+        <label>No llenar este campo
+          <input type="text" name="website" id="hp-website" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      <!-- ===== Datos ===== -->
+      <h2>Sus datos</h2>
+
+      <div class="field">
+        <label class="lbl" for="nombre">Nombre y apellido <span class="req">*</span></label>
+        <input type="text" id="nombre" name="nombre" required minlength="3" />
+        <div class="err-msg" data-for="nombre">Ingrese su nombre completo (mínimo 3 caracteres).</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="cargo">Cargo <span class="req">*</span></label>
+        <input type="text" id="cargo" name="cargo" required minlength="2" />
+        <div class="err-msg" data-for="cargo">Ingrese su cargo (mínimo 2 caracteres).</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="empresa">Empresa donde trabaja <span class="req">*</span></label>
+        <input type="text" id="empresa" name="empresa" required minlength="2" />
+        <div class="err-msg" data-for="empresa">Ingrese el nombre de la empresa.</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="email">Email corporativo <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required />
+        <div class="err-msg" data-for="email">Ingrese un email válido.</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="telefono">Teléfono <span class="req">*</span></label>
+        <input type="tel" id="telefono" name="telefono" required minlength="7" />
+        <div class="err-msg" data-for="telefono">Ingrese un número de teléfono válido.</div>
+      </div>
+
+      <!-- ===== RUC/CI ===== -->
+      <h2>RUC/CI a monitorear</h2>
+      <p class="hint" style="margin-bottom:14px;">
+        Indique los RUC o cédulas que desea que monitoreemos. El primero es obligatorio.
+        Puede agregar hasta 10 adicionales.
+      </p>
+
+      <div class="field">
+        <label class="lbl" for="ruc_principal">RUC/CI principal <span class="req">*</span></label>
+        <div class="ruc-block">
+          <div class="ruc-col">
+            <input type="text" id="ruc_principal" name="ruc_principal"
+                   required maxlength="13" inputmode="numeric" placeholder="RUC o CI" />
+          </div>
+          <div class="alias-col">
+            <input type="text" id="alias_principal" name="alias_principal"
+                   placeholder="Razón Social / Nombre y Apellido (Opcional)" />
+          </div>
+        </div>
+        <div class="err-msg" data-for="ruc_principal">
+          Debe ser un número de 10 dígitos (CI) o 13 dígitos (RUC).
+        </div>
+      </div>
+
+      <div id="rucs-adicionales"></div>
+
+      <button type="button" class="btn-add" id="btn-add-ruc">+ Agregar otro RUC/CI</button>
+      <div class="hint" id="hint-max" style="display:none;">
+        Ha alcanzado el máximo de 11 RUC/CI. Si necesita más, escríbanos a
+        <a href="mailto:comercial@censusconsultores.com.ec">comercial@censusconsultores.com.ec</a>.
+      </div>
+
+      <!-- ===== Fuentes ===== -->
+      <h2>Fuentes a monitorear <span style="color:var(--c-error);">*</span></h2>
+      <div class="info-banner">
+        Seleccione las fuentes de su interés (mínimo una). La <strong>frecuencia de envío</strong>
+        de cada notificación se indica junto a cada opción.
+      </div>
+
+      <div class="checks" id="fuentes-list">
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="SATJE" /> Demandas judiciales (SATJE)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="SRI" /> Deudas SRI</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="IESS" /> Mora IESS (aportes patronales)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="SUPERCIAS" /> Supercías (multas societarias)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-note">Aplicable solo para RUC registrados en la SuperCías.</div>
+
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="ANT" /> Multas de tránsito (ANT)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="GADS" /> Deudas municipales (Guayaquil, Samborondón)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="FISCALIA" /> Denuncias Fiscalía (Noticias del Delito)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="MINTRABAJO" /> Ministerio del Trabajo</label>
+          <span class="freq-badge semanal">Semanal</span>
+        </div>
+      </div>
+      <div class="err-msg" data-for="fuentes">Seleccione al menos una fuente a monitorear.</div>
+
+      <!-- ===== Correos ===== -->
+      <h2>Correos de notificación</h2>
+      <div class="info-banner">
+        Las notificaciones generadas por el monitoreo llegarán al <strong>correo destinatario principal</strong>.
+        Opcionalmente puede agregar hasta <strong>5 correos adicionales</strong> que también recibirán las alertas.
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="correo_principal">
+          Correo destinatario principal <span class="req">*</span>
+        </label>
+        <div class="email-primary">
+          <input type="email" id="correo_principal" name="correo_principal" required
+                 placeholder="ejemplo@empresa.com" />
+          <button type="button" class="btn-add-inline" id="btn-add-email"
+                  title="Agregar correo adicional">+</button>
+        </div>
+        <div class="err-msg" data-for="correo_principal">Ingrese un correo principal válido.</div>
+      </div>
+
+      <div class="emails-add-wrap" id="emails-add-wrap">
+        <h3>Correos destinatarios adicionales</h3>
+        <div id="emails-adicionales"></div>
+        <div class="hint" id="hint-max-emails" style="display:none;">
+          Ha alcanzado el máximo de 5 correos adicionales.
+        </div>
+      </div>
+
+      <!-- ===== Autorización ===== -->
+      <h2>Autorización y consentimiento</h2>
+      <p class="legal-intro">
+        Census Consultores realiza consultas en portales públicos del Estado ecuatoriano en su nombre.
+        Se requiere su autorización expresa.
+      </p>
+      <div class="checks legal">
+        <label>
+          <input type="checkbox" id="acepto_tyc" name="acepto_tyc" required />
+          <span>
+            Acepto los
+            <a href="/terminos-y-condiciones" target="_blank" rel="noopener">
+              <strong>Términos y Condiciones</strong>
+            </a>
+            del servicio Census Alert.
+          </span>
+        </label>
+        <label>
+          <input type="checkbox" id="acepto_lopdp" name="acepto_lopdp" required />
+          <span>
+            Autorizo el
+            <a href="/tratamiento-de-datos" target="_blank" rel="noopener">
+              <strong>tratamiento de mis datos</strong>
+            </a>
+            conforme a la Ley Orgánica de Protección de Datos Personales (Ecuador).
+          </span>
+        </label>
+      </div>
+      <div class="err-msg" data-for="legales">
+        Para enviar la solicitud debe marcar las 2 autorizaciones.
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="submit" id="btn-submit">Enviar solicitud</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="final-ok" class="final-msg ok" style="display:none;">
+    ✅ <strong>Gracias, su solicitud ha sido recibida por Census Consultores.</strong>
+    Lo contactaremos en menos de 24 horas hábiles al correo indicado.
+  </div>
+  <div id="final-err" class="final-msg err" style="display:none;">
+    ⚠️ Ocurrió un problema enviando su solicitud. Intente nuevamente o escríbanos a
+    <a href="mailto:comercial@censusconsultores.com.ec">comercial@censusconsultores.com.ec</a>.
+  </div>
+</main>
+
+<style is:global>
+  /* ----- Layout del form ----- */
+  .form-main { padding: 28px 32px 40px; }
+
+  .form-main h1 {
+    font-size: 22px;
+    margin: 0 0 12px;
+    color: var(--c-bg-dark);
+  }
+  .form-main p.intro {
+    color: #444;
+    font-size: 14px;
+    margin: 0 0 24px;
+  }
+  .form-main h2 {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--c-gold-dark);
+    margin: 28px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .field { margin-bottom: 14px; }
+  label.lbl {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2a2a2a;
+  }
+  label.lbl .req { color: var(--c-error); margin-left: 2px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid #cfcabf;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--c-gold);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18);
+  }
+  input.error, textarea.error { border-color: var(--c-error); }
+
+  .err-msg {
+    color: var(--c-error);
+    font-size: 12px;
+    margin-top: 3px;
+    display: none;
+  }
+  .err-msg.show { display: block; }
+  .hint { font-size: 12px; color: var(--c-text-muted); margin-top: 2px; }
+
+  .info-banner {
+    background: var(--c-gold-soft);
+    border-left: 3px solid var(--c-gold);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #5a4a1f;
+    margin-bottom: 14px;
+    border-radius: 0 4px 4px 0;
+  }
+  .info-banner strong { color: var(--c-gold-dark); }
+
+  /* ----- Bloque RUC ----- */
+  .ruc-block {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .ruc-block .ruc-col { flex: 1.2; }
+  .ruc-block .alias-col { flex: 1; }
+  .ruc-block .rm-col {
+    flex: 0 0 36px;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 22px;
+  }
+  .btn-remove {
+    background: #f4e6e8;
+    color: var(--c-error);
+    border: 1px solid #e0c0c5;
+    width: 32px;
+    height: 36px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .btn-remove:hover { background: #e8c5cb; }
+
+  .btn-add {
+    background: var(--c-gold-soft);
+    color: var(--c-gold-dark);
+    border: 1px dashed var(--c-gold);
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+  .btn-add:hover { background: #ebe1c1; }
+  .btn-add:disabled {
+    background: #eee;
+    color: #aaa;
+    border-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  /* ----- Email principal ----- */
+  .email-primary {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .email-primary input { flex: 1; }
+  .btn-add-inline {
+    flex: 0 0 38px;
+    background: var(--c-gold);
+    color: var(--c-bg-dark);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  .btn-add-inline:hover { background: #b8962f; }
+  .btn-add-inline:disabled { background: #d8c890; cursor: not-allowed; }
+
+  .emails-add-wrap {
+    margin-top: 12px;
+    padding: 12px;
+    background: #faf8f0;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    display: none;
+  }
+  .emails-add-wrap.show { display: block; }
+  .emails-add-wrap h3 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--c-gold-dark);
+  }
+  .email-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+  .email-row input { flex: 1; }
+  .email-row .rm-col { flex: 0 0 36px; padding-top: 0; }
+
+  /* ----- Checkboxes / radios ----- */
+  .checks { display: flex; flex-direction: column; gap: 8px; }
+  .checks label, .radios label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .checks input[type="checkbox"],
+  .radios input[type="radio"] {
+    margin-top: 3px;
+    cursor: pointer;
+  }
+
+  /* ----- Fuentes con badge ----- */
+  .fuente-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 4px 0;
+  }
+  .fuente-row label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    flex: 1;
+  }
+  .fuente-row input[type="checkbox"] { margin-top: 3px; cursor: pointer; }
+  .freq-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  .freq-badge.diaria {
+    background: #e3f2e6;
+    color: #1b5e20;
+    border: 1px solid #c5e0c9;
+  }
+  .freq-badge.semanal {
+    background: #fff4e0;
+    color: var(--c-gold-dark);
+    border: 1px solid #f0d8a0;
+  }
+  .fuente-note {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    margin-left: 26px;
+    margin-top: -2px;
+    font-style: italic;
+  }
+
+  /* ----- Legal ----- */
+  .legal-intro {
+    font-size: 13px;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .checks.legal label { font-size: 13px; }
+  .checks.legal a { color: var(--c-gold-dark); text-decoration: underline; }
+  .checks.legal a:hover { color: var(--c-gold); }
+
+  /* ----- Honeypot ----- */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px; height: 1px;
+    overflow: hidden;
+  }
+
+  /* ----- Submit ----- */
+  .submit-row { margin-top: 28px; }
+  button.submit {
+    background: var(--c-gold);
+    color: var(--c-bg-dark);
+    border: none;
+    padding: 13px 28px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
+  }
+  button.submit:hover { background: #b8962f; }
+  button.submit:disabled { background: #d8c890; cursor: not-allowed; }
+
+  /* ----- Mensajes finales ----- */
+  .final-msg {
+    padding: 24px;
+    border-radius: 6px;
+    font-size: 15px;
+    margin: 20px 0;
+  }
+  .final-msg.ok {
+    background: #e8f5e9;
+    color: #1b5e20;
+    border-left: 4px solid #2e7d32;
+  }
+  .final-msg.err {
+    background: #fdecea;
+    color: #7f1d1d;
+    border-left: 4px solid var(--c-error);
+  }
+
+  @media (max-width: 600px) {
+    .form-main { padding: 20px 18px 30px; }
+    .ruc-block { flex-wrap: wrap; }
+    .ruc-block .ruc-col, .ruc-block .alias-col { flex: 1 1 100%; }
+    .ruc-block .rm-col { padding-top: 0; }
+  }
+</style>
+
+<script>
+  import { initCensusForm } from "../../scripts/form.js";
+  initCensusForm();
+</script>

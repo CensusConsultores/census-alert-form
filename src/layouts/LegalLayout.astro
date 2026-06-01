@@ -1,0 +1,172 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  pageTitle: string;
+  crumb: string;
+  updated: string;
+  description?: string;
+}
+
+const { title, pageTitle, crumb, updated, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} wrapClass="legal" showSplash={false}>
+  <main class="legal-main">
+    <div class="breadcrumb">
+      <a href="/">Inicio</a> &nbsp;›&nbsp; {crumb}
+    </div>
+
+    <h1>{pageTitle}</h1>
+    <div class="updated">{updated}</div>
+
+    <slot />
+
+    <div class="back-row">
+      <a href="/" class="btn-back">← Volver al formulario</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .legal-main {
+    padding: 36px 48px 40px;
+    line-height: 1.65;
+  }
+  .breadcrumb {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 18px;
+  }
+  .breadcrumb a {
+    color: var(--c-gold-dark);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .legal-main h1 {
+    font-size: 28px;
+    color: var(--c-bg-dark);
+    margin: 0 0 6px;
+    letter-spacing: -0.3px;
+  }
+  .updated {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eee;
+  }
+  .legal-main h2 {
+    font-size: 17px;
+    color: var(--c-gold-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #f0e8d0;
+  }
+  .legal-main h2 .num {
+    display: inline-block;
+    color: var(--c-gold);
+    margin-right: 8px;
+    font-weight: 700;
+  }
+  .legal-main p {
+    font-size: 15px;
+    color: #333;
+    margin: 0 0 14px;
+    text-align: justify;
+  }
+  .legal-main ul,
+  .legal-main ol {
+    font-size: 15px;
+    color: #333;
+    padding-left: 22px;
+    margin: 0 0 14px;
+  }
+  .legal-main li { margin-bottom: 6px; }
+
+  .toc {
+    background: #faf8f0;
+    border-left: 3px solid var(--c-gold);
+    padding: 16px 20px;
+    margin: 0 0 32px;
+    border-radius: 0 4px 4px 0;
+  }
+  .toc-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--c-gold-dark);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 22px;
+    font-size: 14px;
+    column-count: 2;
+    column-gap: 30px;
+  }
+  .toc ol li { margin-bottom: 4px; break-inside: avoid; }
+  .toc a {
+    color: #5a4a1f;
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--c-gold-dark); text-decoration: underline; }
+
+  .responsable-card {
+    background: var(--c-bg-dark);
+    color: #f0e8d0;
+    padding: 20px 24px;
+    border-radius: 6px;
+    margin: 18px 0 28px;
+  }
+  .responsable-card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--c-gold);
+    margin-bottom: 6px;
+  }
+  .responsable-card .name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  .responsable-card .meta {
+    font-size: 13px;
+    color: #c5bf9f;
+  }
+  .responsable-card .meta a { color: var(--c-gold); text-decoration: none; }
+
+  .back-row {
+    margin: 36px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    text-align: center;
+  }
+  .btn-back {
+    display: inline-block;
+    background: var(--c-gold);
+    color: var(--c-bg-dark);
+    padding: 11px 26px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+  }
+  .btn-back:hover { background: #b8962f; }
+
+  @media (max-width: 600px) {
+    .legal-main { padding: 24px 22px 30px; }
+    .legal-main h1 { font-size: 22px; }
+    .toc ol { column-count: 1; }
+  }
+</style>
