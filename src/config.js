@@ -19,4 +19,4 @@ export const APPS_SCRIPT_URL = url;
 export const MAX_RUCS_ADICIONALES = 10;
 export const MAX_EMAILS_ADICIONALES = 5;
 
-export const SOURCES_EMAIL_LOPDP = 'comercial@censusconsultores.com.ec';
+export const SOURCES_EMAIL_LOPDP = 'info@censusconsultores.com.ec';

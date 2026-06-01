@@ -372,10 +372,12 @@ export function initCensusForm() {
     };
   }
 
-  // Reintenta hasta 3 veces con backoff: 0ms, 1s, 2s entre intentos.
+  // Reintenta hasta 10 veces con backoff lineal capeado a 2s entre intentos.
   // Cubre blips de red transitorios y demoras puntuales del Apps Script.
+  // Tiempo máximo aproximado en el peor caso: ~20s.
   async function enviar(payload) {
-    const MAX_ATTEMPTS = 3;
+    const MAX_ATTEMPTS = 10;
+    const MAX_BACKOFF_MS = 2000;
     let lastError;
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
@@ -392,7 +394,8 @@ export function initCensusForm() {
         lastError = err;
         console.warn(`[Census Alert] Intento ${attempt}/${MAX_ATTEMPTS} falló:`, err.message);
         if (attempt < MAX_ATTEMPTS) {
-          await new Promise((r) => setTimeout(r, attempt * 1000));
+          const waitMs = Math.min(attempt * 500, MAX_BACKOFF_MS);
+          await new Promise((r) => setTimeout(r, waitMs));
         }
       }
     }
