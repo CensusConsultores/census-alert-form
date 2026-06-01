@@ -1,10 +1,20 @@
 // ============================================================
 // Configuración global del cliente Census Alert
-// Cambiar acá la URL del Apps Script o los límites del formulario.
+// ------------------------------------------------------------
+// La URL del Apps Script se lee de la env var PUBLIC_APPS_SCRIPT_URL
+// (definida en .env localmente y en Vercel → Settings → Env Variables).
+// Si no está definida, falla el build con error claro.
 // ============================================================
 
-export const APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbxv7redqIaf-o6Nn0CG0E7-tUXkhZgVdRc_E-M75PZ9TlmuF31G5FFt-zjFA484r70IcA/exec';
+const url = import.meta.env.PUBLIC_APPS_SCRIPT_URL;
+if (!url) {
+  throw new Error(
+    "Falta la env var PUBLIC_APPS_SCRIPT_URL. " +
+    "Definila en .env (local) o en Vercel → Settings → Environment Variables."
+  );
+}
+
+export const APPS_SCRIPT_URL = url;
 
 export const MAX_RUCS_ADICIONALES = 10;
 export const MAX_EMAILS_ADICIONALES = 5;
