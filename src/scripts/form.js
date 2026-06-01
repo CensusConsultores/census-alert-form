@@ -273,7 +273,6 @@ export function initCensusForm() {
       empresa: $("#empresa").value.trim(),
       email: $("#email").value.trim(),
       telefono: telefonoFinal,
-      telefono_pais: $("#phone-country").value,
       ruc_principal: $("#ruc_principal").value.trim(),
       razon_social_principal: $("#alias_principal").value.trim(),
       rucs_adicionales,
