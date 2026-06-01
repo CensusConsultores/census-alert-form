@@ -11,7 +11,7 @@
 // ===== CONFIG =====
 const DESTINATARIO = 'a.vasconez@censusconsultores.com.ec';   // ← cambiar / agregar separados por coma
 const TZ = 'America/Guayaquil';
-const COL_PROCESADO = 14;  // columna N (1-indexed) — header "procesado" en N1
+const COL_PROCESADO = 16;  // columna P (1-indexed) — header "procesado" en P1
 
 // ============================================================
 // 1) doPost — recibe el formulario
@@ -28,6 +28,13 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // Serializar adicionales con tipo y fecha de nacimiento
+    // Formato por item: "numero|tipo|fecha_nac|alias"  (separador entre items: "; ")
+    // Para tipo=RUC, fecha_nac queda vacío.
+    const adicSerializado = (data.rucs_adicionales || [])
+      .map(r => `${r.ruc}|${r.tipo || 'RUC'}|${r.fecha_nacimiento || ''}|${r.alias || ''}`)
+      .join('; ');
+
     sheet.appendRow([
       new Date(),                                                       // A · fecha_envio
       data.nombre || '',                                                // B · nombre
@@ -37,13 +44,14 @@ function doPost(e) {
       data.telefono || '',                                              // F · telefono
       data.ruc_principal || '',                                         // G · ruc_principal
       data.razon_social_principal || '',                                // H · razon_social_principal
-      (data.rucs_adicionales || [])
-        .map(r => `${r.ruc}:${r.alias || ''}`).join('; '),              // I · rucs_adicionales
+      adicSerializado,                                                  // I · rucs_adicionales
       (data.fuentes || []).join(', '),                                  // J · fuentes
       data.correos_alertas || data.correo_principal || '',              // K · correos_alertas (CSV)
       data.acepto_tyc ? 'SÍ' : 'NO',                                    // L · acepto_tyc
       data.acepto_lopdp ? 'SÍ' : 'NO',                                  // M · acepto_lopdp
-      ''                                                                // N · procesado (vacío hasta el digest)
+      data.tipo_doc_principal || 'RUC',                                 // N · tipo_doc_principal (RUC | CI)
+      data.fecha_nac_principal || '',                                   // O · fecha_nac_principal (YYYY-MM-DD si CI)
+      ''                                                                // P · procesado (vacío hasta el digest)
     ]);
 
     return ContentService

@@ -8,9 +8,9 @@
     <h1>Solicitud de servicio · Census Alert</h1>
     <p class="intro">
       Census Alert monitorea diariamente las fuentes oficiales del Estado ecuatoriano
-      (SATJE, SRI, IESS, Supercías, ANT, GADs municipales, Fiscalía, Ministerio del Trabajo)
-      y le notifica por correo cualquier novedad relevante para su empresa. Complete este
-      formulario en pocos minutos. Lo contactaremos en menos de 24 horas hábiles.
+      (judiciales, tributarias, societarias, migratorias, municipales y laborales)
+      y le notifica por correo cualquier novedad relevante para su empresa.
+      Complete este formulario en pocos minutos.
     </p>
 
     <form id="census-form" novalidate autocomplete="on">
@@ -83,9 +83,15 @@
       <div class="field">
         <label class="lbl" for="ruc_principal">RUC/CI principal <span class="req">*</span></label>
         <div class="ruc-block">
+          <div class="tipo-col">
+            <select id="tipo_principal" class="tipo-doc" aria-label="Tipo de documento">
+              <option value="RUC" selected>RUC</option>
+              <option value="CI">CI</option>
+            </select>
+          </div>
           <div class="ruc-col">
             <input type="text" id="ruc_principal" name="ruc_principal"
-                   required maxlength="13" inputmode="numeric" placeholder="RUC o CI" />
+                   required maxlength="13" inputmode="numeric" placeholder="Número" />
           </div>
           <div class="alias-col">
             <input type="text" id="alias_principal" name="alias_principal"
@@ -93,7 +99,14 @@
           </div>
         </div>
         <div class="err-msg" data-for="ruc_principal">
-          Debe ser un número de 10 dígitos (CI) o 13 dígitos (RUC).
+          El RUC debe tener 13 dígitos. La CI debe tener 10 dígitos.
+        </div>
+        <div class="fecha-nac-row" id="fecha_nac_principal_row" hidden>
+          <label class="lbl" for="fecha_nac_principal">
+            Fecha de nacimiento <span class="req">*</span>
+          </label>
+          <input type="date" id="fecha_nac_principal" class="fecha-nac" />
+          <div class="err-msg" data-for="fecha_nac_principal">Ingrese la fecha de nacimiento.</div>
         </div>
       </div>
 
@@ -118,6 +131,10 @@
           <span class="freq-badge diaria">Diaria</span>
         </div>
         <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="SUPA" /> SUPA (Pensiones alimenticias)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
           <label><input type="checkbox" name="fuentes" value="SRI" /> Deudas SRI</label>
           <span class="freq-badge diaria">Diaria</span>
         </div>
@@ -136,11 +153,15 @@
           <span class="freq-badge diaria">Diaria</span>
         </div>
         <div class="fuente-row">
-          <label><input type="checkbox" name="fuentes" value="ANT_ATM" /> Multas de tránsito (ANT, ATM)</label>
+          <label><input type="checkbox" name="fuentes" value="ANT_ATM_CTE" /> Multas de tránsito (ANT, ATM, CTE)</label>
           <span class="freq-badge diaria">Diaria</span>
         </div>
         <div class="fuente-row">
           <label><input type="checkbox" name="fuentes" value="GADS" /> Deudas municipales (Samborondón)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="IMPEDIMENTOS_MIGRACION" /> Impedimentos migratorios</label>
           <span class="freq-badge diaria">Diaria</span>
         </div>
         <div class="fuente-row">
@@ -222,7 +243,6 @@
 
   <div id="final-ok" class="final-msg ok" style="display:none;">
     ✅ <strong>Gracias, su solicitud ha sido recibida por Census Consultores.</strong>
-    Lo contactaremos en menos de 24 horas hábiles al correo indicado.
   </div>
   <div id="final-err" class="final-msg err" style="display:none;">
     ⚠️ Ocurrió un problema enviando su solicitud. Intente nuevamente o escríbanos a
@@ -310,8 +330,53 @@
     align-items: flex-start;
     margin-bottom: 10px;
   }
+  .ruc-block .tipo-col { flex: 0 0 76px; }
   .ruc-block .ruc-col { flex: 1.2; }
   .ruc-block .alias-col { flex: 1; }
+  .tipo-doc {
+    width: 100%;
+    padding: 9px 6px 9px 10px;
+    border: 1px solid #cfcabf;
+    border-radius: var(--radius);
+    background: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    color: #2a2a2a;
+    cursor: pointer;
+    height: 38px;
+  }
+  .tipo-doc:focus {
+    outline: none;
+    border-color: var(--c-gold);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18);
+  }
+
+  .fecha-nac-row {
+    margin-top: 6px;
+    margin-bottom: 4px;
+    padding: 10px 12px;
+    background: #faf8f0;
+    border-left: 3px solid var(--c-gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .fecha-nac-row[hidden] { display: none; }
+  .fecha-nac-row .lbl { font-size: 12px; margin-bottom: 4px; }
+  .fecha-nac-row input[type="date"] {
+    max-width: 220px;
+    padding: 8px 10px;
+    border: 1px solid #cfcabf;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+  }
+  .fecha-nac-row input[type="date"]:focus {
+    outline: none;
+    border-color: var(--c-gold);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18);
+  }
+  .fecha-nac-row input[type="date"].error { border-color: var(--c-error); }
   .ruc-block .rm-col {
     flex: 0 0 36px;
     display: flex;
@@ -633,7 +698,9 @@
   @media (max-width: 600px) {
     .form-main { padding: 20px 18px 30px; }
     .ruc-block { flex-wrap: wrap; }
-    .ruc-block .ruc-col, .ruc-block .alias-col { flex: 1 1 100%; }
+    .ruc-block .tipo-col { flex: 0 0 96px; }
+    .ruc-block .ruc-col { flex: 1 1 calc(100% - 106px); }
+    .ruc-block .alias-col { flex: 1 1 100%; }
     .ruc-block .rm-col { padding-top: 0; }
   }
 </style>

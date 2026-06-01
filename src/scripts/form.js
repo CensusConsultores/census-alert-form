@@ -69,14 +69,23 @@ export function initCensusForm() {
     rucCounter++;
     const id = `ruc_add_${rucCounter}`;
     const aliasId = `alias_add_${rucCounter}`;
+    const tipoId = `tipo_add_${rucCounter}`;
+    const fechaId = `fecha_nac_add_${rucCounter}`;
+    const fechaRowId = `fecha_nac_add_row_${rucCounter}`;
     const wrap = document.createElement("div");
     wrap.className = "field";
     wrap.innerHTML = `
       <label class="lbl ruc-label" for="${id}">RUC/CI adicional</label>
       <div class="ruc-block">
+        <div class="tipo-col">
+          <select id="${tipoId}" class="tipo-doc tipo-add" data-target="${id}" aria-label="Tipo de documento">
+            <option value="RUC" selected>RUC</option>
+            <option value="CI">CI</option>
+          </select>
+        </div>
         <div class="ruc-col">
           <input type="text" id="${id}" class="ruc-add" required
-                 maxlength="13" inputmode="numeric" placeholder="RUC o CI" />
+                 maxlength="13" inputmode="numeric" placeholder="Número" />
         </div>
         <div class="alias-col">
           <input type="text" id="${aliasId}" class="alias-add"
@@ -86,18 +95,55 @@ export function initCensusForm() {
           <button type="button" class="btn-remove" title="Eliminar">✕</button>
         </div>
       </div>
-      <div class="err-msg" data-for="${id}">Debe ser un número de 10 dígitos (CI) o 13 dígitos (RUC).</div>
+      <div class="err-msg" data-for="${id}">El RUC debe tener 13 dígitos. La CI debe tener 10 dígitos.</div>
+      <div class="fecha-nac-row" id="${fechaRowId}" hidden>
+        <label class="lbl" for="${fechaId}">Fecha de nacimiento <span class="req">*</span></label>
+        <input type="date" id="${fechaId}" class="fecha-nac fecha-nac-add" data-target="${id}" />
+        <div class="err-msg" data-for="${fechaId}">Ingrese la fecha de nacimiento.</div>
+      </div>
     `;
     wrap.querySelector(".btn-remove").addEventListener("click", () => {
       wrap.remove();
       refreshRucNumbers();
       actualizarBotonRuc();
     });
+    // Hook del tipo selector → toggle fecha + maxlength del número
+    const tipoSel = wrap.querySelector(".tipo-doc");
+    const numInput = wrap.querySelector(".ruc-add");
+    const fechaRow = wrap.querySelector(".fecha-nac-row");
+    const fechaInp = wrap.querySelector(".fecha-nac-add");
+    tipoSel.addEventListener("change", () =>
+      aplicarTipoDoc(tipoSel, numInput, fechaRow, fechaInp)
+    );
+    aplicarTipoDoc(tipoSel, numInput, fechaRow, fechaInp);
     rucsContainer.appendChild(wrap);
     refreshRucNumbers();
     actualizarBotonRuc();
   }
+
+  // Helper compartido: aplica reglas según tipo (RUC | CI)
+  function aplicarTipoDoc(tipoSel, numInput, fechaRow, fechaInput) {
+    const isCI = tipoSel.value === "CI";
+    fechaRow.hidden = !isCI;
+    fechaInput.required = isCI;
+    if (!isCI) fechaInput.value = "";
+    numInput.maxLength = isCI ? 10 : 13;
+    // Set max=hoy a la fecha de nacimiento (no permite fechas futuras)
+    if (isCI && !fechaInput.max) {
+      fechaInput.max = new Date().toISOString().split("T")[0];
+    }
+  }
   btnAddRuc.addEventListener("click", agregarRuc);
+
+  // --- Selector tipo (RUC/CI) del bloque principal ---
+  const tipoPrincipal = $("#tipo_principal");
+  const rucPrincipalInput = $("#ruc_principal");
+  const fechaPrincipalRow = $("#fecha_nac_principal_row");
+  const fechaPrincipalInput = $("#fecha_nac_principal");
+  fechaPrincipalInput.max = new Date().toISOString().split("T")[0];
+  tipoPrincipal.addEventListener("change", () =>
+    aplicarTipoDoc(tipoPrincipal, rucPrincipalInput, fechaPrincipalRow, fechaPrincipalInput)
+  );
 
   // ---------- Emails adicionales ----------
   let emailCounter = 0;
@@ -197,20 +243,47 @@ export function initCensusForm() {
       marcar("telefono");
     }
 
-    if (!RE_RUC_CI.test($("#ruc_principal").value.trim())) marcar("ruc_principal");
+    // RUC/CI principal — regex según tipo elegido
+    const tipoP = $("#tipo_principal").value;
+    const numP = $("#ruc_principal").value.trim();
+    const reP = tipoP === "CI" ? /^[0-9]{10}$/ : /^[0-9]{13}$/;
+    if (!reP.test(numP)) marcar("ruc_principal");
+    if (tipoP === "CI") {
+      const fechaP = $("#fecha_nac_principal").value;
+      if (!fechaP || isNaN(new Date(fechaP).getTime())) {
+        marcar("fecha_nac_principal");
+      }
+    }
 
-    $$(".ruc-add").forEach((inp) => {
-      const v = inp.value.trim();
-      if (!RE_RUC_CI.test(v)) {
-        inp.classList.add("error");
-        const em = document.querySelector(`.err-msg[data-for="${inp.id}"]`);
+    // RUC/CI adicionales — regex según tipo + fecha si CI
+    $$("#rucs-adicionales .ruc-block").forEach((blk) => {
+      const tipo = blk.querySelector(".tipo-doc").value;
+      const numInp = blk.querySelector(".ruc-add");
+      const re = tipo === "CI" ? /^[0-9]{10}$/ : /^[0-9]{13}$/;
+      if (!re.test(numInp.value.trim())) {
+        numInp.classList.add("error");
+        const em = document.querySelector(`.err-msg[data-for="${numInp.id}"]`);
         if (em) em.classList.add("show");
-        if (!firstErrorEl) firstErrorEl = inp;
+        if (!firstErrorEl) firstErrorEl = numInp;
         ok = false;
       } else {
-        inp.classList.remove("error");
-        const em = document.querySelector(`.err-msg[data-for="${inp.id}"]`);
+        numInp.classList.remove("error");
+        const em = document.querySelector(`.err-msg[data-for="${numInp.id}"]`);
         if (em) em.classList.remove("show");
+      }
+      if (tipo === "CI") {
+        const fechaInp = blk.parentElement.querySelector(".fecha-nac-add");
+        if (fechaInp && (!fechaInp.value || isNaN(new Date(fechaInp.value).getTime()))) {
+          fechaInp.classList.add("error");
+          const em = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
+          if (em) em.classList.add("show");
+          if (!firstErrorEl) firstErrorEl = fechaInp;
+          ok = false;
+        } else if (fechaInp) {
+          fechaInp.classList.remove("error");
+          const em = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
+          if (em) em.classList.remove("show");
+        }
       }
     });
 
@@ -247,10 +320,16 @@ export function initCensusForm() {
 
   // ---------- payload ----------
   function construirPayload() {
-    const rucs_adicionales = $$("#rucs-adicionales .ruc-block").map((blk) => ({
-      ruc: blk.querySelector(".ruc-add").value.trim(),
-      alias: blk.querySelector(".alias-add").value.trim(),
-    }));
+    const rucs_adicionales = $$("#rucs-adicionales .ruc-block").map((blk) => {
+      const tipo = blk.querySelector(".tipo-doc").value;
+      const fechaInp = blk.parentElement.querySelector(".fecha-nac-add");
+      return {
+        ruc: blk.querySelector(".ruc-add").value.trim(),
+        alias: blk.querySelector(".alias-add").value.trim(),
+        tipo,
+        fecha_nacimiento: tipo === "CI" && fechaInp ? fechaInp.value : "",
+      };
+    });
     const correos_adicionales = $$(".email-add")
       .map((i) => i.value.trim())
       .filter(Boolean);
@@ -274,6 +353,11 @@ export function initCensusForm() {
       email: $("#email").value.trim(),
       telefono: telefonoFinal,
       ruc_principal: $("#ruc_principal").value.trim(),
+      tipo_doc_principal: $("#tipo_principal").value,
+      fecha_nac_principal:
+        $("#tipo_principal").value === "CI"
+          ? $("#fecha_nac_principal").value
+          : "",
       razon_social_principal: $("#alias_principal").value.trim(),
       rucs_adicionales,
       fuentes: $$('input[name="fuentes"]:checked').map((c) => c.value),
