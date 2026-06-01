@@ -85,11 +85,13 @@ export function initCensusForm() {
         </div>
         <div class="ruc-col">
           <input type="text" id="${id}" class="ruc-add" required
-                 maxlength="13" inputmode="numeric" placeholder="Número" />
+                 maxlength="13" inputmode="numeric" placeholder="Número"
+                 autocomplete="off" data-1p-ignore data-lpignore="true" />
         </div>
         <div class="alias-col">
           <input type="text" id="${aliasId}" class="alias-add"
-                 placeholder="Razón Social / Nombre y Apellido (Opcional)" />
+                 placeholder="Razón Social / Nombre y Apellido (Opcional)"
+                 autocomplete="off" data-1p-ignore data-lpignore="true" />
         </div>
         <div class="rm-col">
           <button type="button" class="btn-remove" title="Eliminar">✕</button>

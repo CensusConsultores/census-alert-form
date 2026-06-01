@@ -104,11 +104,13 @@
           </div>
           <div class="ruc-col">
             <input type="text" id="ruc_principal" name="ruc_principal"
-                   required maxlength="13" inputmode="numeric" placeholder="Número" />
+                   required maxlength="13" inputmode="numeric" placeholder="Número"
+                   autocomplete="off" data-1p-ignore data-lpignore="true" />
           </div>
           <div class="alias-col">
             <input type="text" id="alias_principal" name="alias_principal"
-                   placeholder="Razón Social / Nombre y Apellido (Opcional)" />
+                   placeholder="Razón Social / Nombre y Apellido (Opcional)"
+                   autocomplete="off" data-1p-ignore data-lpignore="true" />
           </div>
         </div>
         <div class="err-msg" data-for="ruc_principal">
