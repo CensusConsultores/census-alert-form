@@ -6,6 +6,13 @@ import {
   MAX_RUCS_ADICIONALES,
   MAX_EMAILS_ADICIONALES,
 } from "../config.js";
+import {
+  AsYouType,
+  isValidPhoneNumber,
+  parsePhoneNumberFromString,
+  getCountries,
+  getCountryCallingCode,
+} from "libphonenumber-js/min";
 
 const $ = (s, ctx = document) => ctx.querySelector(s);
 const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
@@ -132,6 +139,30 @@ export function initCensusForm() {
   }
   btnAddEmail.addEventListener("click", agregarEmail);
 
+  // ---------- Teléfono: selector país buscable + formato as-you-type ----------
+  const telInput = $("#telefono");
+  const telCountry = $("#phone-country");
+
+  function formatearTelefono() {
+    const country = telCountry.value;
+    const digits = telInput.value.replace(/[^\d]/g, "").replace(/^0+/, "");
+    if (!digits) {
+      telInput.value = "";
+      return;
+    }
+    const formatted = new AsYouType(country).input(digits);
+    telInput.value = formatted.replace(/^0\s*/, "");
+  }
+
+  telInput.addEventListener("input", formatearTelefono);
+  telCountry.addEventListener("change", () => {
+    formatearTelefono();
+    telInput.focus();
+  });
+
+  // --- Dropdown custom buscable ---
+  initPhoneCountrySelect(telCountry);
+
   // ---------- limpieza errores on input/change ----------
   document.addEventListener("input", (e) => {
     if (e.target.id) hideErr(e.target.id);
@@ -160,8 +191,11 @@ export function initCensusForm() {
     if ($("#empresa").value.trim().length < 2) marcar("empresa");
     if (!RE_EMAIL.test($("#email").value.trim())) marcar("email");
 
-    const telDigits = $("#telefono").value.replace(/\D/g, "");
-    if (telDigits.length < 7) marcar("telefono");
+    const telVal = telInput.value.trim();
+    const telCountryVal = telCountry.value;
+    if (!telVal || !isValidPhoneNumber(telVal, telCountryVal)) {
+      marcar("telefono");
+    }
 
     if (!RE_RUC_CI.test($("#ruc_principal").value.trim())) marcar("ruc_principal");
 
@@ -224,12 +258,22 @@ export function initCensusForm() {
       .filter(Boolean)
       .join(", ");
 
+    // Teléfono: parsear y guardar en formato E.164 (ej. +593960511029, sin espacios)
+    const telParsed = parsePhoneNumberFromString(
+      $("#telefono").value.trim(),
+      $("#phone-country").value
+    );
+    const telefonoFinal = telParsed
+      ? telParsed.number   // formato E.164: "+593960511029"
+      : $("#telefono").value.trim();
+
     return {
       nombre: $("#nombre").value.trim(),
       cargo: $("#cargo").value.trim(),
       empresa: $("#empresa").value.trim(),
       email: $("#email").value.trim(),
-      telefono: $("#telefono").value.trim(),
+      telefono: telefonoFinal,
+      telefono_pais: $("#phone-country").value,
       ruc_principal: $("#ruc_principal").value.trim(),
       razon_social_principal: $("#alias_principal").value.trim(),
       rucs_adicionales,
@@ -276,4 +320,178 @@ export function initCensusForm() {
       btn.textContent = labelOriginal;
     }
   });
+}
+
+// ============================================================
+// Selector de país buscable (custom dropdown)
+// ============================================================
+function isoToFlag(iso) {
+  // Convierte "EC" → "🇪🇨" usando los Regional Indicator Symbols Unicode
+  if (!iso || iso.length !== 2) return "🌐";
+  return iso
+    .toUpperCase()
+    .replace(/./g, (c) => String.fromCodePoint(127397 + c.charCodeAt(0)));
+}
+
+function buildCountryList() {
+  // Nombres en español sin depender de paquetes — API nativa del browser
+  let regionNames;
+  try {
+    regionNames = new Intl.DisplayNames(["es"], { type: "region" });
+  } catch {
+    regionNames = null;
+  }
+
+  const list = getCountries()
+    .map((iso) => {
+      let dial = "";
+      try {
+        dial = "+" + getCountryCallingCode(iso);
+      } catch {
+        return null;
+      }
+      let name = iso;
+      if (regionNames) {
+        try { name = regionNames.of(iso) || iso; } catch { /* ignore */ }
+      }
+      return {
+        iso,
+        name,
+        dial,
+        flag: isoToFlag(iso),
+        // string normalizado para búsqueda: sin acentos, lowercase
+        searchKey: (name + " " + iso + " " + dial + " " + dial.replace("+", ""))
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[̀-ͯ]/g, ""),
+      };
+    })
+    .filter(Boolean);
+
+  // Ordenar alfabéticamente por nombre, locale-aware
+  list.sort((a, b) => a.name.localeCompare(b.name, "es"));
+  return list;
+}
+
+function initPhoneCountrySelect(hiddenInput) {
+  const trigger = document.getElementById("phone-trigger");
+  const popup = document.getElementById("phone-popup");
+  const search = document.getElementById("phone-search");
+  const listEl = document.getElementById("phone-list");
+  const emptyEl = document.getElementById("phone-empty");
+  const flagSpan = document.getElementById("phone-flag");
+  const dialSpan = document.getElementById("phone-dial");
+  if (!trigger) return;
+
+  const countries = buildCountryList();
+  let filtered = countries;
+  let highlightIdx = -1;
+
+  function setCountry(iso, dispatch = true) {
+    const c = countries.find((x) => x.iso === iso);
+    if (!c) return;
+    hiddenInput.value = iso;
+    flagSpan.textContent = c.flag;
+    dialSpan.textContent = c.dial;
+    if (dispatch) {
+      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }
+
+  function renderList(filter = "") {
+    const q = filter
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "");
+    filtered = q
+      ? countries.filter((c) => c.searchKey.includes(q))
+      : countries;
+    highlightIdx = -1;
+    if (filtered.length === 0) {
+      listEl.innerHTML = "";
+      emptyEl.hidden = false;
+      return;
+    }
+    emptyEl.hidden = true;
+    const selectedIso = hiddenInput.value;
+    listEl.innerHTML = filtered
+      .map(
+        (c, i) => `
+        <div class="phone-item${c.iso === selectedIso ? " selected" : ""}"
+             role="option" data-iso="${c.iso}" data-i="${i}">
+          <span class="item-flag">${c.flag}</span>
+          <span class="item-name">${c.name}</span>
+          <span class="item-dial">${c.dial}</span>
+        </div>`
+      )
+      .join("");
+  }
+
+  function highlight(idx) {
+    const items = listEl.querySelectorAll(".phone-item");
+    items.forEach((it) => it.classList.remove("highlighted"));
+    if (idx >= 0 && idx < items.length) {
+      items[idx].classList.add("highlighted");
+      items[idx].scrollIntoView({ block: "nearest" });
+      highlightIdx = idx;
+    }
+  }
+
+  function openPopup() {
+    popup.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    search.value = "";
+    renderList();
+    setTimeout(() => search.focus(), 0);
+  }
+  function closePopup() {
+    popup.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+  }
+  function togglePopup() {
+    if (popup.hidden) openPopup();
+    else closePopup();
+  }
+
+  trigger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePopup();
+  });
+  search.addEventListener("input", (e) => renderList(e.target.value));
+  search.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      highlight(Math.min(highlightIdx + 1, filtered.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      highlight(Math.max(highlightIdx - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const target = filtered[highlightIdx] || filtered[0];
+      if (target) {
+        setCountry(target.iso);
+        closePopup();
+      }
+    } else if (e.key === "Escape") {
+      closePopup();
+      trigger.focus();
+    }
+  });
+  listEl.addEventListener("click", (e) => {
+    const item = e.target.closest(".phone-item");
+    if (item) {
+      setCountry(item.dataset.iso);
+      closePopup();
+      document.getElementById("telefono").focus();
+    }
+  });
+  document.addEventListener("click", (e) => {
+    if (!popup.hidden && !document.getElementById("phone-select").contains(e.target)) {
+      closePopup();
+    }
+  });
+
+  // Inicializar con Ecuador (o lo que ya tenga el hidden input)
+  setCountry(hiddenInput.value || "EC", false);
 }

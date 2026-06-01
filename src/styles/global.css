@@ -21,7 +21,7 @@
   --container-form: 780px;
   --container-legal: 820px;
   --radius: 4px;
-  --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 4px 24px rgba(26, 26, 14, 0.10), 0 1px 4px rgba(26, 26, 14, 0.06);
 }
 
 * { box-sizing: border-box; }
@@ -30,9 +30,21 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-base);
-  background: var(--c-page);
   color: var(--c-text);
   line-height: 1.55;
+  min-height: 100vh;
+}
+
+body {
+  background:
+    radial-gradient(ellipse 900px 700px at 50% -120px,
+                    rgba(201, 168, 76, 0.14),
+                    transparent 65%),
+    radial-gradient(ellipse 600px 500px at 100% 100%,
+                    rgba(139, 105, 20, 0.05),
+                    transparent 70%),
+    linear-gradient(180deg, #faf6ea 0%, var(--c-page) 55%);
+  background-attachment: fixed;
 }
 
 a { color: var(--c-gold-dark); }

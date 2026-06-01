@@ -50,7 +50,26 @@
 
       <div class="field">
         <label class="lbl" for="telefono">Teléfono <span class="req">*</span></label>
-        <input type="tel" id="telefono" name="telefono" required minlength="7" />
+        <div class="phone-wrap">
+          <div class="phone-select" id="phone-select">
+            <button type="button" class="phone-select-trigger" id="phone-trigger"
+                    aria-haspopup="listbox" aria-expanded="false" aria-label="Seleccionar país">
+              <span class="phone-flag" id="phone-flag">🇪🇨</span>
+              <span class="phone-dial" id="phone-dial">+593</span>
+              <span class="phone-caret" aria-hidden="true">▾</span>
+            </button>
+            <input type="hidden" id="phone-country" value="EC" />
+            <div class="phone-popup" id="phone-popup" role="dialog" aria-label="Buscar país" hidden>
+              <input type="text" class="phone-search" id="phone-search"
+                     placeholder="Buscar por país o código (ej. Ecuador, 593)…"
+                     autocomplete="off" />
+              <div class="phone-list" id="phone-list" role="listbox"></div>
+              <div class="phone-empty" id="phone-empty" hidden>Sin resultados</div>
+            </div>
+          </div>
+          <input type="tel" id="telefono" name="telefono" required
+                 placeholder="99 123 4567" autocomplete="tel-national" />
+        </div>
         <div class="err-msg" data-for="telefono">Ingrese un número de teléfono válido.</div>
       </div>
 
@@ -113,11 +132,15 @@
         <div class="fuente-note">Aplicable solo para RUC registrados en la SuperCías.</div>
 
         <div class="fuente-row">
-          <label><input type="checkbox" name="fuentes" value="ANT" /> Multas de tránsito (ANT)</label>
+          <label><input type="checkbox" name="fuentes" value="SERCOP" /> SERCOP (Contratación Pública)</label>
           <span class="freq-badge diaria">Diaria</span>
         </div>
         <div class="fuente-row">
-          <label><input type="checkbox" name="fuentes" value="GADS" /> Deudas municipales (Guayaquil, Samborondón)</label>
+          <label><input type="checkbox" name="fuentes" value="ANT_ATM" /> Multas de tránsito (ANT, ATM)</label>
+          <span class="freq-badge diaria">Diaria</span>
+        </div>
+        <div class="fuente-row">
+          <label><input type="checkbox" name="fuentes" value="GADS" /> Deudas municipales (Samborondón)</label>
           <span class="freq-badge diaria">Diaria</span>
         </div>
         <div class="fuente-row">
@@ -325,6 +348,123 @@
     color: #aaa;
     border-color: #ccc;
     cursor: not-allowed;
+  }
+
+  /* ----- Teléfono con selector país buscable ----- */
+  .phone-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    position: relative;
+  }
+  .phone-wrap input[type="tel"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .phone-select {
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .phone-select-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 11px;
+    border: 1px solid #cfcabf;
+    border-radius: var(--radius);
+    background: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    height: 100%;
+    min-width: 110px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .phone-select-trigger:hover { border-color: #b8a87a; }
+  .phone-select-trigger[aria-expanded="true"],
+  .phone-select-trigger:focus-visible {
+    outline: none;
+    border-color: var(--c-gold);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18);
+  }
+  .phone-flag { font-size: 18px; line-height: 1; }
+  .phone-dial { font-weight: 600; color: #333; font-variant-numeric: tabular-nums; }
+  .phone-caret { font-size: 10px; color: #999; margin-left: 2px; }
+
+  .phone-popup {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 100;
+    width: 360px;
+    max-width: calc(100vw - 32px);
+    background: #fff;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(26, 26, 14, 0.18);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-popup[hidden] { display: none; }
+
+  .phone-search {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 1px solid var(--c-border);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    background: #faf8f0;
+  }
+  .phone-search:focus { background: #fff; }
+
+  .phone-list {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .phone-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #f5f3ee;
+  }
+  .phone-item:last-child { border-bottom: none; }
+  .phone-item:hover,
+  .phone-item.highlighted {
+    background: var(--c-gold-soft);
+  }
+  .phone-item.selected {
+    background: rgba(201, 168, 76, 0.12);
+    font-weight: 600;
+  }
+  .item-flag { font-size: 18px; flex-shrink: 0; line-height: 1; }
+  .item-name { flex: 1; color: #2a2a2a; }
+  .item-dial {
+    color: #777;
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+  }
+  .phone-empty {
+    padding: 16px;
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    font-style: italic;
+  }
+  .phone-empty[hidden] { display: none; }
+
+  @media (max-width: 600px) {
+    .phone-wrap { flex-wrap: wrap; }
+    .phone-select { flex: 1 1 100%; }
+    .phone-select-trigger { width: 100%; }
+    .phone-popup { width: 100%; }
   }
 
   /* ----- Email principal ----- */
