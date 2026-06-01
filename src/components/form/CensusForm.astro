@@ -73,6 +73,19 @@
         <div class="err-msg" data-for="telefono">Ingrese un número de teléfono válido.</div>
       </div>
 
+      <!-- ===== Grupo ===== -->
+      <h2>Grupo a monitorear</h2>
+      <div class="field">
+        <label class="lbl" for="nombre_grupo">Nombre del grupo <span class="req">*</span></label>
+        <input type="text" id="nombre_grupo" name="nombre_grupo" required minlength="2"
+               placeholder="Ej: Constructora Andina S.A. y filiales" />
+        <div class="hint">
+          Sirve para agrupar internamente esta solicitud. Todos los RUC/CI que indique a
+          continuación quedarán asociados a este grupo para su monitoreo y reporte.
+        </div>
+        <div class="err-msg" data-for="nombre_grupo">Indique el nombre del grupo (mínimo 2 caracteres).</div>
+      </div>
+
       <!-- ===== RUC/CI ===== -->
       <h2>RUC/CI a monitorear</h2>
       <p class="hint" style="margin-bottom:14px;">

@@ -11,7 +11,7 @@
 // ===== CONFIG =====
 const DESTINATARIO = 'a.vasconez@censusconsultores.com.ec';   // ← cambiar / agregar separados por coma
 const TZ = 'America/Guayaquil';
-const COL_PROCESADO = 16;  // columna P (1-indexed) — header "procesado" en P1
+const COL_PROCESADO = 17;  // columna Q (1-indexed) — header "procesado" en Q1
 
 // ============================================================
 // 1) doPost — recibe el formulario
@@ -51,7 +51,8 @@ function doPost(e) {
       data.acepto_lopdp ? 'SÍ' : 'NO',                                  // M · acepto_lopdp
       data.tipo_doc_principal || 'RUC',                                 // N · tipo_doc_principal (RUC | CI)
       data.fecha_nac_principal || '',                                   // O · fecha_nac_principal (YYYY-MM-DD si CI)
-      ''                                                                // P · procesado (vacío hasta el digest)
+      data.nombre_grupo || '',                                          // P · nombre_grupo
+      ''                                                                // Q · procesado (vacío hasta el digest)
     ]);
 
     return ContentService

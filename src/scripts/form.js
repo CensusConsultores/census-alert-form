@@ -236,6 +236,7 @@ export function initCensusForm() {
     if ($("#cargo").value.trim().length < 2) marcar("cargo");
     if ($("#empresa").value.trim().length < 2) marcar("empresa");
     if (!RE_EMAIL.test($("#email").value.trim())) marcar("email");
+    if ($("#nombre_grupo").value.trim().length < 2) marcar("nombre_grupo");
 
     const telVal = telInput.value.trim();
     const telCountryVal = telCountry.value;
@@ -352,6 +353,7 @@ export function initCensusForm() {
       empresa: $("#empresa").value.trim(),
       email: $("#email").value.trim(),
       telefono: telefonoFinal,
+      nombre_grupo: $("#nombre_grupo").value.trim(),
       ruc_principal: $("#ruc_principal").value.trim(),
       tipo_doc_principal: $("#tipo_principal").value,
       fecha_nac_principal:
