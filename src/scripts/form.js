@@ -372,15 +372,31 @@ export function initCensusForm() {
     };
   }
 
+  // Reintenta hasta 3 veces con backoff: 0ms, 1s, 2s entre intentos.
+  // Cubre blips de red transitorios y demoras puntuales del Apps Script.
   async function enviar(payload) {
-    const resp = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-    });
-    const json = await resp.json();
-    if (!json.ok) throw new Error(json.error || "Error desconocido");
-    return json;
+    const MAX_ATTEMPTS = 3;
+    let lastError;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        const resp = await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+        const json = await resp.json();
+        if (!json.ok) throw new Error(json.error || "Apps Script devolvió ok=false");
+        return json;
+      } catch (err) {
+        lastError = err;
+        console.warn(`[Census Alert] Intento ${attempt}/${MAX_ATTEMPTS} falló:`, err.message);
+        if (attempt < MAX_ATTEMPTS) {
+          await new Promise((r) => setTimeout(r, attempt * 1000));
+        }
+      }
+    }
+    throw lastError;
   }
 
   form.addEventListener("submit", async (e) => {
