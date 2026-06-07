@@ -18,7 +18,7 @@
   --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 
   /* Layout */
-  --container-form: 780px;
+  --container-form: 936px;
   --container-legal: 820px;
   --radius: 4px;
   --shadow-card: 0 4px 24px rgba(26, 26, 14, 0.10), 0 1px 4px rgba(26, 26, 14, 0.06);

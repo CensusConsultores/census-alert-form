@@ -86,44 +86,12 @@
         <div class="err-msg" data-for="nombre_grupo">Indique el nombre del grupo (mínimo 2 caracteres).</div>
       </div>
 
-      <!-- ===== RUC/CI ===== -->
+      <!-- ===== Documentos a monitorear ===== -->
       <h2>RUC/CI a monitorear</h2>
       <p class="hint" style="margin-bottom:14px;">
         Indique los RUC o cédulas que desea que monitoreemos. El primero es obligatorio.
         Puede agregar hasta 10 adicionales.
       </p>
-
-      <div class="field">
-        <label class="lbl" for="ruc_principal">RUC/CI principal <span class="req">*</span></label>
-        <div class="ruc-block">
-          <div class="tipo-col">
-            <select id="tipo_principal" class="tipo-doc" aria-label="Tipo de documento">
-              <option value="RUC" selected>RUC</option>
-              <option value="CI">CI</option>
-            </select>
-          </div>
-          <div class="ruc-col">
-            <input type="text" id="ruc_principal" name="ruc_principal"
-                   required maxlength="13" inputmode="numeric" placeholder="Número"
-                   autocomplete="off" data-1p-ignore data-lpignore="true" />
-          </div>
-          <div class="alias-col">
-            <input type="text" id="alias_principal" name="alias_principal"
-                   placeholder="Razón Social / Nombre y Apellido (Opcional)"
-                   autocomplete="off" data-1p-ignore data-lpignore="true" />
-          </div>
-        </div>
-        <div class="err-msg" data-for="ruc_principal">
-          El RUC debe tener 13 dígitos. La CI debe tener 10 dígitos.
-        </div>
-        <div class="fecha-nac-row" id="fecha_nac_principal_row" hidden>
-          <label class="lbl" for="fecha_nac_principal">
-            Fecha de nacimiento <span class="req">*</span>
-          </label>
-          <input type="date" id="fecha_nac_principal" class="fecha-nac" />
-          <div class="err-msg" data-for="fecha_nac_principal">Ingrese la fecha de nacimiento.</div>
-        </div>
-      </div>
 
       <div id="rucs-adicionales"></div>
 
@@ -161,7 +129,7 @@
           <label><input type="checkbox" name="fuentes" value="SUPERCIAS" /> Supercías (multas societarias)</label>
           <span class="freq-badge diaria">Diaria</span>
         </div>
-        <div class="fuente-note">Aplicable solo para RUC registrados en la SuperCías. No aplicable para personas naturales.</div>
+        <div class="fuente-note">Aplicable solo para personas jurídicas registradas en la SuperCías.</div>
 
         <div class="fuente-row">
           <label><input type="checkbox" name="fuentes" value="SERCOP" /> SERCOP (Contratación Pública)</label>
@@ -347,7 +315,7 @@
     align-items: flex-start;
     margin-bottom: 10px;
   }
-  .ruc-block .tipo-col { flex: 0 0 76px; }
+  .ruc-block .tipo-col { flex: 0 0 84px; }
   .ruc-block .ruc-col { flex: 1.2; }
   .ruc-block .alias-col { flex: 1; }
   .tipo-doc {
@@ -715,8 +683,8 @@
   @media (max-width: 600px) {
     .form-main { padding: 20px 18px 30px; }
     .ruc-block { flex-wrap: wrap; }
-    .ruc-block .tipo-col { flex: 0 0 96px; }
-    .ruc-block .ruc-col { flex: 1 1 calc(100% - 106px); }
+    .ruc-block .tipo-col { flex: 0 0 106px; }
+    .ruc-block .ruc-col { flex: 1 1 calc(100% - 116px); }
     .ruc-block .alias-col { flex: 1 1 100%; }
     .ruc-block .rm-col { padding-top: 0; }
   }

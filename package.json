@@ -12,7 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/vercel": "^10.0.8",
     "astro": "^6.4.2",
-    "libphonenumber-js": "^1.13.4"
+    "libphonenumber-js": "^1.13.4",
+    "pg": "^8.21.0"
   }
 }

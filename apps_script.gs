@@ -28,12 +28,18 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
-    // Serializar adicionales con tipo y fecha de nacimiento
+    // Serializar adicionales con tipo y fecha de nacimiento.
     // Formato por item: "numero|tipo|fecha_nac|alias"  (separador entre items: "; ")
-    // Para tipo=RUC, fecha_nac queda vacío.
+    // tipo ∈ { NATURAL, JURIDICO }. Para tipo=JURIDICO, fecha_nac queda vacío.
     const adicSerializado = (data.rucs_adicionales || [])
-      .map(r => `${r.ruc}|${r.tipo || 'RUC'}|${r.fecha_nacimiento || ''}|${r.alias || ''}`)
+      .map(r => `${r.ruc}|${r.tipo || 'JURIDICO'}|${r.fecha_nacimiento || ''}|${r.alias || ''}`)
       .join('; ');
+
+    // Prefijar con apostrofe los campos numéricos puros para que Google Sheets
+    // los trate como texto y NO se coma el 0 inicial (ej: 0953085289001).
+    // El apostrofe no se muestra en la celda ni viaja al leer por la API.
+    const rucPrincipalSafe = data.ruc_principal ? "'" + data.ruc_principal : '';
+    const telefonoSafe     = data.telefono      ? "'" + data.telefono      : '';
 
     sheet.appendRow([
       new Date(),                                                       // A · fecha_envio
@@ -41,16 +47,16 @@ function doPost(e) {
       data.cargo || '',                                                 // C · cargo
       data.empresa || '',                                               // D · empresa
       data.email || '',                                                 // E · email
-      data.telefono || '',                                              // F · telefono
-      data.ruc_principal || '',                                         // G · ruc_principal
+      telefonoSafe,                                                     // F · telefono
+      rucPrincipalSafe,                                                 // G · ruc_principal
       data.razon_social_principal || '',                                // H · razon_social_principal
       adicSerializado,                                                  // I · rucs_adicionales
       (data.fuentes || []).join(', '),                                  // J · fuentes
       data.correos_alertas || data.correo_principal || '',              // K · correos_alertas (CSV)
       data.acepto_tyc ? 'SÍ' : 'NO',                                    // L · acepto_tyc
       data.acepto_lopdp ? 'SÍ' : 'NO',                                  // M · acepto_lopdp
-      data.tipo_doc_principal || 'RUC',                                 // N · tipo_doc_principal (RUC | CI)
-      data.fecha_nac_principal || '',                                   // O · fecha_nac_principal (YYYY-MM-DD si CI)
+      data.tipo_doc_principal || 'JURIDICO',                            // N · tipo_doc_principal (NATURAL | JURIDICO)
+      data.fecha_nac_principal || '',                                   // O · fecha_nac_principal (YYYY-MM-DD si NATURAL)
       data.nombre_grupo || '',                                          // P · nombre_grupo
       ''                                                                // Q · procesado (vacío hasta el digest)
     ]);

@@ -2,7 +2,7 @@
 // Census Alert · Lógica del formulario
 // ============================================================
 import {
-  APPS_SCRIPT_URL,
+  SUBMIT_URL,
   MAX_RUCS_ADICIONALES,
   MAX_EMAILS_ADICIONALES,
 } from "../config.js";
@@ -42,7 +42,9 @@ export function initCensusForm() {
   const form = $("#census-form");
   if (!form) return;
 
-  // ---------- RUCs/CI dinámicos ----------
+  // ---------- RUCs/CI dinámicos (lista unificada, primero obligatorio) ----------
+  // El primer doc se crea al cargar el form y no tiene botón ✕.
+  // Los siguientes se agregan/eliminan con los botones. Máximo MAX_RUCS_ADICIONALES + 1.
   let rucCounter = 0;
   const rucsContainer = $("#rucs-adicionales");
   const btnAddRuc = $("#btn-add-ruc");
@@ -51,12 +53,19 @@ export function initCensusForm() {
   function refreshRucNumbers() {
     $$("#rucs-adicionales .ruc-block").forEach((blk, idx) => {
       const lbl = blk.parentElement.querySelector(".ruc-label");
-      if (lbl) lbl.textContent = `RUC/CI adicional ${idx + 1}`;
+      if (lbl) {
+        // El primero es obligatorio → asterisco; los demás opcionales.
+        lbl.innerHTML =
+          idx === 0
+            ? `RUC/CI 1 <span class="req">*</span>`
+            : `RUC/CI ${idx + 1}`;
+      }
     });
   }
   function actualizarBotonRuc() {
+    // Hay 1 obligatorio + hasta MAX_RUCS_ADICIONALES adicionales = MAX+1 totales.
     const count = $$("#rucs-adicionales .ruc-block").length;
-    if (count >= MAX_RUCS_ADICIONALES) {
+    if (count >= MAX_RUCS_ADICIONALES + 1) {
       btnAddRuc.disabled = true;
       hintMaxRuc.style.display = "block";
     } else {
@@ -64,27 +73,28 @@ export function initCensusForm() {
       hintMaxRuc.style.display = "none";
     }
   }
-  function agregarRuc() {
-    if ($$("#rucs-adicionales .ruc-block").length >= MAX_RUCS_ADICIONALES) return;
+  // esPrimero: la primera fila no tiene botón eliminar (es obligatoria).
+  function agregarRuc(esPrimero = false) {
+    if ($$("#rucs-adicionales .ruc-block").length >= MAX_RUCS_ADICIONALES + 1) return;
     rucCounter++;
-    const id = `ruc_add_${rucCounter}`;
-    const aliasId = `alias_add_${rucCounter}`;
-    const tipoId = `tipo_add_${rucCounter}`;
-    const fechaId = `fecha_nac_add_${rucCounter}`;
-    const fechaRowId = `fecha_nac_add_row_${rucCounter}`;
+    const id = `ruc_doc_${rucCounter}`;
+    const aliasId = `alias_doc_${rucCounter}`;
+    const tipoId = `tipo_doc_${rucCounter}`;
+    const fechaId = `fecha_nac_doc_${rucCounter}`;
+    const fechaRowId = `fecha_nac_doc_row_${rucCounter}`;
     const wrap = document.createElement("div");
     wrap.className = "field";
     wrap.innerHTML = `
-      <label class="lbl ruc-label" for="${id}">RUC/CI adicional</label>
+      <label class="lbl ruc-label" for="${id}"></label>
       <div class="ruc-block">
         <div class="tipo-col">
-          <select id="${tipoId}" class="tipo-doc tipo-add" data-target="${id}" aria-label="Tipo de documento">
-            <option value="RUC" selected>RUC</option>
-            <option value="CI">CI</option>
+          <select id="${tipoId}" class="tipo-doc" data-target="${id}" aria-label="Tipo de persona">
+            <option value="JURIDICO" selected>Jurídica</option>
+            <option value="NATURAL">Natural</option>
           </select>
         </div>
         <div class="ruc-col">
-          <input type="text" id="${id}" class="ruc-add" required
+          <input type="text" id="${id}" class="ruc-add" ${esPrimero ? "required" : ""}
                  maxlength="13" inputmode="numeric" placeholder="Número"
                  autocomplete="off" data-1p-ignore data-lpignore="true" />
         </div>
@@ -93,22 +103,29 @@ export function initCensusForm() {
                  placeholder="Razón Social / Nombre y Apellido (Opcional)"
                  autocomplete="off" data-1p-ignore data-lpignore="true" />
         </div>
-        <div class="rm-col">
-          <button type="button" class="btn-remove" title="Eliminar">✕</button>
-        </div>
+        ${
+          esPrimero
+            ? ""
+            : `<div class="rm-col">
+                 <button type="button" class="btn-remove" title="Eliminar">✕</button>
+               </div>`
+        }
       </div>
-      <div class="err-msg" data-for="${id}">El RUC debe tener 13 dígitos. La CI debe tener 10 dígitos.</div>
+      <div class="err-msg" data-for="${id}">Persona Jurídica: 13 dígitos. Persona Natural: 10 (cédula) o 13 dígitos (RUC).</div>
       <div class="fecha-nac-row" id="${fechaRowId}" hidden>
         <label class="lbl" for="${fechaId}">Fecha de nacimiento <span class="req">*</span></label>
         <input type="date" id="${fechaId}" class="fecha-nac fecha-nac-add" data-target="${id}" />
         <div class="err-msg" data-for="${fechaId}">Ingrese la fecha de nacimiento.</div>
       </div>
     `;
-    wrap.querySelector(".btn-remove").addEventListener("click", () => {
-      wrap.remove();
-      refreshRucNumbers();
-      actualizarBotonRuc();
-    });
+    const btnRm = wrap.querySelector(".btn-remove");
+    if (btnRm) {
+      btnRm.addEventListener("click", () => {
+        wrap.remove();
+        refreshRucNumbers();
+        actualizarBotonRuc();
+      });
+    }
     // Hook del tipo selector → toggle fecha + maxlength del número
     const tipoSel = wrap.querySelector(".tipo-doc");
     const numInput = wrap.querySelector(".ruc-add");
@@ -123,29 +140,72 @@ export function initCensusForm() {
     actualizarBotonRuc();
   }
 
-  // Helper compartido: aplica reglas según tipo (RUC | CI)
+  // Helper compartido: aplica reglas según tipo (NATURAL | JURIDICO).
+  // NATURAL: puede tener cédula (10 dig) o RUC de persona natural (13 dig) → exige fecha.
+  // JURIDICO: RUC de sociedad (13 dig) → no exige fecha.
   function aplicarTipoDoc(tipoSel, numInput, fechaRow, fechaInput) {
-    const isCI = tipoSel.value === "CI";
-    fechaRow.hidden = !isCI;
-    fechaInput.required = isCI;
-    if (!isCI) fechaInput.value = "";
-    numInput.maxLength = isCI ? 10 : 13;
-    // Set max=hoy a la fecha de nacimiento (no permite fechas futuras)
-    if (isCI && !fechaInput.max) {
+    const isNatural = tipoSel.value === "NATURAL";
+    fechaRow.hidden = !isNatural;
+    fechaInput.required = isNatural;
+    if (!isNatural) fechaInput.value = "";
+    // En ambos casos el input acepta hasta 13 dígitos (NATURAL puede ser 10 o 13).
+    numInput.maxLength = 13;
+    if (isNatural && !fechaInput.max) {
       fechaInput.max = new Date().toISOString().split("T")[0];
     }
   }
-  btnAddRuc.addEventListener("click", agregarRuc);
 
-  // --- Selector tipo (RUC/CI) del bloque principal ---
-  const tipoPrincipal = $("#tipo_principal");
-  const rucPrincipalInput = $("#ruc_principal");
-  const fechaPrincipalRow = $("#fecha_nac_principal_row");
-  const fechaPrincipalInput = $("#fecha_nac_principal");
-  fechaPrincipalInput.max = new Date().toISOString().split("T")[0];
-  tipoPrincipal.addEventListener("change", () =>
-    aplicarTipoDoc(tipoPrincipal, rucPrincipalInput, fechaPrincipalRow, fechaPrincipalInput)
-  );
+  // Devuelve { ok: bool, code: '', tipoReal: 'NATURAL'|'JURIDICO'|null }
+  // Reglas de Ecuador: el 3er dígito determina el tipo.
+  //   0..5 → persona natural   |   6..9 → persona jurídica
+  // Trabajamos siempre con el string crudo (NUNCA Number/parseInt sobre el
+  // número completo, para no perder el 0 inicial de cédulas como 0953...).
+  function validarTipoVsNumero(tipo, numero) {
+    if (!/^[0-9]+$/.test(numero) || numero.length < 3) {
+      return { ok: false, code: "FORMATO_INVALIDO", tipoReal: null };
+    }
+    const tercer = numero.charAt(2); // char en posición índice 2 (3er dígito real)
+    const tipoReal = "012345".includes(tercer) ? "NATURAL" : "JURIDICO";
+    if (tipo === "NATURAL") {
+      if (numero.length !== 10 && numero.length !== 13) {
+        return { ok: false, code: "LARGO_INVALIDO_NATURAL", tipoReal };
+      }
+    } else if (tipo === "JURIDICO") {
+      if (numero.length !== 13) {
+        return { ok: false, code: "LARGO_INVALIDO_JURIDICO", tipoReal };
+      }
+    }
+    if (tipo !== tipoReal) {
+      return { ok: false, code: "TIPO_MISMATCH", tipoReal };
+    }
+    return { ok: true, code: "", tipoReal };
+  }
+
+  // Cambia el texto del .err-msg de un input a un mensaje específico.
+  function setErrMsg(field, texto) {
+    const el = document.querySelector(`.err-msg[data-for="${field}"]`);
+    if (el) el.textContent = texto;
+  }
+  const ERR_MSG_DEFAULT =
+    "Persona Jurídica: 13 dígitos. Persona Natural: 10 (cédula) o 13 dígitos (RUC).";
+  function mensajeError(code, tipoReal) {
+    if (code === "TIPO_MISMATCH") {
+      return tipoReal === "JURIDICO"
+        ? "El número ingresado corresponde a una persona jurídica. Cambie el tipo."
+        : "El número ingresado corresponde a una persona natural. Cambie el tipo.";
+    }
+    if (code === "LARGO_INVALIDO_NATURAL") {
+      return "Para persona natural ingrese 10 dígitos (cédula) o 13 dígitos (RUC).";
+    }
+    if (code === "LARGO_INVALIDO_JURIDICO") {
+      return "Para persona jurídica ingrese 13 dígitos (RUC).";
+    }
+    return ERR_MSG_DEFAULT;
+  }
+  btnAddRuc.addEventListener("click", () => agregarRuc(false));
+
+  // Crear la primera fila al cargar (obligatoria, sin botón ✕).
+  agregarRuc(true);
 
   // ---------- Emails adicionales ----------
   let emailCounter = 0;
@@ -246,46 +306,53 @@ export function initCensusForm() {
       marcar("telefono");
     }
 
-    // RUC/CI principal — regex según tipo elegido
-    const tipoP = $("#tipo_principal").value;
-    const numP = $("#ruc_principal").value.trim();
-    const reP = tipoP === "CI" ? /^[0-9]{10}$/ : /^[0-9]{13}$/;
-    if (!reP.test(numP)) marcar("ruc_principal");
-    if (tipoP === "CI") {
-      const fechaP = $("#fecha_nac_principal").value;
-      if (!fechaP || isNaN(new Date(fechaP).getTime())) {
-        marcar("fecha_nac_principal");
-      }
-    }
-
-    // RUC/CI adicionales — regex según tipo + fecha si CI
-    $$("#rucs-adicionales .ruc-block").forEach((blk) => {
+    // Validación unificada de TODOS los RUCs/CIs.
+    // - El primero (idx 0) es obligatorio: si está vacío → error.
+    // - Los demás son opcionales: si están vacíos se ignoran, si tienen algo se validan.
+    const bloques = $$("#rucs-adicionales .ruc-block");
+    bloques.forEach((blk, idx) => {
       const tipo = blk.querySelector(".tipo-doc").value;
       const numInp = blk.querySelector(".ruc-add");
-      const re = tipo === "CI" ? /^[0-9]{10}$/ : /^[0-9]{13}$/;
-      if (!re.test(numInp.value.trim())) {
+      const valor = numInp.value.trim();
+      const em = document.querySelector(`.err-msg[data-for="${numInp.id}"]`);
+
+      // Adicional vacío → ignorar (no es error)
+      if (idx > 0 && valor === "") {
+        numInp.classList.remove("error");
+        if (em) em.classList.remove("show");
+        const fechaInp = blk.parentElement.querySelector(".fecha-nac-add");
+        if (fechaInp) {
+          fechaInp.classList.remove("error");
+          const emF = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
+          if (emF) emF.classList.remove("show");
+        }
+        return;
+      }
+
+      const res = validarTipoVsNumero(tipo, valor);
+      if (!res.ok) {
+        if (em) em.textContent = mensajeError(res.code, res.tipoReal);
         numInp.classList.add("error");
-        const em = document.querySelector(`.err-msg[data-for="${numInp.id}"]`);
         if (em) em.classList.add("show");
         if (!firstErrorEl) firstErrorEl = numInp;
         ok = false;
       } else {
+        if (em) em.textContent = ERR_MSG_DEFAULT;
         numInp.classList.remove("error");
-        const em = document.querySelector(`.err-msg[data-for="${numInp.id}"]`);
         if (em) em.classList.remove("show");
       }
-      if (tipo === "CI") {
+      if (tipo === "NATURAL") {
         const fechaInp = blk.parentElement.querySelector(".fecha-nac-add");
         if (fechaInp && (!fechaInp.value || isNaN(new Date(fechaInp.value).getTime()))) {
           fechaInp.classList.add("error");
-          const em = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
-          if (em) em.classList.add("show");
+          const emF = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
+          if (emF) emF.classList.add("show");
           if (!firstErrorEl) firstErrorEl = fechaInp;
           ok = false;
         } else if (fechaInp) {
           fechaInp.classList.remove("error");
-          const em = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
-          if (em) em.classList.remove("show");
+          const emF = document.querySelector(`.err-msg[data-for="${fechaInp.id}"]`);
+          if (emF) emF.classList.remove("show");
         }
       }
     });
@@ -323,16 +390,20 @@ export function initCensusForm() {
 
   // ---------- payload ----------
   function construirPayload() {
-    const rucs_adicionales = $$("#rucs-adicionales .ruc-block").map((blk) => {
-      const tipo = blk.querySelector(".tipo-doc").value;
-      const fechaInp = blk.parentElement.querySelector(".fecha-nac-add");
-      return {
-        ruc: blk.querySelector(".ruc-add").value.trim(),
-        alias: blk.querySelector(".alias-add").value.trim(),
-        tipo,
-        fecha_nacimiento: tipo === "CI" && fechaInp ? fechaInp.value : "",
-      };
-    });
+    // Todos los docs en una sola lista. Los vacíos (adicionales sin llenar) se omiten.
+    const docs_alertas = $$("#rucs-adicionales .ruc-block")
+      .map((blk) => {
+        const tipo = blk.querySelector(".tipo-doc").value;
+        const fechaInp = blk.parentElement.querySelector(".fecha-nac-add");
+        return {
+          ruc: blk.querySelector(".ruc-add").value.trim(),
+          alias: blk.querySelector(".alias-add").value.trim(),
+          tipo,
+          fecha_nacimiento: tipo === "NATURAL" && fechaInp ? fechaInp.value : "",
+        };
+      })
+      .filter((d) => d.ruc.length > 0);
+
     const correos_adicionales = $$(".email-add")
       .map((i) => i.value.trim())
       .filter(Boolean);
@@ -356,14 +427,7 @@ export function initCensusForm() {
       email: $("#email").value.trim(),
       telefono: telefonoFinal,
       nombre_grupo: $("#nombre_grupo").value.trim(),
-      ruc_principal: $("#ruc_principal").value.trim(),
-      tipo_doc_principal: $("#tipo_principal").value,
-      fecha_nac_principal:
-        $("#tipo_principal").value === "CI"
-          ? $("#fecha_nac_principal").value
-          : "",
-      razon_social_principal: $("#alias_principal").value.trim(),
-      rucs_adicionales,
+      docs_alertas,
       fuentes: $$('input[name="fuentes"]:checked').map((c) => c.value),
       correo_principal: $("#correo_principal").value.trim(),
       correos_adicionales,
@@ -375,7 +439,7 @@ export function initCensusForm() {
   }
 
   // Reintenta hasta 10 veces con backoff lineal capeado a 2s entre intentos.
-  // Cubre blips de red transitorios y demoras puntuales del Apps Script.
+  // Cubre blips transitorios y la ventana de redeploy de la API route en Vercel.
   // Tiempo máximo aproximado en el peor caso: ~20s.
   async function enviar(payload) {
     const MAX_ATTEMPTS = 10;
@@ -383,14 +447,14 @@ export function initCensusForm() {
     let lastError;
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
-        const resp = await fetch(APPS_SCRIPT_URL, {
+        const resp = await fetch(SUBMIT_URL, {
           method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
         const json = await resp.json();
-        if (!json.ok) throw new Error(json.error || "Apps Script devolvió ok=false");
+        if (!json.ok) throw new Error(json.error || "El servidor devolvió ok=false");
         return json;
       } catch (err) {
         lastError = err;

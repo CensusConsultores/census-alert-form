@@ -1,20 +1,13 @@
 // ============================================================
 // Configuración global del cliente Census Alert
 // ------------------------------------------------------------
-// La URL del Apps Script se lee de la env var PUBLIC_APPS_SCRIPT_URL
-// (definida en .env localmente y en Vercel → Settings → Env Variables).
-// Si no está definida, falla el build con error claro.
+// SUBMIT_URL es relativo: el form hace POST al endpoint API route
+// del mismo dominio Vercel (src/pages/api/submit.ts), que escribe
+// directo en la BD de census-tracking-web (Render).
+// Reemplaza el flujo anterior vía Google Apps Script + Sheet.
 // ============================================================
 
-const url = import.meta.env.PUBLIC_APPS_SCRIPT_URL;
-if (!url) {
-  throw new Error(
-    "Falta la env var PUBLIC_APPS_SCRIPT_URL. " +
-    "Definila en .env (local) o en Vercel → Settings → Environment Variables."
-  );
-}
-
-export const APPS_SCRIPT_URL = url;
+export const SUBMIT_URL = '/api/submit';
 
 export const MAX_RUCS_ADICIONALES = 10;
 export const MAX_EMAILS_ADICIONALES = 5;
