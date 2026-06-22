@@ -1,0 +1,74 @@
+---
+import "../styles/global.css";
+import LoadingSplash from "../components/LoadingSplash.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Census Alert · Monitoreo Legal y Tributario Automatizado",
+  description = "Vigilamos los principales portales públicos del Ecuador todos los días. Detectamos deudas, multas, demandas y denuncias antes de que se conviertan en un problema.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/alert-icon.png" />
+    <link rel="apple-touch-icon" href="/alert-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="landing-body">
+    <LoadingSplash />
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  .landing-body {
+    background: #0f0f0c;
+    color: #f0ead8;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Override page-wrap for landing — full width */
+  .landing-body .page-wrap {
+    max-width: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* Landing tokens */
+  :root {
+    --l-bg:          #0f0f0c;
+    --l-surface:     #171712;
+    --l-surface-2:   #1e1d16;
+    --l-border:      rgba(201,168,76,0.18);
+    --l-gold:        #C9A84C;
+    --l-gold-lite:   #e0c46a;
+    --l-gold-dark:   #8B6914;
+    --l-gold-dim:    rgba(201,168,76,0.12);
+    --l-text:        #f0ead8;
+    --l-muted:       #9e9580;
+    --l-radius:      8px;
+    --l-max:         1200px;
+    --grad-gold:     linear-gradient(135deg, #e0c46a 0%, #C9A84C 45%, #a07c28 100%);
+    --grad-gold-h:   linear-gradient(135deg, #eecf7a 0%, #d4af37 45%, #b08030 100%);
+    --shadow-gold:   0 0 24px rgba(201,168,76,0.20);
+  }
+</style>

@@ -1,8 +1,1160 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import CensusForm from "../components/form/CensusForm.astro";
+import LandingLayout from "../layouts/LandingLayout.astro";
 ---
 
-<BaseLayout title="Census Alert · Solicitud de Servicio">
-  <CensusForm />
-</BaseLayout>
+<LandingLayout>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════════ -->
+<nav class="l-nav" id="top">
+  <div class="l-nav__inner">
+    <a href="#top" class="l-nav__logo">
+      <img src="/logo-census.svg" alt="Census Consultores" class="l-nav__logo-img" />
+    </a>
+    <button class="l-nav__burger" id="navBurger" aria-label="Menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="l-nav__links" id="navLinks">
+      <li><a href="#portales">Portales</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#beneficios">Beneficios</a></li>
+      <li>
+        <a href="/formulario" class="l-nav__cta">Solicitar servicio</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<section class="l-hero" id="hero">
+  <div class="l-hero__glow" aria-hidden="true"></div>
+  <div class="l-container l-hero__inner">
+
+    <div class="l-hero__copy">
+      <p class="l-eyebrow">Monitoreo Integral 360°</p>
+      <h1 class="l-hero__title">
+        Antes de<br />cualquier sorpresa:<br />
+        <em>Census Alert.</em>
+      </h1>
+      <p class="l-hero__sub">
+        Monitoreo diario para detectar deudas, novedades y alertas
+        registradas en fuentes públicas. Tecnología diseñada para darte
+        visibilidad inmediata sobre tus obligaciones legales y tributarias,
+        para que actúes a tiempo.
+      </p>
+      <div class="l-hero__ctas">
+        <a href="/formulario" class="btn-gold">Quiero monitorear mi empresa</a>
+        <a href="#como-funciona" class="btn-outline">Ver cómo funciona</a>
+      </div>
+      <p class="l-hero__note">
+        <span class="dot-live"></span>
+        13 fuentes oficiales · Revisión automática diaria · Sin instalar nada
+      </p>
+    </div>
+
+    <div class="l-hero__visual">
+      <div class="l-hero__robot-wrap">
+        <img
+          src="/robot-alert.png"
+          alt="Census Alert"
+          class="l-hero__robot-img"
+        />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PORTALES QUE REVISAMOS
+═══════════════════════════════════════════════════════════ -->
+<section class="l-section l-section--alt" id="portales">
+  <div class="l-container">
+    <div class="l-section-head">
+      <p class="l-eyebrow">Cobertura oficial</p>
+      <h2>13 portales del Estado. <br class="br-desktop"/>Un solo informe.</h2>
+      <p class="l-section-sub">
+        Consultamos directamente las fuentes oficiales, no intermediarios.
+        Si hay algo en tu nombre, lo encontramos.
+      </p>
+    </div>
+
+    <div class="l-cat-grid">
+
+      <div class="l-cat">
+        <div class="l-cat__header">
+          <span class="l-cat__icon">⚖️</span>
+          <span class="l-cat__title">Tributario y Laboral</span>
+        </div>
+        <ul class="l-sources">
+          <li class="l-source">
+            <span class="l-source__name">SRI</span>
+            <span class="l-source__desc">Deudas tributarias firmes, impugnadas y en facilidades de pago.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">IESS</span>
+            <span class="l-source__desc">Mora patronal — aportes en mora y valores adeudados al seguro social.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">Minist. del Trabajo</span>
+            <span class="l-source__desc">Obligaciones laborales y actas del Ministerio del Trabajo.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">SUPA</span>
+            <span class="l-source__desc">Deudas por pensiones alimenticias registradas en el sistema.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="l-cat">
+        <div class="l-cat__header">
+          <span class="l-cat__icon">🏛️</span>
+          <span class="l-cat__title">Judicial y Penal</span>
+        </div>
+        <ul class="l-sources">
+          <li class="l-source">
+            <span class="l-source__name">SATJE — Función Judicial</span>
+            <span class="l-source__desc">Demandas y causas judiciales activas en tu contra.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">Fiscalía (SIAF)</span>
+            <span class="l-source__desc">Noticias del delito y denuncias penales registradas.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="l-cat">
+        <div class="l-cat__header">
+          <span class="l-cat__icon">🚦</span>
+          <span class="l-cat__title">Tránsito</span>
+        </div>
+        <ul class="l-sources">
+          <li class="l-source">
+            <span class="l-source__name">ANT</span>
+            <span class="l-source__desc">Multas de tránsito a nivel nacional.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">ATM — Guayaquil</span>
+            <span class="l-source__desc">Citaciones y multas del cantón Guayaquil.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">CTE</span>
+            <span class="l-source__desc">Multas viales de la Comisión de Tránsito del Ecuador.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="l-cat">
+        <div class="l-cat__header">
+          <span class="l-cat__icon">🏢</span>
+          <span class="l-cat__title">Societario y Contratación</span>
+        </div>
+        <ul class="l-sources">
+          <li class="l-source">
+            <span class="l-source__name">Superintendencia de Compañías</span>
+            <span class="l-source__desc">Situación societaria, multas y obligaciones vigentes.</span>
+          </li>
+          <li class="l-source">
+            <span class="l-source__name">SERCOP</span>
+            <span class="l-source__desc">Estado en compras públicas, inhabilidades y certificado de proveedor.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="l-cat">
+        <div class="l-cat__header">
+          <span class="l-cat__icon">✈️</span>
+          <span class="l-cat__title">Migratorio</span>
+        </div>
+        <ul class="l-sources">
+          <li class="l-source">
+            <span class="l-source__name">Migración Ecuador</span>
+            <span class="l-source__desc">Impedimentos de salida del país vigentes.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="l-cat">
+        <div class="l-cat__header">
+          <span class="l-cat__icon">🏙️</span>
+          <span class="l-cat__title">Municipal</span>
+        </div>
+        <ul class="l-sources">
+          <li class="l-source">
+            <span class="l-source__name">Municipio de Samborondón</span>
+            <span class="l-source__desc">Deudas municipales de predial, tasas y contribuciones.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="l-data-detail">
+      <h3>¿Qué información extraemos de cada portal?</h3>
+      <div class="l-data-pills">
+        <span class="l-pill">Montos adeudados</span>
+        <span class="l-pill">Estado de la obligación</span>
+        <span class="l-pill">Fechas de vencimiento</span>
+        <span class="l-pill">N.º de causa / citación / denuncia</span>
+        <span class="l-pill">Razón social y estado del contribuyente</span>
+        <span class="l-pill">Verificado contra la fuente oficial</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CÓMO SE PRESENTA LA INFORMACIÓN
+═══════════════════════════════════════════════════════════ -->
+<section class="l-section" id="informes">
+  <div class="l-container">
+    <div class="l-section-head">
+      <p class="l-eyebrow">Entrega de resultados</p>
+      <h2>La información, ordenada y lista para actuar.</h2>
+    </div>
+
+    <div class="l-delivery-grid">
+
+      <div class="l-delivery-card">
+        <div class="l-delivery-card__icon">📄</div>
+        <h3>Informe Consolidado 360°</h3>
+        <p>
+          Un único reporte por cliente: una sección por fuente, estado
+          claro (<strong>Al día / Novedad / Pendiente</strong>), montos
+          y detalle. Entregado por correo y disponible en PDF con la
+          marca Census.
+        </p>
+        <div class="l-mini-report">
+          <div class="l-mini-report__row">
+            <span>SRI — Obligaciones tributarias</span>
+            <span class="badge badge--ok">Al día</span>
+          </div>
+          <div class="l-mini-report__row">
+            <span>IESS — Mora patronal</span>
+            <span class="badge badge--alert">Novedad · $1.240</span>
+          </div>
+          <div class="l-mini-report__row">
+            <span>SATJE — Causas judiciales</span>
+            <span class="badge badge--ok">Al día</span>
+          </div>
+          <div class="l-mini-report__row">
+            <span>ANT — Multas de tránsito</span>
+            <span class="badge badge--pending">Pendiente</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="l-delivery-card">
+        <div class="l-delivery-card__icon">🔔</div>
+        <h3>Feed de Novedades</h3>
+        <p>
+          Lista cronológica de los cambios detectados: nueva deuda, nueva
+          multa, nueva demanda, nueva denuncia. Solo lo nuevo, sin repetir
+          lo que ya sabías.
+        </p>
+        <div class="l-feed">
+          <div class="l-feed__item l-feed__item--alert">
+            <span class="l-feed__dot"></span>
+            <div>
+              <span class="l-feed__time">Hoy, 06:45</span>
+              <span class="l-feed__text">IESS: mora patronal registrada — $1.240,00</span>
+            </div>
+          </div>
+          <div class="l-feed__item">
+            <span class="l-feed__dot l-feed__dot--ok"></span>
+            <div>
+              <span class="l-feed__time">Ayer, 06:45</span>
+              <span class="l-feed__text">SRI: sin novedades</span>
+            </div>
+          </div>
+          <div class="l-feed__item">
+            <span class="l-feed__dot l-feed__dot--ok"></span>
+            <div>
+              <span class="l-feed__time">Hace 2 días, 06:45</span>
+              <span class="l-feed__text">SATJE: sin nuevas causas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CÓMO FUNCIONA — 4 PASOS
+═══════════════════════════════════════════════════════════ -->
+<section class="l-section l-section--alt" id="como-funciona">
+  <div class="l-container">
+    <div class="l-section-head">
+      <p class="l-eyebrow">El proceso</p>
+      <h2>Automático. Silencioso. Preciso.</h2>
+      <p class="l-section-sub">
+        Sin intervención manual. Todos los días, antes de que tu jornada empiece.
+      </p>
+    </div>
+
+    <div class="l-steps">
+      <div class="l-step">
+        <div class="l-step__num">01</div>
+        <div class="l-step__body">
+          <h3>Vigilamos</h3>
+          <p>Consultamos las 13 fuentes oficiales cada madrugada, de forma automática y sin fallas.</p>
+        </div>
+      </div>
+      <div class="l-step__arrow" aria-hidden="true">→</div>
+      <div class="l-step">
+        <div class="l-step__num">02</div>
+        <div class="l-step__body">
+          <h3>Detectamos el cambio</h3>
+          <p>Comparamos contra el último estado conocido. Solo marcamos lo que es realmente nuevo.</p>
+        </div>
+      </div>
+      <div class="l-step__arrow" aria-hidden="true">→</div>
+      <div class="l-step">
+        <div class="l-step__num">03</div>
+        <div class="l-step__body">
+          <h3>Consolidamos</h3>
+          <p>Armamos un informe único, claro y estructurado por fuente, con estado, montos y detalle.</p>
+        </div>
+      </div>
+      <div class="l-step__arrow" aria-hidden="true">→</div>
+      <div class="l-step">
+        <div class="l-step__num">04</div>
+        <div class="l-step__body">
+          <h3>Te notificamos</h3>
+          <p>Un solo correo por cliente, con copias a los destinatarios que tú configures. Sin spam.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="l-highlight-box">
+      <span class="l-highlight-box__icon">🛡️</span>
+      <div>
+        <strong>Solo datos de fuentes oficiales públicas.</strong>
+        No usamos intermediarios, no cruzamos datos privados. Todo lo que
+        informamos está disponible en los portales del Estado ecuatoriano.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BENEFICIOS
+═══════════════════════════════════════════════════════════ -->
+<section class="l-section" id="beneficios">
+  <div class="l-container">
+    <div class="l-section-head">
+      <p class="l-eyebrow">Por qué Census Alert</p>
+      <h2>Entérate antes, no después.</h2>
+    </div>
+
+    <div class="l-benefits-grid">
+      <div class="l-benefit">
+        <span class="l-benefit__icon">⏱️</span>
+        <h3>Ahorra horas de revisión manual</h3>
+        <p>Revisar 13 portales cada día toma horas. Census Alert lo hace en minutos, sin error humano.</p>
+      </div>
+      <div class="l-benefit">
+        <span class="l-benefit__icon">🚨</span>
+        <h3>Evita sorpresas costosas</h3>
+        <p>Embargos, inhabilidades, salidas bloqueadas: todas tienen señales previas. Nosotros las detectamos.</p>
+      </div>
+      <div class="l-benefit">
+        <span class="l-benefit__icon">⚡</span>
+        <h3>Reacciona a tiempo</h3>
+        <p>Con 24 horas de anticipación puedes impugnar, pagar, o asesorarte. Sin monitoreo, no hay margen.</p>
+      </div>
+      <div class="l-benefit">
+        <span class="l-benefit__icon">📋</span>
+        <h3>Todo en un solo lugar</h3>
+        <p>Un informe, un correo, un estado por fuente. Sin navegar portal por portal ni recordar contraseñas.</p>
+      </div>
+      <div class="l-benefit">
+        <span class="l-benefit__icon">🔒</span>
+        <h3>13 fuentes oficiales cubiertas</h3>
+        <p>La cobertura más amplia disponible: tributario, laboral, judicial, tránsito, societario, migratorio y municipal.</p>
+      </div>
+      <div class="l-benefit">
+        <span class="l-benefit__icon">🎯</span>
+        <h3>Solo lo nuevo, sin ruido</h3>
+        <p>Detección inteligente de cambios: solo te avisamos cuando algo cambia, no todos los días con lo mismo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CTA FINAL
+═══════════════════════════════════════════════════════════ -->
+<section class="l-cta-final">
+  <div class="l-container l-cta-final__inner">
+    <p class="l-eyebrow" style="text-align:center;margin-bottom:20px;">Sin costo para clientes Census · Por tiempo limitado</p>
+    <h2>¿Tu empresa está en los portales del Estado sin saberlo?</h2>
+    <p>La única forma de saberlo es revisarlo. Census Alert lo hace por ti, todos los días.</p>
+    <a href="/formulario" class="btn-gold btn-gold--lg">Empieza a monitorear hoy →</a>
+  </div>
+</section>
+
+<footer class="l-footer">
+  <div class="l-container l-footer__inner">
+    <img src="/logo-census.svg" alt="Census Consultores" class="l-footer__logo" />
+    <div class="l-footer__links">
+      <a href="/terminos-y-condiciones">Términos y Condiciones</a>
+      <a href="/tratamiento-de-datos">Política de Datos</a>
+      <a href="mailto:info@censusconsultores.com.ec">info@censusconsultores.com.ec</a>
+    </div>
+    <p class="l-footer__legal">
+      © {new Date().getFullYear()} Census Consultores · Asesores Legales y Tributarios · Ecuador<br />
+      Census Alert es un servicio de monitoreo de información pública oficial.
+      La información se extrae de portales del Estado ecuatoriano y se presenta con fines informativos.
+    </p>
+  </div>
+</footer>
+
+</LandingLayout>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════════ */
+.l-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15, 15, 12, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--l-border);
+}
+.l-nav__inner {
+  max-width: var(--l-max);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  gap: 16px;
+}
+.l-nav__logo { display: flex; align-items: center; }
+.l-nav__logo-img { height: 40px; width: auto; }
+.l-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.l-nav__links a {
+  color: var(--l-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.l-nav__links a:hover { color: var(--l-gold); }
+.l-nav__cta {
+  background: var(--grad-gold) !important;
+  color: #1a1500 !important;
+  font-weight: 600 !important;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px !important;
+  transition: opacity 0.2s !important;
+}
+.l-nav__cta:hover { opacity: 0.88; }
+
+/* Burger — oculto en desktop */
+.l-nav__burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.l-nav__burger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--l-gold);
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.l-nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.l-nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.l-nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ═══════════════════════════════════════════════════════════
+   CONTENEDOR BASE
+═══════════════════════════════════════════════════════════ */
+.l-container {
+  max-width: var(--l-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════════ */
+.l-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 0 72px;
+  background: var(--l-bg);
+}
+.l-hero__glow {
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(201,168,76,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.l-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.l-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--l-gold);
+  margin: 0 0 16px;
+}
+.l-hero__title {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 24px;
+  color: var(--l-text);
+}
+.l-hero__title em {
+  font-style: italic;
+  background: var(--grad-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.l-hero__sub {
+  font-size: 17px;
+  color: var(--l-muted);
+  margin: 0 0 36px;
+  max-width: 520px;
+  line-height: 1.65;
+}
+.l-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.l-hero__note {
+  font-size: 13px;
+  color: var(--l-muted);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot-live {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
+  animation: pulse-green 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.25); }
+  50%       { box-shadow: 0 0 0 6px rgba(74,222,128,0.08); }
+}
+
+/* Robot hero image — PNG transparente */
+.l-hero__visual { display: flex; justify-content: center; align-items: center; }
+.l-hero__robot-wrap {
+  width: 100%;
+  max-width: 380px;
+  filter: drop-shadow(0 0 40px rgba(201,168,76,0.35)) drop-shadow(0 20px 60px rgba(0,0,0,0.6));
+}
+.l-hero__robot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Mockup (kept for delivery section) */
+.l-mockup {
+  width: 100%;
+  max-width: 380px;
+  background: var(--l-surface-2);
+  border: 1px solid var(--l-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-gold), 0 24px 64px rgba(0,0,0,0.5);
+}
+.l-mockup__header {
+  background: var(--l-surface);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--l-border);
+}
+.l-mockup__logo { height: 28px; width: auto; }
+.l-mockup__tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--l-gold);
+}
+.l-mockup__client {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--l-border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.l-mockup__label { font-size: 10px; color: var(--l-muted); text-transform: uppercase; letter-spacing: 1px; }
+.l-mockup__name { font-size: 14px; font-weight: 600; color: var(--l-text); }
+.l-mockup__rows { padding: 8px 0; }
+.l-mockup__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(201,168,76,0.07);
+  font-size: 13px;
+}
+.l-mockup__row:last-child { border-bottom: none; }
+.l-mockup__source { color: var(--l-text); font-weight: 500; flex: 1; min-width: 0; }
+.l-mockup__detail { font-size: 11px; color: var(--l-muted); }
+.l-mockup__footer {
+  background: var(--l-surface);
+  padding: 12px 20px;
+  border-top: 1px solid var(--l-border);
+  font-size: 11px;
+  color: var(--l-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════════════════════ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.badge--ok      { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
+.badge--alert   { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+.badge--pending { background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
+
+/* ═══════════════════════════════════════════════════════════
+   BOTONES
+═══════════════════════════════════════════════════════════ */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  background: var(--grad-gold);
+  color: #1a1500;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+}
+.btn-gold:hover { opacity: 0.88; box-shadow: 0 6px 24px rgba(201,168,76,0.4); }
+.btn-gold--lg { padding: 16px 40px; font-size: 17px; }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  border: 1.5px solid var(--l-border);
+  color: var(--l-muted);
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: var(--l-gold); color: var(--l-gold); }
+
+/* ═══════════════════════════════════════════════════════════
+   SECCIONES
+═══════════════════════════════════════════════════════════ */
+.l-section {
+  padding: 88px 0;
+  background: var(--l-bg);
+}
+.l-section--alt { background: var(--l-surface); }
+.l-section--form {
+  background: var(--l-bg);
+  padding-bottom: 48px;
+}
+.l-section-head {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.l-section-head h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(26px, 3.5vw, 40px);
+  font-weight: 700;
+  color: var(--l-text);
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+.l-section-sub {
+  font-size: 16px;
+  color: var(--l-muted);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTALES — GRILLA POR CATEGORÍA
+═══════════════════════════════════════════════════════════ */
+.l-cat-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.l-cat {
+  background: var(--l-bg);
+  border: 1px solid var(--l-border);
+  border-radius: var(--l-radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.l-cat:hover { border-color: rgba(201,168,76,0.4); }
+.l-cat__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(201,168,76,0.07);
+  border-bottom: 1px solid var(--l-border);
+}
+.l-cat__icon { font-size: 18px; }
+.l-cat__title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--l-gold);
+}
+.l-sources { list-style: none; margin: 0; padding: 8px 0; }
+.l-source {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(201,168,76,0.06);
+}
+.l-source:last-child { border-bottom: none; }
+.l-source__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--l-text);
+}
+.l-source__desc {
+  font-size: 12px;
+  color: var(--l-muted);
+  line-height: 1.5;
+}
+
+/* Pills de datos */
+.l-data-detail {
+  margin-top: 56px;
+  text-align: center;
+}
+.l-data-detail h3 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 20px;
+  color: var(--l-text);
+  margin: 0 0 24px;
+}
+.l-data-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.l-pill {
+  background: var(--l-gold-dim);
+  border: 1px solid var(--l-border);
+  color: var(--l-gold);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ENTREGA DE RESULTADOS
+═══════════════════════════════════════════════════════════ */
+.l-delivery-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.l-delivery-card {
+  background: var(--l-surface);
+  border: 1px solid var(--l-border);
+  border-radius: var(--l-radius);
+  padding: 32px;
+}
+.l-delivery-card__icon { font-size: 28px; margin-bottom: 16px; }
+.l-delivery-card h3 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--l-text);
+  margin: 0 0 12px;
+}
+.l-delivery-card p { font-size: 15px; color: var(--l-muted); margin: 0 0 24px; line-height: 1.65; }
+
+/* Mini-report mockup */
+.l-mini-report { display: flex; flex-direction: column; gap: 8px; }
+.l-mini-report__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--l-surface-2);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--l-muted);
+  gap: 12px;
+}
+.l-mini-report__row span:first-child { flex: 1; min-width: 0; }
+
+/* Feed */
+.l-feed { display: flex; flex-direction: column; gap: 0; }
+.l-feed__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+}
+.l-feed__item:last-child { border-bottom: none; }
+.l-feed__item--alert .l-feed__dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.5); }
+.l-feed__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--l-muted);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.l-feed__dot--ok { background: #4ade80; }
+.l-feed__time { display: block; font-size: 11px; color: var(--l-muted); margin-bottom: 2px; }
+.l-feed__text { font-size: 13px; color: var(--l-text); }
+
+/* ═══════════════════════════════════════════════════════════
+   PASOS
+═══════════════════════════════════════════════════════════ */
+.l-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-bottom: 48px;
+}
+.l-step {
+  display: flex;
+  gap: 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--l-border);
+}
+.l-step:last-child { border-bottom: none; }
+.l-step__arrow {
+  display: none;
+}
+.l-step__num {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--l-gold);
+  flex-shrink: 0;
+  width: 56px;
+}
+.l-step__body h3 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--l-text);
+  margin: 0 0 8px;
+}
+.l-step__body p { font-size: 14px; color: var(--l-muted); margin: 0; line-height: 1.6; }
+
+/* Highlight box */
+.l-highlight-box {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--l-gold-dim);
+  border: 1px solid var(--l-border);
+  border-left: 3px solid var(--l-gold);
+  border-radius: var(--l-radius);
+  padding: 20px 24px;
+  font-size: 14px;
+  color: var(--l-muted);
+  line-height: 1.6;
+}
+.l-highlight-box strong { color: var(--l-text); }
+.l-highlight-box__icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+/* ═══════════════════════════════════════════════════════════
+   BENEFICIOS
+═══════════════════════════════════════════════════════════ */
+.l-benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.l-benefit {
+  background: var(--l-surface);
+  border: 1px solid var(--l-border);
+  border-radius: var(--l-radius);
+  padding: 28px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.l-benefit:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-2px); }
+.l-benefit__icon { font-size: 24px; display: block; margin-bottom: 14px; }
+.l-benefit h3 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--l-text);
+  margin: 0 0 10px;
+}
+.l-benefit p { font-size: 14px; color: var(--l-muted); margin: 0; line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════════════════
+   CTA FINAL
+═══════════════════════════════════════════════════════════ */
+.l-cta-final {
+  background: var(--l-surface);
+  border-top: 1px solid var(--l-border);
+  border-bottom: 1px solid var(--l-border);
+  padding: 80px 0;
+}
+.l-cta-final__inner {
+  text-align: center;
+}
+.l-cta-final h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 700;
+  color: var(--l-text);
+  margin: 0 0 16px;
+  line-height: 1.25;
+}
+.l-cta-final p {
+  font-size: 16px;
+  color: var(--l-muted);
+  margin: 0 0 36px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════ */
+.l-footer {
+  background: #0a0a08;
+  padding: 48px 0 36px;
+  border-top: 1px solid var(--l-border);
+}
+.l-footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+.l-footer__logo { height: 36px; width: auto; opacity: 0.7; }
+.l-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+.l-footer__links a {
+  font-size: 13px;
+  color: var(--l-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.l-footer__links a:hover { color: var(--l-gold); }
+.l-footer__legal {
+  font-size: 12px;
+  color: #5a5445;
+  margin: 0;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILIDADES
+═══════════════════════════════════════════════════════════ */
+.br-desktop { display: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET  ≥ 640px
+═══════════════════════════════════════════════════════════ */
+@media (min-width: 640px) {
+  .l-cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .l-benefits-grid { grid-template-columns: repeat(2, 1fr); }
+  .l-delivery-grid { grid-template-columns: repeat(2, 1fr); }
+  .l-steps {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .l-step {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 1px solid var(--l-border);
+    padding: 0 28px 0 0;
+  }
+  .l-step:last-child { border-right: none; padding-right: 0; }
+  .l-step__num { width: auto; }
+  .l-hero__ctas { flex-wrap: nowrap; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — DESKTOP  ≥ 1024px
+═══════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .l-hero__inner {
+    grid-template-columns: 1fr 420px;
+    gap: 80px;
+  }
+  .l-cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .l-benefits-grid { grid-template-columns: repeat(3, 1fr); }
+  .br-desktop { display: inline; }
+  .l-nav__burger { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE NAV  < 640px
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 639px) {
+  .l-nav__burger { display: flex; }
+  .l-nav__links {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(15,15,12,0.98);
+    border-bottom: 1px solid var(--l-border);
+    padding: 8px 0 16px;
+    z-index: 99;
+  }
+  .l-nav__links.is-open { display: flex; }
+  .l-nav__links li { width: 100%; }
+  .l-nav__links a {
+    display: block;
+    padding: 14px 24px;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(201,168,76,0.06);
+  }
+  .l-nav__links li:last-child a {
+    margin: 12px 24px 0;
+    padding: 12px 20px;
+    border-bottom: none;
+    text-align: center;
+  }
+  .l-hero { padding: 56px 0 48px; }
+  .l-section { padding: 64px 0; }
+  .l-cta-final { padding: 56px 0; }
+  .l-delivery-card { padding: 24px; }
+  .l-steps { gap: 0; }
+}
+</style>
+
+<script>
+  // Burger menu toggle
+  const burger = document.getElementById('navBurger');
+  const links  = document.getElementById('navLinks');
+  if (burger && links) {
+    burger.addEventListener('click', () => {
+      const open = burger.getAttribute('aria-expanded') === 'true';
+      burger.setAttribute('aria-expanded', String(!open));
+      links.classList.toggle('is-open', !open);
+    });
+    // Cerrar al hacer click en un link del menú móvil
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        burger.setAttribute('aria-expanded', 'false');
+        links.classList.remove('is-open');
+      });
+    });
+  }
+
+  // Scroll suave para todos los href ancla
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const id = anchor.getAttribute('href');
+      const target = document.querySelector(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.l-cat, .l-benefit, .l-delivery-card, .l-step').forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
+</script>
+
+<style is:global>
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.is-visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in { opacity: 1; transform: none; transition: none; }
+  }
+</style>
