@@ -685,6 +685,38 @@ import LandingLayout from "../layouts/LandingLayout.astro";
   50%       { box-shadow: 0 0 0 6px rgba(74,222,128,0.08); }
 }
 
+/* ── Hero entrance animations ── */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.l-hero__copy .l-eyebrow {
+  animation: hero-rise 0.6s ease-out 0.10s both;
+}
+.l-hero__copy .l-hero__title {
+  animation: hero-rise 0.65s ease-out 0.22s both;
+}
+.l-hero__copy .l-hero__sub {
+  animation: hero-rise 0.65s ease-out 0.38s both;
+}
+.l-hero__copy .l-hero__ctas {
+  animation: hero-rise 0.65s ease-out 0.52s both;
+}
+.l-hero__copy .l-hero__note {
+  animation: hero-rise 0.6s ease-out 0.66s both;
+}
+.l-hero__visual {
+  animation: hero-rise 0.75s ease-out 0.30s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .l-hero__copy .l-eyebrow,
+  .l-hero__copy .l-hero__title,
+  .l-hero__copy .l-hero__sub,
+  .l-hero__copy .l-hero__ctas,
+  .l-hero__copy .l-hero__note,
+  .l-hero__visual { animation: none; }
+}
+
 /* Robot hero image — PNG transparente */
 .l-hero__visual { display: flex; justify-content: center; align-items: center; }
 .l-hero__robot-wrap {
