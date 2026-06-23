@@ -1257,15 +1257,15 @@ import LandingLayout from "../layouts/LandingLayout.astro";
     wrap.className = 'hero-dust';
     wrap.setAttribute('aria-hidden', 'true');
     hero.insertBefore(wrap, hero.firstChild);
-    for (let i = 0; i < 55; i++) {
+    for (let i = 0; i < 160; i++) {
       const p = document.createElement('span');
       p.className = 'hero-dust__p';
-      const sz   = (Math.random() * 2.4 + 0.8).toFixed(1);
+      const sz   = (Math.random() * 3.2 + 0.8).toFixed(1);
       const left = (Math.random() * 100).toFixed(1);
       const bot  = (Math.random() * 100).toFixed(1);
       const dur  = (Math.random() * 8 + 5).toFixed(1) + 's';
       const del  = '-' + (Math.random() * 13).toFixed(1) + 's';
-      const op   = (Math.random() * 0.28 + 0.06).toFixed(2);
+      const op   = (Math.random() * 0.45 + 0.10).toFixed(2);
       const dx   = ((Math.random() - 0.5) * 44).toFixed(0) + 'px';
       p.style.cssText =
         `width:${sz}px;height:${sz}px;left:${left}%;bottom:${bot}%;` +
