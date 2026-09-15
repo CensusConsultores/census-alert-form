@@ -1,515 +1,319 @@
 ---
 import LandingLayout from "../layouts/LandingLayout.astro";
+
+// Los 19 sellos de la sección de cobertura. El orden agrupa por materia:
+// primero lo tributario y laboral, luego judicial, control, y al final las
+// listas internacionales.
+// Polvo dorado de la portada. Se genera AQUÍ y no en el navegador: el
+// CSS con ámbito de Astro solo alcanza a los elementos de la plantilla,
+// así que unos <span> creados por JavaScript se quedaban sin estilo.
+const POLVO = Array.from({ length: 150 }, () => ({
+  tam: (Math.random() * 3.4 + 0.9).toFixed(1),
+  x: (Math.random() * 100).toFixed(1),
+  y: (Math.random() * 100).toFixed(1),
+  dur: (Math.random() * 8 + 5).toFixed(1),
+  del: (Math.random() * 13).toFixed(1),
+  op: (Math.random() * 0.5 + 0.14).toFixed(2),
+  dx: ((Math.random() - 0.5) * 46).toFixed(0),
+}));
+
+const PORTALES = [
+  { s: "sri",         n: "SRI",                              e: "svg"  },
+  { s: "iess",        n: "IESS",                             e: "webp" },
+  { s: "judicatura",  n: "Función Judicial",                 e: "webp" },
+  { s: "fiscalia",    n: "Fiscalía General del Estado",      e: "webp" },
+  { s: "supercias",   n: "Superintendencia de Compañías",    e: "webp" },
+  { s: "mdt",         n: "Ministerio del Trabajo",           e: "webp" },
+  { s: "sercop",      n: "SERCOP",                           e: "webp" },
+  { s: "ant",         n: "Agencia Nacional de Tránsito",     e: "webp" },
+  { s: "atm",         n: "ATM Guayaquil",                    e: "webp" },
+  { s: "sambo",       n: "Municipio de Samborondón",         e: "webp" },
+  { s: "interior",    n: "Ministerio del Interior",          e: "webp" },
+  { s: "policia",     n: "Policía Nacional",                 e: "webp" },
+  { s: "superbancos", n: "Superintendencia de Bancos",       e: "webp" },
+  { s: "seps",        n: "SEPS",                             e: "svg"  },
+  { s: "ofac",        n: "OFAC — Tesoro de EE. UU.",         e: "webp" },
+  { s: "onu",         n: "Naciones Unidas",                  e: "webp" },
+  { s: "fbi",         n: "FBI",                              e: "webp" },
+  { s: "eumw",        n: "ENFAST — Unión Europea",           e: "webp" },
+  { s: "basc",        n: "BASC",                             e: "svg"  },
+];
 ---
 
 <LandingLayout>
 
-<!-- ═══════════════════════════════════════════════════════════
-     NAV
-═══════════════════════════════════════════════════════════ -->
-<nav class="l-nav" id="top">
-  <div class="l-nav__inner">
-    <a href="#top" class="l-nav__logo">
-      <img src="/logo-census.svg" alt="Census Consultores" class="l-nav__logo-img" />
+<nav class="nav">
+  <div class="nav__in">
+    <a href="#top" class="nav__logo">
+      <img src="/logo-census.svg" alt="Census Consultores" />
     </a>
-    <button class="l-nav__burger" id="navBurger" aria-label="Menú" aria-expanded="false">
+    <button class="nav__burger" id="navBurger" aria-label="Menú" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
-    <ul class="l-nav__links" id="navLinks">
-      <li><a href="#portales">Portales</a></li>
-      <li><a href="#como-funciona">Cómo funciona</a></li>
-      <li><a href="#beneficios">Beneficios</a></li>
-      <li>
-        <a href="/formulario" class="l-nav__cta">Solicitar servicio</a>
-      </li>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="#rutas">Qué hacemos</a></li>
+      <li><a href="#fuentes">Fuentes</a></li>
+      <li><a href="/formulario" class="bt bt--sm">Solicitar servicio</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════════
-     HERO
-═══════════════════════════════════════════════════════════ -->
-<section class="l-hero" id="hero">
-  <div class="l-hero__glow" aria-hidden="true"></div>
-  <div class="l-container l-hero__inner">
+<span class="centinela" aria-hidden="true"></span>
 
-    <div class="l-hero__copy">
-      <p class="l-eyebrow">Monitoreo Integral 360°</p>
-      <h1 class="l-hero__title">
-        Antes de<br />cualquier sorpresa:<br />
-        <em>Census Alert.</em>
-      </h1>
-      <p class="l-hero__sub">
-        Monitoreo diario para detectar deudas, novedades y alertas
-        registradas en fuentes públicas. Tecnología diseñada para darte
-        visibilidad inmediata sobre tus obligaciones legales y tributarias,
-        para que actúes a tiempo.
-      </p>
-      <div class="l-hero__ctas">
-        <a href="/formulario" class="btn-gold">Quiero monitorear mi empresa</a>
-        <a href="#como-funciona" class="btn-outline">Ver cómo funciona</a>
-      </div>
-      <p class="l-hero__note">
-        <span class="dot-live"></span>
-        13 fuentes oficiales · Revisión automática diaria · Sin instalar nada
-      </p>
-    </div>
-
-    <div class="l-hero__visual">
-      <div class="l-hero__robot-wrap">
-        <img
-          src="/robot-alert.png"
-          alt="Census Alert"
-          class="l-hero__robot-img"
-        />
-      </div>
-    </div>
-
+<header class="portada grano" id="top">
+  <div class="portada__luz" aria-hidden="true"></div>
+  <div class="polvo" aria-hidden="true">
+    {POLVO.map((m) => (
+      <span style={`width:${m.tam}px;height:${m.tam}px;left:${m.x}%;bottom:${m.y}%;--dur:${m.dur}s;--del:-${m.del}s;--op:${m.op};--dx:${m.dx}px`}></span>
+    ))}
   </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════
-     PORTALES QUE REVISAMOS
-═══════════════════════════════════════════════════════════ -->
-<section class="l-section l-section--alt" id="portales">
-  <div class="l-container">
-    <div class="l-section-head">
-      <p class="l-eyebrow">Cobertura oficial</p>
-      <h2>13 portales del Estado. <br class="br-desktop"/>Un solo informe.</h2>
-      <p class="l-section-sub">
-        Consultamos directamente las fuentes oficiales, no intermediarios.
-        Si hay algo en tu nombre, lo encontramos.
+  <div class="wrap portada__in">
+    <div class="portada__txt">
+      <p class="kick rv">Monitoreo integral 360°</p>
+      <h1 class="rv">Antes de<br />cualquier sorpresa:<em>Census Alert.</em></h1>
+      <p class="lead rv">
+        Vigilamos lo que el Estado publica sobre tus empresas, todos los días,
+        y te avisamos el mismo día que algo cambia.
+      </p>
+      <div class="ctas rv">
+        <a href="/formulario" class="bt">Quiero monitorear mi empresa</a>
+        <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
+      </div>
+      <p class="pie rv">
+        <span class="viva" aria-hidden="true"></span>
+        12 portales oficiales · Revisión diaria · Sin instalar nada
       </p>
     </div>
+    <div class="portada__vis rv">
+      <!-- El filete que cruza la portada y rodea el teléfono. Los dos
+           tramos rectos salen de los diagonales y se pierden por los
+           lados; el móvil pasa por delante del fondo del rebaje. -->
+      <div class="corte" aria-hidden="true">
+        <svg viewBox="0 0 620 50" preserveAspectRatio="none" fill="none">
+          <path d="M0 1 H70 L115 49 H505 L550 1 H620"
+                stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke" />
+        </svg>
+      </div>
+      <!-- El correo 360° dentro de un teléfono. Datos inventados y RUC
+           enmascarado: es una portada pública, no una demo con datos de
+           un cliente. -->
+      <div class="escena">
+      <div class="escena__arco" aria-hidden="true"></div>
 
-    <div class="l-cat-grid">
+      <div class="hoja" role="img" aria-label="Primera página de un informe consolidado: identificación del consultado, resultado de la consulta con un hallazgo en el SRI, y el resumen por fuente">
+        <div class="fono__marco">
+        <span class="fono__isla" aria-hidden="true"></span>
+        <div class="doc">
 
-      <div class="l-cat">
-        <div class="l-cat__header">
-          <!-- Balanza de justicia -->
-          <svg class="l-cat__icon-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="12,2 9.5,6 14.5,6"/>
-            <rect x="2" y="5.5" width="20" height="1.5" rx="0.75"/>
-            <rect x="11.25" y="7" width="1.5" height="11" rx="0.5"/>
-            <rect x="3" y="7" width="1" height="5"/>
-            <rect x="20" y="7" width="1" height="5"/>
-            <path d="M1,12 A3,3 0 0,1 7,12 Z"/>
-            <path d="M17,12 A3,3 0 0,1 23,12 Z"/>
-            <rect x="9" y="18" width="6" height="2" rx="1"/>
-          </svg>
-          <span class="l-cat__title">Tributario y Laboral</span>
+          <div class="doc__banda">
+            <div>
+              <p class="doc__marca">CENSUS <span>ALERT</span></p>
+              <p class="doc__kick">Informe consolidado</p>
+            </div>
+            <div class="doc__meta">
+              <p class="doc__n">CENS-ALERT-0000000184</p>
+              <p class="doc__d">Emitido 14-09-2026 09:12</p>
+              <p class="doc__d">Modo en vivo · 29 fuentes</p>
+            </div>
+          </div>
+          <div class="doc__regla"></div>
+
+          <div class="doc__cuerpo">
+            <p class="doc__rot">Consultado</p>
+            <div class="doc__sujeto">
+              <p class="doc__nm">COMERCIAL DEL PACÍFICO S.A.</p>
+              <p class="doc__id">RUC <b>09•••••••001</b> · Persona jurídica · Modo <b>En vivo</b></p>
+            </div>
+
+            <div class="doc__ver">
+              <p class="doc__vk">Resultado de la consulta</p>
+              <p class="doc__vt">2 de 27 fuentes con hallazgos</p>
+              <p class="doc__vs">Hay registros vigentes a nombre del consultado.</p>
+              <p class="doc__vd">25 sin novedades · 2 sin verificar</p>
+            </div>
+
+            <p class="doc__rot doc__rot--sep">Resumen por fuente</p>
+            <table class="doc__tbl">
+              <tr class="doc__th"><th colspan="2">Fuente</th><th>Estado</th><th class="v">Valor</th></tr>
+              <tr class="hay"><td class="pt"><i></i></td><td class="f">SRI<span>Deudas tributarias</span></td><td>Deuda vigente</td><td class="v">$ 1.240,00</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">IESS<span>Mora patronal</span></td><td>Sin mora patronal</td><td class="v">Sin deudas</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">Función Judicial<span>Causas judiciales</span></td><td>Sin novedades</td><td class="v">Sin causas</td></tr>
+              <tr class="info"><td class="pt"><i></i></td><td class="f">Supercías<span>Ficha societaria</span></td><td>Compañía activa</td><td class="v">3 accionistas</td></tr>
+              <tr class="hay"><td class="pt"><i></i></td><td class="f">Fiscalía<span>Noticias del delito</span></td><td>Denuncias nuevas</td><td class="v">2 denuncias</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">SERCOP<span>Contratación pública</span></td><td>Sin incumplir</td><td class="v">Habilitado</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">ANT<span>Multas nacionales</span></td><td>Sin novedades</td><td class="v">Sin multas</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">MDT<span>Obligaciones laborales</span></td><td>Al día</td><td class="v">Sin deudas</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">SUPA<span>Pensiones alimenticias</span></td><td>Sin pensiones</td><td class="v">Sin deudas</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">Municipios<span>Impuestos prediales</span></td><td>Sin deuda</td><td class="v">Sin deudas</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">OFAC<span>Listas de sanciones</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
+              <tr class="ok"><td class="pt"><i></i></td><td class="f">Superintendencia de Bancos<span>No autorizadas</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
+            </table>
+          </div>
+
         </div>
-        <ul class="l-sources">
-          <li class="l-source">
-            <span class="l-source__name">SRI</span>
-            <span class="l-source__desc">Deudas tributarias firmes, impugnadas y en facilidades de pago.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">IESS</span>
-            <span class="l-source__desc">Mora patronal — aportes en mora y valores adeudados al seguro social.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">Minist. del Trabajo</span>
-            <span class="l-source__desc">Obligaciones laborales y actas del Ministerio del Trabajo.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">SUPA</span>
-            <span class="l-source__desc">Deudas por pensiones alimenticias registradas en el sistema.</span>
-          </li>
-        </ul>
+        </div>
+      <div class="nota nota--alerta" aria-hidden="true">
+        <p class="nota__k">Hoy · 06:12</p>
+        <div class="nota__l"><span class="nota__f">SRI</span><span class="et et--al">Deuda nueva</span></div>
+        <p class="nota__c">$ 1.240,00</p>
       </div>
 
-      <div class="l-cat">
-        <div class="l-cat__header">
-          <!-- Columnas clásicas / Palacio de Justicia -->
-          <svg class="l-cat__icon-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="12,2 1,7 23,7"/>
-            <rect x="1" y="7" width="22" height="1.5"/>
-            <rect x="3" y="8.5" width="2.5" height="11" rx="0.5"/>
-            <rect x="10.75" y="8.5" width="2.5" height="11" rx="0.5"/>
-            <rect x="18.5" y="8.5" width="2.5" height="11" rx="0.5"/>
-            <rect x="1" y="19.5" width="22" height="2.5" rx="1"/>
-          </svg>
-          <span class="l-cat__title">Judicial y Penal</span>
-        </div>
-        <ul class="l-sources">
-          <li class="l-source">
-            <span class="l-source__name">SATJE — Función Judicial</span>
-            <span class="l-source__desc">Demandas y causas judiciales activas en tu contra.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">Fiscalía (SIAF)</span>
-            <span class="l-source__desc">Noticias del delito y denuncias penales registradas.</span>
-          </li>
-        </ul>
+      <div class="nota nota--barrido" aria-hidden="true">
+        <p class="nota__n nota__n--al">2</p>
+        <p class="nota__k">denuncias nuevas<br>en Fiscalía</p>
       </div>
 
-      <div class="l-cat">
-        <div class="l-cat__header">
-          <!-- Velocímetro / Tránsito -->
-          <svg class="l-cat__icon-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm0 2a7 7 0 1 1 0 14A7 7 0 0 1 12 5z"/>
-            <path d="M6.34 8.05a1 1 0 0 1 1.32 1.5L6.5 10.67a1 1 0 1 1-1.32-1.5l1.16-1.12z"/>
-            <path d="M17.66 8.05a1 1 0 0 0-1.32 1.5l1.16 1.12a1 1 0 1 0 1.32-1.5l-1.16-1.12z"/>
-            <rect x="11" y="7" width="2" height="4" rx="1"/>
-            <circle cx="12" cy="17" r="1.5"/>
-            <rect x="5" y="12.5" width="3.5" height="1.5" rx="0.75"/>
-            <rect x="15.5" y="12.5" width="3.5" height="1.5" rx="0.75"/>
-            <path d="M12 13.5 L14.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <span class="l-cat__title">Tránsito</span>
-        </div>
-        <ul class="l-sources">
-          <li class="l-source">
-            <span class="l-source__name">ANT</span>
-            <span class="l-source__desc">Multas de tránsito a nivel nacional.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">ATM — Guayaquil</span>
-            <span class="l-source__desc">Citaciones y multas del cantón Guayaquil.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">CTE</span>
-            <span class="l-source__desc">Multas viales de la Comisión de Tránsito del Ecuador.</span>
-          </li>
-        </ul>
       </div>
-
-      <div class="l-cat">
-        <div class="l-cat__header">
-          <!-- Escudo con check / Certificación -->
-          <svg class="l-cat__icon-svg" viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L3 6v7c0 4.4 3.9 8.5 9 9.9C18.1 21.5 21 17.4 21 13V6L12 2z"/>
-            <path d="M8.5 12.5l2 2 5-5 1 1-6 6-3-3 1-1z" fill="#0f0f0c"/>
-          </svg>
-          <span class="l-cat__title">Societario y Contratación</span>
-        </div>
-        <ul class="l-sources">
-          <li class="l-source">
-            <span class="l-source__name">Superintendencia de Compañías</span>
-            <span class="l-source__desc">Situación societaria, multas y obligaciones vigentes.</span>
-          </li>
-          <li class="l-source">
-            <span class="l-source__name">SERCOP</span>
-            <span class="l-source__desc">Estado en compras públicas, inhabilidades y certificado de proveedor.</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="l-cat">
-        <div class="l-cat__header">
-          <!-- Avión / Migración -->
-          <svg class="l-cat__icon-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="12" cy="12" rx="2" ry="9"/>
-            <path d="M2,12.5 L10,10.5 L10,14.5 Z"/>
-            <path d="M22,12.5 L14,10.5 L14,14.5 Z"/>
-            <path d="M6.5,20 L10,18.5 L10,21.5 Z"/>
-            <path d="M17.5,20 L14,18.5 L14,21.5 Z"/>
-          </svg>
-          <span class="l-cat__title">Migratorio</span>
-        </div>
-        <ul class="l-sources">
-          <li class="l-source">
-            <span class="l-source__name">Migración Ecuador</span>
-            <span class="l-source__desc">Impedimentos de salida del país vigentes.</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="l-cat">
-        <div class="l-cat__header">
-          <!-- Municipio / Cúpula -->
-          <svg class="l-cat__icon-svg" viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4,13 A8,8 0 0,1 20,13 Z"/>
-            <rect x="6" y="13" width="12" height="2"/>
-            <rect x="3" y="15" width="18" height="7" rx="1"/>
-            <rect x="10.5" y="17.5" width="3" height="4.5" fill="#0f0f0c"/>
-            <rect x="5" y="17" width="2.5" height="2.5" rx="0.4" fill="#0f0f0c"/>
-            <rect x="16.5" y="17" width="2.5" height="2.5" rx="0.4" fill="#0f0f0c"/>
-          </svg>
-          <span class="l-cat__title">Municipal</span>
-        </div>
-        <ul class="l-sources">
-          <li class="l-source">
-            <span class="l-source__name">Municipio de Samborondón</span>
-            <span class="l-source__desc">Deudas municipales de predial, tasas y contribuciones.</span>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-
-    <div class="l-data-detail">
-      <h3>¿Qué información extraemos de cada portal?</h3>
-      <div class="l-data-pills">
-        <span class="l-pill">Montos adeudados</span>
-        <span class="l-pill">Estado de la obligación</span>
-        <span class="l-pill">Fechas de vencimiento</span>
-        <span class="l-pill">N.º de causa / citación / denuncia</span>
-        <span class="l-pill">Razón social y estado del contribuyente</span>
-        <span class="l-pill">Verificado contra la fuente oficial</span>
       </div>
     </div>
   </div>
-</section>
+</header>
 
-<!-- ═══════════════════════════════════════════════════════════
-     CÓMO SE PRESENTA LA INFORMACIÓN
-═══════════════════════════════════════════════════════════ -->
-<section class="l-section" id="informes">
-  <div class="l-container">
-    <div class="l-section-head">
-      <p class="l-eyebrow">Entrega de resultados</p>
-      <h2>La información, ordenada y lista para actuar.</h2>
+<section class="sec claro claro--alto grano" id="rutas">
+  <!-- Fondo esculpido de la sección. Mismo recurso que el de la
+       referencia pero en tonos de papel: sobre claro, una mancha
+       oscura sería una mancha de verdad. -->
+  <svg class="mancha" viewBox="-620 -120 1260 1140" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="pPanel" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#F2ECDC"/>
+        <stop offset="60%"  stop-color="#F7F2E6"/>
+        <stop offset="100%" stop-color="#FBF8EF"/>
+      </linearGradient>
+      <linearGradient id="pAtras" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#EBE3CF"/>
+        <stop offset="100%" stop-color="#F5F0E2"/>
+      </linearGradient>
+      <linearGradient id="pFilo" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#A87C1E" stop-opacity="0"/>
+        <stop offset="24%"  stop-color="#A87C1E" stop-opacity=".34"/>
+        <stop offset="74%"  stop-color="#A87C1E" stop-opacity=".22"/>
+        <stop offset="100%" stop-color="#A87C1E" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="M-600 -400 L-80 -60 C210 -20 430 90 498 300
+             C566 512 470 700 300 820 C190 898 40 930 -80 906
+             L-600 1300 Z" fill="url(#pAtras)"/>
+    <path d="M-600 -400 L-80 -60 C160 -8 372 104 432 306
+             C494 514 404 686 246 796 C148 864 20 892 -80 872
+             L-600 1300 Z" fill="url(#pPanel)"/>
+    <path d="M-80 -60 C160 -8 372 104 432 306
+             C494 514 404 686 246 796 C148 864 20 892 -80 872"
+          fill="none" stroke="url(#pFilo)" stroke-width="1.6"/>
+    <g fill="none" stroke="#A87C1E" stroke-opacity=".2" stroke-width="1.4">
+      <circle cx="486" cy="168" r="21"/>
+      <rect x="478" y="548" width="27" height="27" rx="3" transform="rotate(16 491 561)"/>
+      <path d="M452 736 h22 M463 725 v22"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div class="cab rv">
+      <p class="kick">Dos formas de usarlo</p>
+      <h2>Vigilancia diaria, o una consulta a fondo.</h2>
     </div>
 
-    <div class="l-delivery-grid">
-
-      <div class="l-delivery-card">
-        <div class="l-delivery-card__icon">
-          <!-- Documento con página doblada -->
-          <svg class="l-icon-glow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 2h9l5 5v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
-            <path d="M14 2l5 5h-5z" fill="#0f0f0c"/>
-            <rect x="7" y="10" width="10" height="1.5" rx="0.75" fill="#0f0f0c"/>
-            <rect x="7" y="13" width="8"  height="1.5" rx="0.75" fill="#0f0f0c"/>
-            <rect x="7" y="16" width="6"  height="1.5" rx="0.75" fill="#0f0f0c"/>
-          </svg>
-        </div>
-        <h3>Informe Consolidado 360°</h3>
-        <p>
-          Un único reporte por cliente: una sección por fuente, estado
-          claro (<strong>Al día / Novedad / Pendiente</strong>), montos
-          y detalle. Entregado por correo y disponible en PDF con la
-          marca Census.
+    <div class="via">
+      <article class="ruta rv">
+        <h3>Monitoreo</h3>
+        <p class="ruta__q">Para después de firmar.</p>
+        <p class="ruta__d">
+          Revisamos tu cartera cada madrugada. Si no cambió nada, no recibes correo.
         </p>
-        <div class="l-mini-report">
-          <div class="l-mini-report__row">
-            <span>SRI — Obligaciones tributarias</span>
-            <span class="badge badge--ok">Al día</span>
-          </div>
-          <div class="l-mini-report__row">
-            <span>IESS — Mora patronal</span>
-            <span class="badge badge--alert">Novedad · $1.240</span>
-          </div>
-          <div class="l-mini-report__row">
-            <span>SATJE — Causas judiciales</span>
-            <span class="badge badge--ok">Al día</span>
-          </div>
-          <div class="l-mini-report__row">
-            <span>ANT — Multas de tránsito</span>
-            <span class="badge badge--pending">Pendiente</span>
-          </div>
-        </div>
-      </div>
+        <div class="barra" aria-hidden="true"><span style="width:41%"></span></div>
+        <p class="barra__l"><b>12 portales</b>, todos los días</p>
+        <a href="/formulario" class="flecha">Contratar monitoreo <span aria-hidden="true">→</span></a>
+      </article>
 
-      <div class="l-delivery-card">
-        <div class="l-delivery-card__icon">
-          <!-- Campana de notificación -->
-          <svg class="l-icon-glow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 1a1 1 0 0 1 1 1v.6A7 7 0 0 1 19 9.5V14l1.7 1.7A1 1 0 0 1 20 17.5H4a1 1 0 0 1-.7-1.8L5 14V9.5a7 7 0 0 1 6-6.9V2a1 1 0 0 1 1-1z"/>
-            <path d="M9.5 17.5a2.5 2.5 0 0 0 5 0h-5z"/>
-          </svg>
-        </div>
-        <h3>Feed de Novedades</h3>
-        <p>
-          Lista cronológica de los cambios detectados: nueva deuda, nueva
-          multa, nueva demanda, nueva denuncia. Solo lo nuevo, sin repetir
-          lo que ya sabías.
+      <article class="ruta ruta--b rv">
+        <h3>Informe</h3>
+        <p class="ruta__q">Para antes de firmar.</p>
+        <p class="ruta__d">
+          Un RUC o una cédula, y en minutos un documento con todo lo que consta
+          en fuentes públicas.
         </p>
-        <div class="l-feed">
-          <div class="l-feed__item l-feed__item--alert">
-            <span class="l-feed__dot"></span>
-            <div>
-              <span class="l-feed__time">Hoy, 06:45</span>
-              <span class="l-feed__text">IESS: mora patronal registrada — $1.240,00</span>
-            </div>
-          </div>
-          <div class="l-feed__item">
-            <span class="l-feed__dot l-feed__dot--ok"></span>
-            <div>
-              <span class="l-feed__time">Ayer, 06:45</span>
-              <span class="l-feed__text">SRI: sin novedades</span>
-            </div>
-          </div>
-          <div class="l-feed__item">
-            <span class="l-feed__dot l-feed__dot--ok"></span>
-            <div>
-              <span class="l-feed__time">Hace 2 días, 06:45</span>
-              <span class="l-feed__text">SATJE: sin nuevas causas</span>
-            </div>
-          </div>
+        <div class="barra" aria-hidden="true">
+          <span style="width:41%"></span><span class="barra__x" style="width:59%"></span>
         </div>
-      </div>
-
+        <p class="barra__l"><b>29 fuentes</b> — esos mismos 12, y 17 más</p>
+        <a href="/formulario" class="flecha">Pedir un informe <span aria-hidden="true">→</span></a>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════
-     CÓMO FUNCIONA — 4 PASOS
-═══════════════════════════════════════════════════════════ -->
-<section class="l-section l-section--alt" id="como-funciona">
-  <div class="l-container">
-    <div class="l-section-head">
-      <p class="l-eyebrow">El proceso</p>
-      <h2>Automático. Silencioso. Preciso.</h2>
-      <p class="l-section-sub">
-        Sin intervención manual. Todos los días, antes de que tu jornada empiece.
-      </p>
+<section class="sec claro grano">
+  <div class="wrap">
+    <div class="cab rv">
+      <p class="kick">Por qué el mismo día</p>
+      <h2>Una deuda no avisa. El portal sí.</h2>
     </div>
-
-    <div class="l-steps">
-      <div class="l-step">
-        <div class="l-step__num">01</div>
-        <div class="l-step__body">
-          <h3>Vigilamos</h3>
-          <p>Consultamos las 13 fuentes oficiales cada madrugada, de forma automática y sin fallas.</p>
-        </div>
+    <div class="reloj">
+      <div class="col col--antes rv">
+        <p class="col__t">Sin monitoreo</p>
+        <ol class="hitos">
+          <li><time>Día 1</time><p>Se registra la obligación. Nadie la ve.</p></li>
+          <li><time>Semanas</time><p>El interés corre. Sigue sin verse.</p></li>
+          <li><time>Meses</time><p>Llega la notificación. El margen se agotó.</p></li>
+        </ol>
       </div>
-      <div class="l-step__arrow" aria-hidden="true">→</div>
-      <div class="l-step">
-        <div class="l-step__num">02</div>
-        <div class="l-step__body">
-          <h3>Detectamos el cambio</h3>
-          <p>Comparamos contra el último estado conocido. Solo marcamos lo que es realmente nuevo.</p>
-        </div>
-      </div>
-      <div class="l-step__arrow" aria-hidden="true">→</div>
-      <div class="l-step">
-        <div class="l-step__num">03</div>
-        <div class="l-step__body">
-          <h3>Consolidamos</h3>
-          <p>Armamos un informe único, claro y estructurado por fuente, con estado, montos y detalle.</p>
-        </div>
-      </div>
-      <div class="l-step__arrow" aria-hidden="true">→</div>
-      <div class="l-step">
-        <div class="l-step__num">04</div>
-        <div class="l-step__body">
-          <h3>Te notificamos</h3>
-          <p>Un solo correo por cliente, con copias a los destinatarios que tú configures. Sin spam.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="l-highlight-box">
-      <svg class="l-icon-glow l-highlight-box__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px;">
-        <path d="M12 2L3 6v7c0 4.4 3.9 8.5 9 9.9C18.1 21.5 21 17.4 21 13V6L12 2z"/>
-        <path d="M8.5 12.5l2 2 5-5 1 1-6 6-3-3 1-1z" fill="#0f0f0c"/>
-      </svg>
-      <div>
-        <strong>Solo datos de fuentes oficiales públicas.</strong>
-        No usamos intermediarios, no cruzamos datos privados. Todo lo que
-        informamos está disponible en los portales del Estado ecuatoriano.
+      <div class="col col--con rv">
+        <p class="col__t">Con Census Alert</p>
+        <ol class="hitos">
+          <li><time>Día 1 · 06:45</time><p>El correo dice qué apareció y por cuánto.</p></li>
+          <li><time>Ese día</time><p>Impugnas, pagas o te asesoras.</p></li>
+          <li><time>Meses</time><p>No hay «meses».</p></li>
+        </ol>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════
-     BENEFICIOS
-═══════════════════════════════════════════════════════════ -->
-<section class="l-section" id="beneficios">
-  <div class="l-container">
-    <div class="l-section-head">
-      <p class="l-eyebrow">Por qué Census Alert</p>
-      <h2>Entérate antes, no después.</h2>
+<section class="rej claro claro--alto" id="fuentes">
+  <div class="wrap">
+    <div class="rej__cab rv">
+      <p class="kick">Cobertura</p>
+      <h2>¿Qué fuentes puedes consultar?</h2>
+      <p class="rej__sub">Vamos al portal de cada institución, no a un intermediario.</p>
     </div>
+    <div class="rej__g">
+      {PORTALES.map(({ s, n, e }) => (
+        <div class="chip" title={n}>
+          <img src={`/logos/${s}.${e}`} alt={n} loading="lazy" />
+        </div>
+      ))}
+    </div>
+    <p class="rej__pie rv">
+      De estos mismos portales salen además las insolvencias, las resoluciones
+      penales, las pensiones alimenticias y el texto completo de los expedientes.
+    </p>
+  </div>
+</section>
 
-    <div class="l-benefits-grid">
-      <div class="l-benefit">
-        <!-- Reloj -->
-        <svg class="l-icon-glow l-benefit__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10"/>
-          <rect x="11" y="5"  width="2" height="7"  rx="1" fill="#0f0f0c"/>
-          <rect x="12" y="11" width="5" height="2"  rx="1" fill="#0f0f0c"/>
-          <circle cx="12" cy="12" r="1.5" fill="#0f0f0c"/>
-        </svg>
-        <h3>Ahorra horas de revisión manual</h3>
-        <p>Revisar 13 portales cada día toma horas. Census Alert lo hace en minutos, sin error humano.</p>
-      </div>
-      <div class="l-benefit">
-        <!-- Triángulo de alerta -->
-        <svg class="l-icon-glow l-benefit__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L1 21h22L12 2z"/>
-          <rect x="11" y="9"  width="2" height="6" rx="1" fill="#0f0f0c"/>
-          <circle cx="12" cy="17.5" r="1.2" fill="#0f0f0c"/>
-        </svg>
-        <h3>Evita sorpresas costosas</h3>
-        <p>Embargos, inhabilidades, salidas bloqueadas: todas tienen señales previas. Nosotros las detectamos.</p>
-      </div>
-      <div class="l-benefit">
-        <!-- Rayo -->
-        <svg class="l-icon-glow l-benefit__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 2L5 13h8l-3 9 12-12h-9z"/>
-        </svg>
-        <h3>Reacciona a tiempo</h3>
-        <p>Con 24 horas de anticipación puedes impugnar, pagar, o asesorarte. Sin monitoreo, no hay margen.</p>
-      </div>
-      <div class="l-benefit">
-        <!-- Portapapeles / dashboard -->
-        <svg class="l-icon-glow l-benefit__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4"  y="4" width="16" height="18" rx="2"/>
-          <rect x="9"  y="2" width="6"  height="4"  rx="1"/>
-          <rect x="7"  y="10" width="10" height="1.5" rx="0.75" fill="#0f0f0c"/>
-          <rect x="7"  y="13.5" width="10" height="1.5" rx="0.75" fill="#0f0f0c"/>
-          <rect x="7"  y="17" width="7"  height="1.5" rx="0.75" fill="#0f0f0c"/>
-        </svg>
-        <h3>Todo en un solo lugar</h3>
-        <p>Un informe, un correo, un estado por fuente. Sin navegar portal por portal ni recordar contraseñas.</p>
-      </div>
-      <div class="l-benefit">
-        <!-- Candado -->
-        <svg class="l-icon-glow l-benefit__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="11" width="16" height="12" rx="3"/>
-          <path fill-rule="evenodd" d="M12 2a5 5 0 0 1 5 5v4H7V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/>
-          <circle cx="12" cy="16.5" r="2"   fill="#0f0f0c"/>
-          <rect   x="11" y="17.5"  width="2" height="3" fill="#0f0f0c"/>
-        </svg>
-        <h3>13 fuentes oficiales cubiertas</h3>
-        <p>La cobertura más amplia disponible: tributario, laboral, judicial, tránsito, societario, migratorio y municipal.</p>
-      </div>
-      <div class="l-benefit">
-        <!-- Diana / bullseye -->
-        <svg class="l-icon-glow l-benefit__icon" viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10"/>
-          <circle cx="12" cy="12" r="7"/>
-          <circle cx="12" cy="12" r="4"/>
-          <circle cx="12" cy="12" r="1.5"/>
-        </svg>
-        <h3>Solo lo nuevo, sin ruido</h3>
-        <p>Detección inteligente de cambios: solo te avisamos cuando algo cambia, no todos los días con lo mismo.</p>
-      </div>
+<section class="cierre claro claro--hondo grano">
+  <div class="wrap">
+    <p class="kick rv">Empieza hoy</p>
+    <h2 class="rv">¿Sabes qué dice el Estado de tu contraparte?</h2>
+    <p class="lead rv">La única forma de saberlo es mirarlo.</p>
+    <div class="ctas rv">
+      <a href="/formulario" class="bt">Solicitar servicio</a>
+      <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════
-     CTA FINAL
-═══════════════════════════════════════════════════════════ -->
-<section class="l-cta-final">
-  <div class="l-container l-cta-final__inner">
-    <p class="l-eyebrow" style="text-align:center;margin-bottom:20px;">Sin costo para clientes Census · Por tiempo limitado</p>
-    <h2>¿Tu empresa está en los portales del Estado sin saberlo?</h2>
-    <p>La única forma de saberlo es revisarlo. Census Alert lo hace por ti, todos los días.</p>
-    <a href="/formulario" class="btn-gold btn-gold--lg">Empieza a monitorear hoy →</a>
-  </div>
-</section>
-
-<footer class="l-footer">
-  <div class="l-container l-footer__inner">
-    <img src="/logo-census.svg" alt="Census Consultores" class="l-footer__logo" />
-    <div class="l-footer__links">
+<footer class="pie-sitio">
+  <div class="wrap pie-sitio__in">
+    <img src="/logo-census.svg" alt="Census Consultores" class="pie-sitio__logo" />
+    <div class="pie-sitio__links">
       <a href="/terminos-y-condiciones">Términos y Condiciones</a>
       <a href="/tratamiento-de-datos">Política de Datos</a>
       <a href="mailto:info@censusconsultores.com.ec">info@censusconsultores.com.ec</a>
     </div>
-    <p class="l-footer__legal">
+    <p class="pie-sitio__legal">
       © {new Date().getFullYear()} Census Consultores · Asesores Legales y Tributarios · Ecuador<br />
       Census Alert es un servicio de monitoreo de información pública oficial.
-      La información se extrae de portales del Estado ecuatoriano y se presenta con fines informativos.
+      La información se extrae de portales del Estado ecuatoriano y se presenta
+      con fines informativos.
     </p>
   </div>
 </footer>
@@ -517,880 +321,686 @@ import LandingLayout from "../layouts/LandingLayout.astro";
 </LandingLayout>
 
 <style>
-/* ═══════════════════════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════════════════════ */
-.l-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(15, 15, 12, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--l-border);
-}
-.l-nav__inner {
-  max-width: var(--l-max);
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 64px;
-  gap: 16px;
-}
-.l-nav__logo { display: flex; align-items: center; }
-.l-nav__logo-img { height: 40px; width: auto; }
-.l-nav__links {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.l-nav__links a {
-  color: var(--l-muted);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-.l-nav__links a:hover { color: var(--l-gold); }
-.l-nav__cta {
-  background: var(--grad-gold) !important;
-  color: #1a1500 !important;
-  font-weight: 600 !important;
-  padding: 8px 20px;
-  border-radius: 6px;
-  font-size: 13px !important;
-  transition: opacity 0.2s !important;
-}
-.l-nav__cta:hover { opacity: 0.88; }
+/* ═══════════════════════════════════════════════════════════════
+   Estructura tomada del sistema de censusconcorazon.com —escalas de
+   7 pasos, radio de 4px, una sola curva de salida y muy poca
+   animación— con la paleta de Census Alert: negro y oro.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --oro: #C9A84C;
+  --oro-cl: #e2c97a;
+  --oro-os: #8B6914;
+  --crema: #f0ead8;
+  --tenue: #9b9280;
+  --linea: rgba(201, 168, 76, .17);
+  /* Tres tonos de papel: el ritmo entre secciones claras lo da el tono,
+     no el espaciado. */
+  --papel-alto: #FCFAF4;
+  --papel: #F0EBDD;
+  --papel-hondo: #E6E0CE;
+  --papel-ink: #2A2419;
+  --papel-2: #6E6555;
 
-/* Burger — oculto en desktop */
-.l-nav__burger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-}
-.l-nav__burger span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: var(--l-gold);
-  border-radius: 2px;
-  transition: transform 0.25s, opacity 0.25s;
-}
-.l-nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.l-nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.l-nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  --display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --prosa: 'Petrona', Georgia, serif;
 
-/* ═══════════════════════════════════════════════════════════
-   CONTENEDOR BASE
-═══════════════════════════════════════════════════════════ */
-.l-container {
-  max-width: var(--l-max);
-  margin: 0 auto;
-  padding: 0 24px;
+  /* Escala contenida: el titular vive en media pantalla, junto al
+     robot, así que un clamp de 5rem lo desbordaba. */
+  --t6: clamp(2.1rem, 3.9vw, 3.15rem);
+  --t5: clamp(1.65rem, 2.7vw, 2.25rem);
+  --t4: clamp(1.25rem, 1.8vw, 1.5rem);
+  --t3: 1.14rem;
+  --t2: 1.02rem;
+  --t1: .94rem;
+  --t0: .78rem;
+
+  --s1: .5rem;  --s2: .85rem; --s3: 1.35rem; --s4: 2.2rem;
+  --s5: 3.4rem; --s6: clamp(3.4rem, 6.4vw, 5.6rem);
+  --s7: clamp(4.4rem, 8.4vw, 7.2rem);
+
+  --wrap: 1180px;
+  --radio: 4px;
+  --nav-h: 86px;
+  --out: cubic-bezier(.16, 1, .3, 1);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════════════════════ */
-.l-hero {
-  position: relative;
-  overflow: hidden;
-  padding: 80px 0 72px;
-  background: var(--l-bg);
-}
-.l-hero__glow {
-  position: absolute;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 600px;
-  background: radial-gradient(ellipse at center, rgba(201,168,76,0.15) 0%, transparent 65%);
-  pointer-events: none;
-}
-.l-hero__inner {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 56px;
-  align-items: center;
-}
-.l-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--l-gold);
-  margin: 0 0 16px;
-}
-.l-hero__title {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 700;
-  line-height: 1.15;
-  margin: 0 0 24px;
-  color: var(--l-text);
-}
-.l-hero__title em {
-  font-style: italic;
-  background: var(--grad-gold);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.l-hero__sub {
-  font-size: 17px;
-  color: var(--l-muted);
-  margin: 0 0 36px;
-  max-width: 520px;
-  line-height: 1.65;
-}
-.l-hero__ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-.l-hero__note {
-  font-size: 13px;
-  color: var(--l-muted);
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.dot-live {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: #4ade80;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
-  animation: pulse-green 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
-@keyframes pulse-green {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.25); }
-  50%       { box-shadow: 0 0 0 6px rgba(74,222,128,0.08); }
-}
-
-/* ── Hero entrance animations ── */
-@keyframes hero-rise {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.l-hero__copy .l-eyebrow {
-  animation: hero-rise 0.6s ease-out 0.10s both;
-}
-.l-hero__copy .l-hero__title {
-  animation: hero-rise 0.65s ease-out 0.22s both;
-}
-.l-hero__copy .l-hero__sub {
-  animation: hero-rise 0.65s ease-out 0.38s both;
-}
-.l-hero__copy .l-hero__ctas {
-  animation: hero-rise 0.65s ease-out 0.52s both;
-}
-.l-hero__copy .l-hero__note {
-  animation: hero-rise 0.6s ease-out 0.66s both;
-}
-.l-hero__visual {
-  animation: hero-rise 0.75s ease-out 0.30s both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .l-hero__copy .l-eyebrow,
-  .l-hero__copy .l-hero__title,
-  .l-hero__copy .l-hero__sub,
-  .l-hero__copy .l-hero__ctas,
-  .l-hero__copy .l-hero__note,
-  .l-hero__visual { animation: none; }
-}
-
-/* Robot hero image — PNG transparente */
-.l-hero__visual { display: flex; justify-content: center; align-items: center; }
-.l-hero__robot-wrap {
-  width: 100%;
-  max-width: 380px;
-  filter: drop-shadow(0 0 40px rgba(201,168,76,0.35)) drop-shadow(0 20px 60px rgba(0,0,0,0.6));
-}
-.l-hero__robot-img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* Mockup (kept for delivery section) */
-.l-mockup {
-  width: 100%;
-  max-width: 380px;
-  background: var(--l-surface-2);
-  border: 1px solid var(--l-border);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: var(--shadow-gold), 0 24px 64px rgba(0,0,0,0.5);
-}
-.l-mockup__header {
-  background: var(--l-surface);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--l-border);
-}
-.l-mockup__logo { height: 28px; width: auto; }
-.l-mockup__tag {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--l-gold);
-}
-.l-mockup__client {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--l-border);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.l-mockup__label { font-size: 10px; color: var(--l-muted); text-transform: uppercase; letter-spacing: 1px; }
-.l-mockup__name { font-size: 14px; font-weight: 600; color: var(--l-text); }
-.l-mockup__rows { padding: 8px 0; }
-.l-mockup__row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 20px;
-  border-bottom: 1px solid rgba(201,168,76,0.07);
-  font-size: 13px;
-}
-.l-mockup__row:last-child { border-bottom: none; }
-.l-mockup__source { color: var(--l-text); font-weight: 500; flex: 1; min-width: 0; }
-.l-mockup__detail { font-size: 11px; color: var(--l-muted); }
-.l-mockup__footer {
-  background: var(--l-surface);
-  padding: 12px 20px;
-  border-top: 1px solid var(--l-border);
-  font-size: 11px;
-  color: var(--l-muted);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BADGES
-═══════════════════════════════════════════════════════════ */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-}
-.badge--ok      { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
-.badge--alert   { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
-.badge--pending { background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
-
-/* ═══════════════════════════════════════════════════════════
-   BOTONES
-═══════════════════════════════════════════════════════════ */
-.btn-gold {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 28px;
-  background: var(--grad-gold);
-  color: #1a1500;
-  font-weight: 700;
-  font-size: 15px;
-  border-radius: 7px;
-  text-decoration: none;
-  transition: opacity 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px rgba(201,168,76,0.3);
-}
-.btn-gold:hover { opacity: 0.88; box-shadow: 0 6px 24px rgba(201,168,76,0.4); }
-.btn-gold--lg { padding: 16px 40px; font-size: 17px; }
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 28px;
-  border: 1.5px solid var(--l-border);
-  color: var(--l-muted);
-  font-size: 15px;
-  font-weight: 500;
-  border-radius: 7px;
-  text-decoration: none;
-  transition: border-color 0.2s, color 0.2s;
-}
-.btn-outline:hover { border-color: var(--l-gold); color: var(--l-gold); }
-
-/* ═══════════════════════════════════════════════════════════
-   SECCIONES
-═══════════════════════════════════════════════════════════ */
-.l-section {
-  padding: 88px 0;
-  background: var(--l-bg);
-}
-.l-section--alt { background: var(--l-surface); }
-.l-section--form {
-  background: var(--l-bg);
-  padding-bottom: 48px;
-}
-.l-section-head {
-  text-align: center;
-  margin-bottom: 56px;
-}
-.l-section-head h2 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(26px, 3.5vw, 40px);
-  font-weight: 700;
-  color: var(--l-text);
-  margin: 0 0 16px;
-  line-height: 1.2;
-}
-.l-section-sub {
-  font-size: 16px;
-  color: var(--l-muted);
-  max-width: 560px;
-  margin: 0 auto;
-  line-height: 1.65;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PORTALES — GRILLA POR CATEGORÍA
-═══════════════════════════════════════════════════════════ */
-.l-cat-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-.l-cat {
-  background: var(--l-bg);
-  border: 1px solid var(--l-border);
-  border-radius: var(--l-radius);
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-.l-cat:hover { border-color: rgba(201,168,76,0.4); }
-.l-cat__header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: rgba(201,168,76,0.07);
-  border-bottom: 1px solid var(--l-border);
-}
-/* ── Iconos SVG dorados con glow (compartido) ── */
-.l-icon-glow,
-.l-cat__icon-svg {
-  fill: var(--l-gold);
-  flex-shrink: 0;
-  filter:
-    drop-shadow(0 0 5px rgba(201,168,76,0.9))
-    drop-shadow(0 0 14px rgba(201,168,76,0.5))
-    drop-shadow(0 0 28px rgba(201,168,76,0.2));
-}
-.l-cat__icon-svg        { width: 34px; height: 34px; }
-.l-delivery-card__icon .l-icon-glow { width: 44px; height: 44px; display: block; }
-.l-benefit__icon.l-icon-glow { width: 32px; height: 32px; display: block; margin-bottom: 14px; }
-.l-cat__title {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--l-gold);
-}
-.l-sources { list-style: none; margin: 0; padding: 8px 0; }
-.l-source {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(201,168,76,0.06);
-}
-.l-source:last-child { border-bottom: none; }
-.l-source__name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--l-text);
-}
-.l-source__desc {
-  font-size: 12px;
-  color: var(--l-muted);
-  line-height: 1.5;
-}
-
-/* Pills de datos */
-.l-data-detail {
-  margin-top: 56px;
-  text-align: center;
-}
-.l-data-detail h3 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 20px;
-  color: var(--l-text);
-  margin: 0 0 24px;
-}
-.l-data-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-.l-pill {
-  background: var(--l-gold-dim);
-  border: 1px solid var(--l-border);
-  color: var(--l-gold);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 16px;
-  border-radius: 20px;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   ENTREGA DE RESULTADOS
-═══════════════════════════════════════════════════════════ */
-.l-delivery-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-.l-delivery-card {
-  background: var(--l-surface);
-  border: 1px solid var(--l-border);
-  border-radius: var(--l-radius);
-  padding: 32px;
-}
-.l-delivery-card__icon { margin-bottom: 16px; }
-.l-delivery-card h3 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--l-text);
-  margin: 0 0 12px;
-}
-.l-delivery-card p { font-size: 15px; color: var(--l-muted); margin: 0 0 24px; line-height: 1.65; }
-
-/* Mini-report mockup */
-.l-mini-report { display: flex; flex-direction: column; gap: 8px; }
-.l-mini-report__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: var(--l-surface-2);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--l-muted);
-  gap: 12px;
-}
-.l-mini-report__row span:first-child { flex: 1; min-width: 0; }
-
-/* Feed */
-.l-feed { display: flex; flex-direction: column; gap: 0; }
-.l-feed__item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(201,168,76,0.08);
-}
-.l-feed__item:last-child { border-bottom: none; }
-.l-feed__item--alert .l-feed__dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.5); }
-.l-feed__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--l-muted);
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-.l-feed__dot--ok { background: #4ade80; }
-.l-feed__time { display: block; font-size: 11px; color: var(--l-muted); margin-bottom: 2px; }
-.l-feed__text { font-size: 13px; color: var(--l-text); }
-
-/* ═══════════════════════════════════════════════════════════
-   PASOS
-═══════════════════════════════════════════════════════════ */
-.l-steps {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  margin-bottom: 48px;
-}
-.l-step {
-  display: flex;
-  gap: 20px;
-  padding: 28px 0;
-  border-bottom: 1px solid var(--l-border);
-}
-.l-step:last-child { border-bottom: none; }
-.l-step__arrow {
-  display: none;
-}
-.l-step__num {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 36px;
-  font-weight: 700;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--l-gold);
-  flex-shrink: 0;
-  width: 56px;
-}
-.l-step__body h3 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 18px;
-  color: var(--l-text);
-  margin: 0 0 8px;
-}
-.l-step__body p { font-size: 14px; color: var(--l-muted); margin: 0; line-height: 1.6; }
-
-/* Highlight box */
-.l-highlight-box {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  background: var(--l-gold-dim);
-  border: 1px solid var(--l-border);
-  border-left: 3px solid var(--l-gold);
-  border-radius: var(--l-radius);
-  padding: 20px 24px;
-  font-size: 14px;
-  color: var(--l-muted);
+/* El layout ya fija el fondo y el color; aquí solo la tipografía. */
+:global(.landing-body) {
+  font-family: var(--display);
+  font-size: var(--t1);
   line-height: 1.6;
+  font-optical-sizing: auto;
 }
-.l-highlight-box strong { color: var(--l-text); }
-.l-highlight-box__icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
 
-/* ═══════════════════════════════════════════════════════════
-   BENEFICIOS
-═══════════════════════════════════════════════════════════ */
-.l-benefits-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-.l-benefit {
-  background: var(--l-surface);
-  border: 1px solid var(--l-border);
-  border-radius: var(--l-radius);
-  padding: 28px;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.l-benefit:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-2px); }
-.l-benefit__icon { display: block; margin-bottom: 14px; }
-.l-benefit h3 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 17px;
+h1, h2, h3 {
+  font-family: var(--display);
   font-weight: 600;
-  color: var(--l-text);
-  margin: 0 0 10px;
-}
-.l-benefit p { font-size: 14px; color: var(--l-muted); margin: 0; line-height: 1.6; }
-
-/* ═══════════════════════════════════════════════════════════
-   CTA FINAL
-═══════════════════════════════════════════════════════════ */
-.l-cta-final {
-  background: var(--l-surface);
-  border-top: 1px solid var(--l-border);
-  border-bottom: 1px solid var(--l-border);
-  padding: 80px 0;
-}
-.l-cta-final__inner {
-  text-align: center;
-}
-.l-cta-final h2 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(24px, 3vw, 36px);
-  font-weight: 700;
-  color: var(--l-text);
-  margin: 0 0 16px;
-  line-height: 1.25;
-}
-.l-cta-final p {
-  font-size: 16px;
-  color: var(--l-muted);
-  margin: 0 0 36px;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════════════════════ */
-.l-footer {
-  background: #0a0a08;
-  padding: 48px 0 36px;
-  border-top: 1px solid var(--l-border);
-}
-.l-footer__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  text-align: center;
-}
-.l-footer__logo { height: 36px; width: auto; opacity: 0.7; }
-.l-footer__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  justify-content: center;
-}
-.l-footer__links a {
-  font-size: 13px;
-  color: var(--l-muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.l-footer__links a:hover { color: var(--l-gold); }
-.l-footer__legal {
-  font-size: 12px;
-  color: #5a5445;
+  line-height: 1.08;
+  letter-spacing: -.018em;
   margin: 0;
-  line-height: 1.7;
-  max-width: 560px;
+  text-wrap: balance;
+}
+p { margin: 0; }
+/* Con la barra fija, un ancla dejaría el título justo debajo de ella. */
+:where(section[id], header[id]) { scroll-margin-top: calc(var(--nav-h) + 12px); }
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px); }
+
+/* Grano: lo que distingue una superficie plana de una impresa. */
+.grano { position: relative; }
+.grano::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none; opacity: .15;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+/* Antes esto era `.grano > *`, y su especificidad ganaba a la de las
+   capas decorativas: les imponía `position: relative` y el polvo y el
+   halo colapsaban a altura cero. Ahora solo sube el contenido. */
+.grano > .wrap { position: relative; z-index: 2; }
+
+.kick {
+  font-size: var(--t0); font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--oro-os);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   UTILIDADES
-═══════════════════════════════════════════════════════════ */
-.br-desktop { display: none; }
-
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — TABLET  ≥ 640px
-═══════════════════════════════════════════════════════════ */
-@media (min-width: 640px) {
-  .l-cat-grid { grid-template-columns: repeat(2, 1fr); }
-  .l-benefits-grid { grid-template-columns: repeat(2, 1fr); }
-  .l-delivery-grid { grid-template-columns: repeat(2, 1fr); }
-  .l-steps {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-  .l-step {
-    flex-direction: column;
-    border-bottom: none;
-    border-right: 1px solid var(--l-border);
-    padding: 0 28px 0 0;
-  }
-  .l-step:last-child { border-right: none; padding-right: 0; }
-  .l-step__num { width: auto; }
-  .l-hero__ctas { flex-wrap: nowrap; }
+.bt {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  border: 0; cursor: pointer; font-family: var(--display);
+  font-size: var(--t1); font-weight: 600;
+  padding: .8rem 1.4rem; border-radius: var(--radio);
+  background: var(--oro); color: #17140a;
+  transition: transform .25s var(--out), background .25s var(--out);
 }
-
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — DESKTOP  ≥ 1024px
-═══════════════════════════════════════════════════════════ */
-@media (min-width: 1024px) {
-  .l-hero__inner {
-    grid-template-columns: 1fr 420px;
-    gap: 80px;
-  }
-  .l-cat-grid { grid-template-columns: repeat(3, 1fr); }
-  .l-benefits-grid { grid-template-columns: repeat(3, 1fr); }
-  .br-desktop { display: inline; }
-  .l-nav__burger { display: none; }
+.bt:hover { transform: translateY(-2px); background: var(--oro-cl); }
+.bt--l {
+  background: transparent; color: var(--oro);
+  box-shadow: inset 0 0 0 1px rgba(201, 168, 76, .45);
 }
+.bt--l:hover { background: rgba(201, 168, 76, .09); box-shadow: inset 0 0 0 1px var(--oro); }
+.bt--sm { padding: .55rem 1.05rem; font-size: var(--t0); }
 
-/* ═══════════════════════════════════════════════════════════
-   MOBILE NAV  < 640px
-═══════════════════════════════════════════════════════════ */
-@media (max-width: 639px) {
-  .l-nav__burger { display: flex; }
-  .l-nav__links {
+/* ── Nav ───────────────────────────────────────────────────── */
+/* Fija y no pegajosa: así deja de ocupar sitio en el flujo y el
+   degradado y el polvo de la portada corren por detrás. Con `sticky`
+   se habría visto el negro liso del body a través del fondo
+   transparente, que es lo contrario del efecto buscado. */
+/* Barra flotante: una isla despegada de los bordes, no un listón
+   pegado al borde superior. Sigue apareciendo al bajar, pero
+   ahora lo que se materializa es la isla entera. */
+.nav {
+  position: fixed; top: 13px; left: 50%; transform: translateX(-50%);
+  width: min(var(--wrap), calc(100% - 28px)); z-index: 100;
+  border-radius: 17px; border: 1px solid transparent; background: transparent;
+  transition: background .3s var(--out), border-color .3s var(--out),
+              box-shadow .3s var(--out), backdrop-filter .3s var(--out);
+}
+.nav.solido {
+  background: rgba(20, 19, 14, .74);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-color: rgba(201, 168, 76, .17);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .46);
+}
+.nav__in {
+  /* 14 px arriba y abajo: con 9 la isla quedaba demasiado fina
+     para su propio ancho. */
+  padding: 14px 12px 14px 22px;
+  display: flex; align-items: center; gap: var(--s4);
+}
+.nav__logo { display: flex; align-items: center; margin-right: auto; }
+.nav__logo img { height: 38px; width: auto; display: block; }
+.nav__links {
+  display: flex; align-items: center; gap: var(--s4);
+  list-style: none; margin: 0; padding: 0;
+}
+.nav__links a { font-size: var(--t1); color: var(--tenue); transition: color .2s var(--out); }
+.nav__links a:hover { color: var(--crema); }
+/* Dentro de la isla los botones van en píldora: el radio de 4 px
+   del resto de la página chirría dentro de una barra redondeada. */
+.nav__links .bt { color: #17140a; border-radius: 999px; padding: 9px 17px; }
+.nav__links a { border-radius: 999px; }
+.nav__burger { display: none; }
+.centinela { position: absolute; top: 0; height: 1px; width: 1px; }
+
+@media (max-width: 760px) {
+  .nav__burger {
+    display: flex; flex-direction: column; gap: 4px;
+    background: none; border: 0; cursor: pointer; padding: 8px;
+  }
+  .nav__burger span { width: 20px; height: 2px; background: var(--oro); display: block; }
+  .nav__links {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: flex-start; gap: var(--s3);
+    margin-top: 9px; border-radius: 14px;
+    background: rgba(20, 19, 14, .96); border: 1px solid rgba(201, 168, 76, .17);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, .5);
+    padding: var(--s3) var(--s3);
     display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    background: rgba(15,15,12,0.98);
-    border-bottom: 1px solid var(--l-border);
-    padding: 8px 0 16px;
-    z-index: 99;
   }
-  .l-nav__links.is-open { display: flex; }
-  .l-nav__links li { width: 100%; }
-  .l-nav__links a {
-    display: block;
-    padding: 14px 24px;
-    font-size: 15px;
-    border-bottom: 1px solid rgba(201,168,76,0.06);
-  }
-  .l-nav__links li:last-child a {
-    margin: 12px 24px 0;
-    padding: 12px 20px;
-    border-bottom: none;
-    text-align: center;
-  }
-  .l-hero { padding: 56px 0 48px; }
-  .l-section { padding: 64px 0; }
-  .l-cta-final { padding: 56px 0; }
-  .l-delivery-card { padding: 24px; }
-  .l-steps { gap: 0; }
+  .nav__links.is-open { display: flex; }
 }
+
+/* ── Portada ───────────────────────────────────────────────── */
+/* El negro plano se leía como un vacío. Tres capas le dan aire sin
+   meter un color nuevo: un halo cálido tras el teléfono, un lavado
+   claro muy tenue arriba a la derecha, y el polvo dorado en
+   movimiento que ya existía en la versión anterior. */
+/* Ocupa la pantalla entera: el oscuro no debe cortarse a media
+   ventana dejando ver la sección clara antes de tiempo. */
+.portada {
+  position: relative; overflow: hidden; min-height: 100svh;
+  /* La barra ya no ocupa flujo, así que se compensa aquí; y el aire
+     superior queda a la mitad, como se pidió. */
+  /* El aire de arriba se reparte entre este relleno y el margen del
+     teléfono; recortar los dos a la vez sube todo el bloque sin
+     cambiar el trozo de móvil que se ve. */
+  padding: calc(var(--nav-h) + var(--s6) * .1) 0 var(--s6);
+}
+.portada__luz {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 56% at 26% 42%, rgba(201, 168, 76, .2), transparent 64%),
+    radial-gradient(ellipse 64% 48% at 86% 6%,  rgba(240, 234, 216, .07), transparent 62%),
+    linear-gradient(178deg, #14130e 0%, #0f0f0c 46%, #100f0b 100%);
+}
+.portada .wrap { position: relative; z-index: 2; }
+
+/* ── Polvo dorado ──────────────────────────────────────────── */
+.polvo { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.polvo span {
+  position: absolute; border-radius: 50%; background: var(--oro);
+  will-change: transform, opacity;
+  animation: subir var(--dur) var(--del) infinite ease-in-out;
+}
+@keyframes subir {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+  15%  { opacity: var(--op); }
+  85%  { opacity: var(--op); }
+  100% { transform: translate(var(--dx), -130px) scale(.6); opacity: 0; }
+}
+/* El teléfono va a la izquierda, pero en el marcado el titular va
+   primero: es lo que debe leer un lector de pantalla, y en móvil el
+   orden natural ya es el correcto. */
+.portada__in {
+  display: grid; grid-template-columns: .95fr 1.05fr;
+  gap: clamp(24px, 4.6vw, 56px); align-items: center;
+}
+.portada__txt { order: 2; }
+.portada__vis { order: 1; }
+.portada h1 { font-size: var(--t6); margin-top: var(--s3); }
+.portada h1 em {
+  font-family: var(--prosa); font-style: italic; font-weight: 400;
+  color: var(--oro); display: block; letter-spacing: -.01em;
+}
+.lead {
+  font-family: var(--prosa); font-size: var(--t3); line-height: 1.5;
+  color: #c6bfab; max-width: 36ch; margin-top: var(--s3);
+}
+.ctas { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s4); }
+.pie {
+  margin-top: var(--s3); font-size: var(--t0); color: var(--tenue);
+  display: flex; align-items: center; gap: var(--s2);
+}
+.viva {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--oro);
+  box-shadow: 0 0 0 0 rgba(201, 168, 76, .55);
+  animation: latir 2.6s var(--out) infinite;
+}
+@keyframes latir {
+  70%  { box-shadow: 0 0 0 8px rgba(201, 168, 76, 0); }
+  100% { box-shadow: 0 0 0 0  rgba(201, 168, 76, 0); }
+}
+.portada__vis { display: flex; justify-content: center; }
+
+/* ── La escena: el teléfono y sus pruebas alrededor ─────────────
+   El teléfono solo enseñaba UNA cosa. Las notas flotantes muestran
+   tres resultados distintos del producto a la vez, y el arco cálido
+   las agrupa para que no se lean como piezas sueltas. */
+/* La escena es más ancha que el teléfono: las notas viven en ese
+   margen, no encima del correo. Tapar el contenido del móvil
+   arruinaba justo lo que el móvil venía a enseñar. */
+.portada__vis { position: relative; }
+/* Pegado a la izquierda: sangra por el borde de la portada, que
+   lo recorta. Así deja sitio a la derecha para las dos tarjetas. */
+.escena { position: relative; z-index: 1; display: flex; justify-content: flex-start; align-items: flex-end; width: 100%; }
+
+/* ── El filete de la portada ────────────────────────────────────
+   Va anclado a la COLUMNA del teléfono y no a la sección: así el
+   rebaje queda centrado con el móvil a cualquier ancho, sin
+   cuentas sobre la rejilla. Los tramos rectos son pseudos de
+   100vw que el `overflow:hidden` de la portada recorta. */
+.corte {
+  /* El rebaje se desplaza con el móvil: centrado en la columna
+     quedaría a un lado del teléfono. */
+  position: absolute; left: 50%; transform: translateX(calc(-50% - 78px));
+  bottom: -62px; width: 672px; z-index: 0; pointer-events: none;
+  color: rgba(201, 168, 76, .28);
+}
+.corte svg { display: block; width: 100%; height: 50px; }
+.corte::before, .corte::after {
+  content: ""; position: absolute; top: 0; width: 100vw;
+  border-top: 1.4px solid currentColor;
+}
+.corte::before { right: 100%; }
+.corte::after  { left: 100%; }
+@media (max-width: 880px) { .corte { display: none; } }
+/* Halo cálido tras el teléfono. Un degradado, no una forma: el hero
+   ya carga con el polvo, el grano y el filete del rebaje. */
+.escena__arco {
+  position: absolute; left: 50%; bottom: 2%; transform: translateX(-50%);
+  width: 150%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 50% 62%,
+    rgba(201, 168, 76, .15) 0%, rgba(201, 168, 76, .05) 42%, transparent 66%);
+}
+
+.nota {
+  /* Ancho fijo: sin él la tarjeta se encoge a su contenido y
+     «denuncias nuevas» se parte en cuatro líneas. */
+  position: absolute; z-index: 3; width: 168px; transform: translateY(-50%);
+  background: var(--papel-alto); color: var(--papel-ink);
+  border-radius: 6px; padding: 9px 12px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(26, 21, 3, .08);
+  transition: transform .35s var(--out), box-shadow .35s var(--out);
+}
+.nota__k { font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: #8A7F6A; line-height: 1.4; }
+.nota__l { display: flex; align-items: center; gap: 7px; margin-top: 4px; }
+.nota__f { font-size: 11.5px; font-weight: 700; }
+.nota__c { font-family: var(--prosa); font-size: 16px; color: #B3261E; margin-top: 3px; line-height: 1; }
+.nota__n { font-family: var(--prosa); font-size: 26px; line-height: 1; color: #8B6914; }
+.nota__n--al { color: #B3261E; }
+
+/* Las dos al lado DERECHO, cada una a la altura exacta de su fila
+   medida desde el borde del marco: 327 px la del SRI, 456 px la de
+   Fiscalía. Los bloques que van encima de la tabla son de alto
+   fijo, así que estos números no se mueven con la ventana. */
+/* Ancladas por su borde IZQUIERDO y no por el derecho: con `right`
+   la separación dependía de lo ancha que saliera cada tarjeta, y
+   una estrecha quedaba flotando lejos del teléfono. */
+.nota--alerta  { left: calc(100% + 15px); top: 327px; }
+.nota--barrido { left: calc(100% + 15px); top: 456px; text-align: center; }
+.nota--barrido .nota__k { margin-top: 2px; }
+
+/* El hover conserva el centrado: sin repetir la traslación, la
+   tarjeta saltaría media altura al pasar el ratón. */
+.nota:hover {
+  transform: translateY(-50%) scale(1.055);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .58), inset 0 0 0 1px rgba(26, 21, 3, .1);
+}
+/* El filete que ata la tarjeta con su fila: cruza el bisel y entra
+   hasta el punto de color de la fila. Sin él, dos cosas a la misma
+   altura son solo dos cosas a la misma altura. */
+.nota::after {
+  content: ""; position: absolute; top: 50%; width: 34px;
+  border-top: 1px solid rgba(179, 38, 30, .5);
+}
+.nota--alerta::after, .nota--barrido::after { right: 100%; }
+
+@media (max-width: 1240px) { .nota { width: 142px; padding: 8px 10px; } }
+
+@media (max-width: 880px)  { .nota { display: none; } .escena__arco { width: 130%; } }
+
+/* ── La hoja: la primera página del informe ─────────────────────
+   Un informe es un A4, no una pantalla de móvil. En un marco de
+   teléfono se leería como otra cosa —y el móvil-en-el-hero es
+   además el patrón más copiado del género—. Va recortada por
+   abajo: se ve dónde empieza, no hace falta ver dónde acaba.
+   Colores y jerarquía tomados de la plantilla real del PDF. */
+/* El teléfono se CORTA por abajo: sale del hero y lo recorta el
+   `overflow:hidden` de la portada. Un objeto cortado implica que
+   hay más; uno completo flotando en el vacío, no. El margen
+   negativo evita que al crecer empuje la altura de la sección. */
+/* Más ancho y arrancando más abajo: con 296 px y arrancando
+   arriba se veía una franja larguísima y estrecha, que no es como
+   se ve un teléfono. Lo que importa es la PROPORCIÓN del trozo
+   visible, no la del aparato entero. */
+/* El alto del teléfono va en unidades de PANTALLA, no en píxeles:
+   así cruza el borde inferior y se corta ahí sea cual sea la
+   ventana. Con un alto fijo, en pantallas altas se veía entero y
+   flotando, que es justo lo contrario del efecto. */
+.hoja { position: relative; width: 100%; max-width: 404px; margin-left: -64px; margin-top: calc(52px + 9svh); margin-bottom: -35svh; }
+.fono__marco {
+  position: relative; border-radius: 46px; padding: 11px;
+  background: linear-gradient(152deg, #2e2e30, #0a0a0b 34%, #17171a 68%, #313134);
+  box-shadow: 0 34px 64px rgba(0, 0, 0, .68),
+              0 2px 0 rgba(255, 255, 255, .07) inset,
+              0 0 0 1px rgba(0, 0, 0, .8);
+}
+/* Los botones laterales. Son dos barras de 3 px y no se «ven»,
+   pero sin ellos el marco se lee como un rectángulo redondeado. */
+.fono__marco::before, .fono__marco::after {
+  content: ""; position: absolute; right: -2px; width: 3px;
+  border-radius: 0 2px 2px 0; background: linear-gradient(#3a3a3d, #1a1a1c);
+}
+.fono__marco::before { top: 23%; height: 34px; }
+.fono__marco::after  { top: 45%; height: 58px; }
+.fono__isla {
+  position: absolute; top: 21px; left: 50%; transform: translateX(-50%);
+  width: 86px; height: 24px; border-radius: 13px; background: #070708; z-index: 3;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .05);
+}
+.doc {
+  background: #fff; color: #1A1713; border-radius: 30px;
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  height: calc(100svh - 122px); min-height: 540px; overflow: hidden;
+}
+
+.doc__banda {
+  background: #12100C; padding: 44px 13px 11px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.doc__marca { font-size: 11.5px; letter-spacing: .2em; white-space: nowrap; font-weight: 600; color: #E8C877; line-height: 1; }
+.doc__marca span { color: #F7F4EC; font-weight: 300; }
+.doc__kick { font-size: 6px; letter-spacing: .3em; text-transform: uppercase; color: #A79878; margin-top: 6px; }
+.doc__meta { text-align: right; white-space: nowrap; }
+.doc__n { font-size: 6.8px; font-weight: 600; color: #F7F4EC; }
+.doc__d { font-size: 5.8px; color: #A79878; margin-top: 2px; }
+.doc__regla { height: 2px; background: #A87C1E; }
+
+.doc__cuerpo { padding: 11px 13px 14px; }
+.doc__rot { font-size: 6.2px; letter-spacing: .24em; text-transform: uppercase; color: #8A7F6A; margin-bottom: 5px; }
+.doc__rot--sep { margin-top: 13px; }
+
+.doc__sujeto { border: 1px solid #E4DCC6; border-left: 2.5px solid #A87C1E; background: #FCFAF4; padding: 9px 11px; }
+.doc__nm { font-family: var(--prosa); font-size: 14px; line-height: 1.15; color: #12100C; }
+.doc__id { font-size: 7.4px; color: #6E6555; margin-top: 4px; }
+.doc__id b { color: #3B362C; font-weight: 600; }
+
+.doc__ver { margin-top: 11px; background: #FCF1EE; border-left: 2.5px solid #B3261E; padding: 9px 12px; }
+.doc__vk { font-size: 6px; letter-spacing: .2em; text-transform: uppercase; color: #8A6A62; }
+.doc__vt { font-family: var(--prosa); font-size: 14.5px; line-height: 1.1; color: #B3261E; margin-top: 4px; }
+.doc__vs { font-size: 7.4px; color: #6B5B57; margin-top: 4px; line-height: 1.45; }
+.doc__vd { font-size: 6.8px; color: #8A6A62; margin-top: 4px; }
+
+.doc__tbl { width: 100%; border-collapse: collapse; }
+.doc__th th { font-size: 6px; letter-spacing: .2em; text-transform: uppercase; color: #8A7F6A;
+               font-weight: 600; text-align: left; padding: 0 6px 5px 0; border-bottom: 1px solid #12100C; }
+.doc__tbl td { font-size: 7.8px; padding: 4px 6px 4px 0; border-bottom: 1px solid #F0EBDD; vertical-align: middle; color: #4A4437; }
+.doc__tbl td.f { font-weight: 600; color: #12100C; }
+.doc__tbl td.f span { display: block; font-size: 6.4px; font-weight: 400; color: #8A7F6A; margin-top: .5px; }
+.doc__tbl .v, .doc__tbl th.v { text-align: right; padding-right: 0; font-variant-numeric: tabular-nums; }
+.doc__tbl td.pt { width: 9px; padding-right: 0; }
+/* Tres colores, tres cosas distintas —igual que en el PDF—: verde
+   consultado y limpio, rojo con hallazgo, azul con datos que no
+   acusan a nadie. */
+.doc__tbl td.pt i { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #C9CCC6; }
+.doc__tbl tr.ok td.pt i   { background: #1E7A4B; }
+.doc__tbl tr.hay td.pt i  { background: #B3261E; }
+.doc__tbl tr.info td.pt i { background: #5A6C90; }
+.doc__tbl tr.hay td { background: #FCF1EE; }
+
+@media (max-width: 880px) { .hoja { max-width: 300px; margin-left: 0; margin-top: 24px; margin-bottom: -30svh; }
+  .escena { justify-content: center; } }
+
+.et { font-size: 7.5px; font-weight: 700; padding: 2.5px 7px; border-radius: 99px; white-space: nowrap; border: 1px solid; }
+.et--ok { color: #1E7A4B; background: #F1F8F3; border-color: rgba(30, 122, 75, .35); }
+.et--al { color: #B3261E; background: #FDF2F1; border-color: rgba(179, 38, 30, .35); }
+.et--pd { color: #B7791F; background: #FBF3E2; border-color: rgba(183, 121, 31, .4); }
+.et--no { color: #6E6555; background: #F7F4EC; border-color: #DDD5C3; }
+
+@media (max-width: 880px) { .fono { max-width: 260px; } }
+@media (max-width: 880px) {
+  .portada__in { grid-template-columns: 1fr; }
+  .portada__vis { max-width: 260px; margin: 0 auto; }
+}
+
+/* ── Secciones ─────────────────────────────────────────────── */
+/* El ritmo lo da la SUPERFICIE, no el espaciado: la página alterna
+   negro y papel para que el suelo cambie mientras se baja. Con tres
+   secciones oscuras seguidas, todas se leían como la misma. */
+.sec { padding: var(--s6) 0; }
+
+.claro {
+  --crema: #1f1704;
+  --tenue: #6E6555;
+  --linea: rgba(26, 21, 3, .13);
+  --oro-os: #8B6914;
+  background: var(--papel); color: var(--papel-ink);
+}
+.claro--alto  { background: var(--papel-alto); }
+
+/* El fondo esculpido de la sección. Anclado por la DERECHA para que
+   crecer de ancho lo extienda hacia fuera sin mover la curva, y con
+   `preserveAspectRatio="none"` para que el viewBox mapee exacto:
+   con `slice` la curva acababa donde no se había calculado. */
+.sec .mancha, .rej .mancha {
+  position: absolute; right: -8%; top: 50%; transform: translateY(-50%);
+  width: 118%; height: 128%; z-index: 0; pointer-events: none;
+}
+.sec, .rej { position: relative; overflow: hidden; }
+@media (max-width: 880px) { .mancha { display: none; } }
+.claro--hondo { background: var(--papel-hondo); }
+.claro .kick { color: var(--oro-os); }
+.claro .ruta__d, .claro .hitos p, .claro .rej__sub, .claro .rej__pie { color: #5f5849; }
+.claro .col--antes { opacity: 1; }
+.claro .col--antes .col__t,
+.claro .col--antes .hitos time { color: #9c9381; }
+.claro .col--antes .hitos p { color: #857d6c; }
+.claro .col--con .hitos time { color: #8B6914; }
+.claro .col--con li:last-child p { color: var(--papel-ink); }
+.claro .mail__nom { color: var(--oro-cl); }
+.claro .ruta__q { color: #8B6914; }
+.claro .barra { background: rgba(26, 21, 3, .1); }
+.claro .barra span { background: #A87C1E; }
+.claro .barra__x {
+  background: repeating-linear-gradient(90deg,
+    rgba(168, 124, 30, .85) 0 3px, transparent 3px 10px);
+}
+.claro .barra__l b { color: var(--papel-ink); }
+.claro .flecha { color: #8B6914; border-bottom-color: rgba(139, 105, 20, .4); }
+.claro .flecha:hover { border-bottom-color: #8B6914; }
+.claro .grano::before, .claro.grano::before { opacity: .07; }
+.cab { max-width: 36ch; }
+.cab h2 { font-size: var(--t5); margin-top: var(--s2); }
+
+/* ── Las dos rutas ─────────────────────────────────────────── */
+.via { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--s5); }
+.ruta { padding-right: clamp(22px, 3.2vw, 44px); }
+.ruta--b {
+  padding-right: 0; padding-left: clamp(22px, 3.2vw, 44px);
+  border-left: 1px solid var(--linea);
+}
+.ruta h3 { font-size: var(--t4); }
+.ruta__q {
+  font-family: var(--prosa); font-style: italic;
+  font-size: var(--t2); color: var(--oro); margin-top: var(--s1);
+}
+.ruta__d { margin-top: var(--s3); color: #a9a18c; max-width: 36ch; }
+
+/* La barra del informe arranca donde termina la del monitoreo: así se
+   ve que un producto contiene al otro, en vez de leerse. */
+.barra { display: flex; height: 3px; margin-top: var(--s4); background: rgba(201, 168, 76, .12); }
+.barra span {
+  display: block; height: 100%; background: var(--oro);
+  transform-origin: left; animation: llena 1.05s var(--out) both;
+}
+.barra__x {
+  /* Trama abierta y separada del tramo sólido: si no, los dos se leen
+     como una sola barra llena y se pierde la comparación. */
+  background: repeating-linear-gradient(90deg,
+    rgba(201, 168, 76, .8) 0 3px, transparent 3px 10px);
+  margin-left: 3px;
+  animation-delay: .18s;
+}
+@keyframes llena { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.barra__l { margin-top: var(--s2); font-size: var(--t0); color: var(--tenue); }
+.barra__l b { color: var(--crema); font-weight: 700; }
+
+.flecha {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  margin-top: var(--s4); font-size: var(--t1); font-weight: 600;
+  color: var(--oro); padding-bottom: 2px;
+  border-bottom: 1px solid rgba(201, 168, 76, .35);
+  transition: gap .25s var(--out), border-color .25s var(--out);
+}
+.flecha:hover { gap: 1.1rem; border-color: var(--oro); }
+
+@media (max-width: 860px) {
+  .via { grid-template-columns: 1fr; }
+  .ruta { padding: 0 0 var(--s4); }
+  .ruta--b { padding: var(--s4) 0 0; border-left: 0; border-top: 1px solid var(--linea); }
+}
+
+/* ── El reloj ──────────────────────────────────────────────── */
+.reloj { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--s5); }
+.col { padding-right: clamp(22px, 3.2vw, 44px); }
+.col--con {
+  padding-right: 0; padding-left: clamp(22px, 3.2vw, 44px);
+  border-left: 1px solid var(--linea);
+}
+.col--antes { opacity: .62; }
+.col__t {
+  font-size: var(--t0); font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--tenue); margin-bottom: var(--s3);
+}
+.col--con .col__t { color: var(--oro); }
+.hitos { list-style: none; padding: 0; margin: 0; }
+.hitos li {
+  display: grid; grid-template-columns: 6rem 1fr; gap: var(--s3);
+  padding: var(--s2) 0; border-top: 1px solid rgba(201, 168, 76, .1);
+}
+.hitos li:first-child { border-top: 0; }
+.hitos time {
+  font-size: var(--t0); letter-spacing: .07em; text-transform: uppercase;
+  color: var(--oro-os);
+}
+.col--con .hitos time { color: var(--oro); }
+.hitos p { font-size: var(--t1); color: #a9a18c; line-height: 1.5; }
+.col--con li:last-child p {
+  font-family: var(--prosa); font-size: var(--t3);
+  color: var(--crema); line-height: 1.3;
+}
+@media (max-width: 800px) {
+  .reloj { grid-template-columns: 1fr; }
+  .col { padding: 0 0 var(--s4); }
+  .col--con { padding: var(--s4) 0 0; border-left: 0; border-top: 1px solid var(--linea); }
+}
+
+/* ── Portales, sobre papel ─────────────────────────────────── */
+.rej { padding: var(--s6) 0; }
+.rej__cab { max-width: 48ch; margin: 0 auto var(--s5); text-align: center; }
+.rej__cab .kick { color: var(--oro-os); }
+.rej h2 { font-size: clamp(1.55rem, 2.9vw, 2.2rem); white-space: nowrap; }
+.rej__sub {
+  margin-top: var(--s2); color: var(--papel-2);
+  font-family: var(--prosa); font-size: var(--t2);
+}
+/* Flex y no grid: en una rejilla la última fila se pega a la izquierda
+   y rompe la simetría; así cada fila queda centrada. */
+.rej__g {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  --h: clamp(16px, 2.4vw, 34px);
+  gap: clamp(24px, 3.2vw, 42px) var(--h);
+}
+.chip {
+  flex: 0 0 calc((100% - var(--h) * 6) / 7);
+  display: flex; align-items: center; justify-content: center;
+  height: clamp(40px, 4.6vw, 56px);
+}
+/* `min-*: 0` deja que la imagen encoja dentro del flex; sin ello los
+   sellos verticales (FBI, OFAC, Policía) se salen de su hueco. */
+.chip img {
+  width: 100%; height: 100%; min-width: 0; min-height: 0;
+  object-fit: contain;
+  filter: grayscale(1) contrast(.86) opacity(.5);
+  transition: filter .3s var(--out);
+}
+.chip:hover img { filter: none; }
+.rej__pie {
+  margin: var(--s5) auto 0; max-width: 74ch; text-align: center;
+  font-family: var(--prosa); font-size: var(--t1);
+  color: var(--papel-2); line-height: 1.6;
+}
+@media (max-width: 900px) {
+  .rej__g { --h: 18px; }
+  .chip { flex: 0 0 calc((100% - var(--h) * 3) / 4); }
+}
+@media (max-width: 620px) {
+  .rej h2 { white-space: normal; }
+  .chip { flex: 0 0 calc((100% - var(--h) * 2) / 3); }
+}
+
+/* ── Cierre ────────────────────────────────────────────────── */
+.cierre { padding: var(--s7) 0; text-align: center; }
+.cierre h2 { font-size: var(--t5); max-width: 18ch; margin: var(--s2) auto 0; }
+.cierre .lead { margin: var(--s3) auto 0; max-width: 42ch; color: var(--papel-2); }
+.cierre .ctas { justify-content: center; }
+
+/* ── Pie ───────────────────────────────────────────────────── */
+.pie-sitio { border-top: 1px solid var(--linea); padding: var(--s5) 0 var(--s4); }
+.pie-sitio__in { display: flex; flex-direction: column; align-items: center; gap: var(--s3); text-align: center; }
+.pie-sitio__logo { height: 46px; width: auto; opacity: .75; }
+.pie-sitio__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s3); }
+.pie-sitio__links a { font-size: var(--t0); color: var(--tenue); transition: color .2s var(--out); }
+.pie-sitio__links a:hover { color: var(--oro); }
+.pie-sitio__legal { font-size: var(--t0); color: #6f6957; line-height: 1.6; max-width: 68ch; }
+
+/* ── Revelado: una sola idea, con moderación ───────────────── */
+.rv {
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .7s var(--out), transform .7s var(--out);
+}
+.rv.on { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; transition: none; }
+  .polvo { display: none; }
+  .nota { transition: none; }
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+}
+:focus-visible { outline: 2px solid var(--oro); outline-offset: 3px; }
 </style>
 
 <script>
-  // Burger menu toggle
-  const burger = document.getElementById('navBurger');
-  const links  = document.getElementById('navLinks');
+  // Menú móvil
+  const burger = document.getElementById("navBurger");
+  const links = document.getElementById("navLinks");
   if (burger && links) {
-    burger.addEventListener('click', () => {
-      const open = burger.getAttribute('aria-expanded') === 'true';
-      burger.setAttribute('aria-expanded', String(!open));
-      links.classList.toggle('is-open', !open);
+    burger.addEventListener("click", () => {
+      const open = burger.getAttribute("aria-expanded") === "true";
+      burger.setAttribute("aria-expanded", String(!open));
+      links.classList.toggle("is-open", !open);
     });
-    // Cerrar al hacer click en un link del menú móvil
-    links.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        burger.setAttribute('aria-expanded', 'false');
-        links.classList.remove('is-open');
+    links.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => {
+        burger.setAttribute("aria-expanded", "false");
+        links.classList.remove("is-open");
       });
     });
   }
 
-  // Scroll suave para todos los href ancla
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const id = anchor.getAttribute('href');
-      const target = document.querySelector(id);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+  // La barra se vuelve sólida en cuanto la portada empieza a subir.
+  // Con un centinela y no con un escuchador de scroll: el navegador
+  // solo avisa cuando cruza el umbral, en vez de en cada píxel.
+  const centinela = document.querySelector(".centinela");
+  const barra = document.querySelector(".nav");
+  if (centinela && barra) {
+    new IntersectionObserver(
+      ([e]) => barra.classList.toggle("solido", !e.isIntersecting),
+      { rootMargin: "0px" },
+    ).observe(centinela);
+  }
+
+  // Revelado al entrar en pantalla. Escalonado solo dentro de los pares
+  // que se leen juntos; el resto entra a su ritmo.
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const d = Number((e.target as HTMLElement).dataset.d || 0);
+        window.setTimeout(() => e.target.classList.add("on"), d);
+        io.unobserve(e.target);
+      });
+    },
+    { threshold: 0.14, rootMargin: "0px 0px -6% 0px" },
+  );
+
+  [".via .ruta", ".reloj .col"].forEach((sel) => {
+    document.querySelectorAll<HTMLElement>(sel).forEach((el, i) => {
+      el.dataset.d = String(i * 110);
     });
   });
-
-  // ── Hero golden dust particles ────────────────────────────
-  (function () {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const hero = document.querySelector('.l-hero');
-    if (!hero) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'hero-dust';
-    wrap.setAttribute('aria-hidden', 'true');
-    hero.insertBefore(wrap, hero.firstChild);
-    for (let i = 0; i < 160; i++) {
-      const p = document.createElement('span');
-      p.className = 'hero-dust__p';
-      const sz   = (Math.random() * 3.2 + 0.8).toFixed(1);
-      const left = (Math.random() * 100).toFixed(1);
-      const bot  = (Math.random() * 100).toFixed(1);
-      const dur  = (Math.random() * 8 + 5).toFixed(1) + 's';
-      const del  = '-' + (Math.random() * 13).toFixed(1) + 's';
-      const op   = (Math.random() * 0.45 + 0.10).toFixed(2);
-      const dx   = ((Math.random() - 0.5) * 44).toFixed(0) + 'px';
-      p.style.cssText =
-        `width:${sz}px;height:${sz}px;left:${left}%;bottom:${bot}%;` +
-        `--dur:${dur};--delay:${del};--op:${op};--drift-x:${dx};`;
-      wrap.appendChild(p);
-    }
-  })();
-
-  // ── Directional scroll-reveal ─────────────────────────────
-  const revealObs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        revealObs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  const DELAYS = ['anim-d1', 'anim-d2', 'anim-d3', 'anim-d4'];
-
-  // Category cards — 3-col grid: left / center-bottom / right
-  document.querySelectorAll('.l-cat').forEach((el, i) => {
-    const col = i % 3;
-    el.classList.add('anim-hidden',
-      col === 0 ? 'anim-from-left' : col === 2 ? 'anim-from-right' : 'anim-from-bottom',
-      DELAYS[col]);
-    revealObs.observe(el);
-  });
-
-  // Delivery cards: slide from sides
-  document.querySelectorAll('.l-delivery-card').forEach((el, i) => {
-    el.classList.add('anim-hidden', i === 0 ? 'anim-from-left' : 'anim-from-right');
-    revealObs.observe(el);
-  });
-
-  // Steps: bottom with stagger
-  document.querySelectorAll('.l-step').forEach((el, i) => {
-    el.classList.add('anim-hidden', 'anim-from-bottom', DELAYS[i] ?? 'anim-d4');
-    revealObs.observe(el);
-  });
-
-  // Benefits: bottom with stagger per column
-  document.querySelectorAll('.l-benefit').forEach((el, i) => {
-    el.classList.add('anim-hidden', 'anim-from-bottom', DELAYS[i % 3]);
-    revealObs.observe(el);
-  });
-
-  // Section headings: fade from below
-  document.querySelectorAll('.l-section-head').forEach(el => {
-    el.classList.add('anim-hidden', 'anim-from-bottom');
-    revealObs.observe(el);
-  });
+  document.querySelectorAll(".rv").forEach((el) => io.observe(el));
 </script>
-
-<style is:global>
-  /* ── Hero golden dust ───────────────────────────────── */
-  .hero-dust {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 0;
-  }
-  .hero-dust__p {
-    position: absolute;
-    border-radius: 50%;
-    background: #C9A84C;
-    will-change: transform, opacity;
-    animation: dust-rise var(--dur) var(--delay) infinite ease-in-out;
-  }
-  @keyframes dust-rise {
-    0%   { transform: translate(0, 0) scale(1);   opacity: 0; }
-    15%  { opacity: var(--op); }
-    85%  { opacity: var(--op); }
-    100% { transform: translate(var(--drift-x), -130px) scale(0.6); opacity: 0; }
-  }
-
-  /* ── Scroll-reveal animations ───────────────────────── */
-  .anim-hidden {
-    opacity: 0;
-    transition: opacity 0.55s ease-out, transform 0.55s ease-out;
-  }
-  .anim-from-bottom { transform: translateY(32px); }
-  .anim-from-left   { transform: translateX(-36px); }
-  .anim-from-right  { transform: translateX(36px); }
-  .anim-hidden.is-visible { opacity: 1; transform: translate(0, 0); }
-  .anim-d1 { transition-delay: 0.08s; }
-  .anim-d2 { transition-delay: 0.16s; }
-  .anim-d3 { transition-delay: 0.24s; }
-  .anim-d4 { transition-delay: 0.32s; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .anim-hidden { opacity: 1; transform: none; transition: none; }
-    .hero-dust__p { animation: none; opacity: 0; }
-  }
-</style>
