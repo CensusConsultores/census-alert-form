@@ -5,12 +5,25 @@ import LoadingSplash from "../components/LoadingSplash.astro";
 interface Props {
   title?: string;
   description?: string;
+  /** Ruta de la imagen de previsualización, si la página quiere otra. */
+  imagen?: string;
+  /** `true` en páginas que no deben aparecer en buscadores. */
+  noindex?: boolean;
 }
 
 const {
-  title = "Census Alert · Monitoreo Legal y Tributario Automatizado",
-  description = "Vigilamos los principales portales públicos del Ecuador todos los días. Detectamos deudas, multas, demandas y denuncias antes de que se conviertan en un problema.",
+  title = "Census Alert · Monitoreo de deudas del SRI, IESS y Supercías en Ecuador",
+  // Bajo los 160 caracteres: Google corta ahí y la frase debe cerrar sola.
+  description =
+    "Vigilamos 29 portales públicos del Ecuador todos los días y te avisamos el mismo día. Deudas del SRI, mora del IESS, causas judiciales, multas y sanciones.",
+  imagen = "/og-census-alert.jpg",
+  noindex = false,
 } = Astro.props;
+
+// URL absoluta y sin barra final duplicada. `Astro.site` viene de
+// astro.config.mjs; si faltara, las redes no podrían resolver la imagen.
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site);
+const imagenAbs = new URL(imagen, Astro.site);
 ---
 
 <!doctype html>
@@ -18,17 +31,113 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/png" href="/alert-icon.png" />
-    <link rel="apple-touch-icon" href="/alert-icon.png" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    {/* ── Open Graph: WhatsApp, Facebook, LinkedIn, Telegram ──────────
+        og:image DEBE ser absoluta o ninguna red la resuelve, y el alto y
+        ancho evitan que WhatsApp la descarte por no saber su tamaño antes
+        de descargarla. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Census Alert" />
+    <meta property="og:locale" content="es_EC" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imagenAbs} />
+    <meta property="og:image:secure_url" content={imagenAbs} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Census Alert — monitoreo integral 360° de portales públicos del Ecuador" />
+
+    {/* ── X / Twitter ─────────────────────────────────────────────── */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imagenAbs} />
+    <meta name="twitter:image:alt" content="Census Alert — monitoreo integral 360°" />
+
+    {/* ── Iconos ───────────────────────────────────────────────────
+        El anterior era un PNG de 4096×4096 y 237 KB para un icono de
+        16 px: el navegador lo descargaba entero en cada visita. */}
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0f0f0c" />
+
+
+    {/* ── Datos estructurados ──────────────────────────────────────
+        Esto sí lo lee Google; la etiqueta `keywords` la ignora desde
+        2009. Aquí cada servicio se nombra como lo busca la gente
+        —«monitoreo de deudas del SRI», «valores adeudados a
+        Supercías»— y queda declarado, no escondido en un meta. */}
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://censusalert.com/#organizacion",
+          "name": "Census Alert",
+          "legalName": "Census Consultores · Asesores Legales y Tributarios",
+          "url": "https://censusalert.com",
+          "logo": "https://censusalert.com/icon-512.png",
+          "image": "https://censusalert.com/og-census-alert.jpg",
+          "email": "info@censusconsultores.com.ec",
+          "areaServed": { "@type": "Country", "name": "Ecuador" },
+          "address": { "@type": "PostalAddress", "addressCountry": "EC" },
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://censusalert.com/#sitio",
+          "url": "https://censusalert.com",
+          "name": "Census Alert",
+          "inLanguage": "es-EC",
+          "publisher": { "@id": "https://censusalert.com/#organizacion" },
+        },
+        {
+          "@type": "Service",
+          "name": "Monitoreo integral 360° de fuentes oficiales",
+          "serviceType": "Monitoreo de obligaciones legales y tributarias",
+          "provider": { "@id": "https://censusalert.com/#organizacion" },
+          "areaServed": { "@type": "Country", "name": "Ecuador" },
+          "description":
+            "Revisión diaria de los portales del Estado ecuatoriano con aviso el mismo día que aparece una novedad.",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Fuentes monitoreadas",
+            "itemListElement": [
+              "Monitoreo de deudas tributarias en el SRI",
+              "Alertas de mora patronal en el IESS",
+              "Valores adeudados a la Superintendencia de Compañías",
+              "Monitoreo de causas judiciales en la Función Judicial (SATJE)",
+              "Denuncias en la Fiscalía General del Estado",
+              "Multas de tránsito de la ANT y la ATM",
+              "Obligaciones laborales pendientes en el Ministerio del Trabajo",
+              "Pensiones alimenticias adeudadas (SUPA)",
+              "Impuestos prediales municipales",
+              "Incumplimientos en contratación pública (SERCOP)",
+              "Impedimento de salida del país",
+              "Cotejo en listas de sanciones OFAC, ONU, Unión Europea y FBI",
+            ].map((n) => ({
+              "@type": "Offer",
+              "itemOffered": { "@type": "Service", "name": n },
+            })),
+          },
+        },
+      ],
+    })} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Petrona:ital,wght@0,300..600;1,300..500&display=swap"
       rel="stylesheet"
     />
-    <title>{title}</title>
   </head>
   <body class="landing-body">
     <LoadingSplash />

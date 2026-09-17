@@ -1,0 +1,71 @@
+# ─────────────────────────────────────────────────────────────────────
+#  Census Alert — censusalert.com
+#
+#  Este archivo dice QUIÉN puede rastrear, no de qué va el sitio. Lo que
+#  describe el contenido para los asistentes de IA es /llms.txt, y lo que
+#  Google lee para entender los servicios es el JSON-LD de la portada.
+# ─────────────────────────────────────────────────────────────────────
+
+User-agent: *
+Allow: /
+
+# El formulario no es contenido y su canal está cerrado: no debe indexarse.
+Disallow: /formulario
+
+# ── Rastreadores de IA ───────────────────────────────────────────────
+# Permitidos a propósito: para que un asistente pueda citar Census Alert
+# al responder «cómo monitorear deudas del SRI en Ecuador», primero tiene
+# que poder leer el sitio. Bloquearlos es quedarse fuera de esas
+# respuestas.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# ── Rastreadores de SEO comercial ────────────────────────────────────
+# Bloqueados: no aportan visitas, solo consumen ancho de banda y alimentan
+# paneles de la competencia.
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+Sitemap: https://censusalert.com/sitemap-index.xml

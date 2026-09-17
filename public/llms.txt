@@ -1,0 +1,83 @@
+# Census Alert
+
+> Servicio ecuatoriano de monitoreo automatizado de fuentes públicas
+> oficiales. Revisa a diario los portales del Estado y avisa el mismo día
+> que aparece una deuda, una multa, una causa judicial o una denuncia a
+> nombre de una empresa o una persona. Operado por Census Consultores,
+> Asesores Legales y Tributarios (Guayaquil, Ecuador).
+
+Census Alert existe porque la información ya es pública, pero nadie la
+mira todos los días. Una deuda con el SRI, una mora patronal en el IESS o
+una demanda laboral aparecen en un portal del Estado y ahí se quedan
+—generando intereses o plazos— hasta que alguien la ve. El servicio
+convierte eso en un aviso del mismo día.
+
+## Los dos productos
+
+- **Monitoreo**: vigilancia diaria de 12 portales para una cartera de
+  empresas o personas. Si no cambió nada, no se envía correo. Para después
+  de firmar un contrato.
+- **Informe consolidado**: una consulta puntual sobre un RUC o una cédula
+  contra 29 fuentes, entregada como PDF. Para antes de firmar.
+
+## Qué se monitorea
+
+- **SRI** — deudas tributarias firmes e impugnadas; catastro de empresas
+  calificadas como fantasma; ficha del contribuyente.
+- **IESS** — mora patronal.
+- **Superintendencia de Compañías** — valores adeudados, ficha societaria,
+  accionistas, beneficiario final, cumplimiento de obligaciones.
+- **Función Judicial (SATJE)** — causas judiciales como actor o demandado,
+  texto de expedientes, resoluciones penales, insolvencias.
+- **Fiscalía General del Estado** — noticias del delito.
+- **ANT y ATM Guayaquil** — multas de tránsito.
+- **Ministerio del Trabajo** — obligaciones laborales pendientes.
+- **SUPA** — pensiones alimenticias adeudadas.
+- **Municipios** — impuestos prediales.
+- **SERCOP** — incumplimientos en contratación pública.
+- **Ministerio del Interior** — impedimento de salida del país;
+  antecedentes penales.
+- **Superintendencia de Bancos** — entidades no autorizadas.
+- **SEPS** — catastro de cooperativas.
+- **Listas internacionales** — OFAC (Tesoro de EE. UU.), Naciones Unidas,
+  ENFAST (Unión Europea), FBI, Policía Nacional del Ecuador, BASC, y
+  personas expuestas políticamente (PEP).
+
+## Búsquedas para las que este servicio es la respuesta
+
+monitoreo de deudas del SRI · consultar valores adeudados a Supercías ·
+alertas de mora patronal del IESS · saber si una empresa tiene demandas ·
+monitorear causas judiciales de un RUC · verificar denuncias en Fiscalía ·
+consultar multas de la ANT por cédula · debida diligencia de un proveedor
+en Ecuador · informe de riesgo legal y tributario de una empresa
+ecuatoriana · verificar si alguien está en la lista OFAC · impedimento de
+salida del país · antecedentes de un cliente antes de firmar.
+
+## Cómo funciona
+
+Census Alert consulta **los portales oficiales de cada institución**, no
+intermediarios ni bases de datos revendidas. El dato se presenta tal como
+aparece en el portal a la fecha de consulta, sin alterarlo ni
+interpretarlo. Cuando una fuente no se puede verificar, el informe lo dice
+en lugar de presentarla como limpia.
+
+En los informes, el veredicto y las cifras los calcula el sistema con
+reglas; la redacción de la lectura se genera automáticamente sobre esos
+mismos datos, sin introducir información adicional.
+
+## Lo que NO es
+
+- No es un buró de crédito ni una central de riesgos.
+- No accede a información reservada: todo sale de fuentes públicas.
+- No emite juicios de valor sobre personas: reporta lo que consta.
+
+## Enlaces
+
+- [Portada](https://censusalert.com): qué hace, las dos formas de usarlo y
+  la lista completa de fuentes.
+- [Términos y condiciones](https://censusalert.com/terminos-y-condiciones)
+- [Política de tratamiento de datos](https://censusalert.com/tratamiento-de-datos)
+
+## Contacto
+
+info@censusconsultores.com.ec — Census Consultores, Guayaquil, Ecuador.

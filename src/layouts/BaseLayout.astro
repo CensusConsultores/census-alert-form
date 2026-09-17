@@ -9,6 +9,8 @@ interface Props {
   description?: string;
   wrapClass?: string;
   showSplash?: boolean;
+  /** `true` en páginas que no deben aparecer en buscadores. */
+  noindex?: boolean;
 }
 
 const {
@@ -16,7 +18,11 @@ const {
   description = "Census Alert · Monitoreo Integral 360° de fuentes oficiales del Estado ecuatoriano.",
   wrapClass = "",
   showSplash = true,
+  noindex = false,
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site);
+const imagenAbs = new URL("/og-census-alert.jpg", Astro.site);
 ---
 
 <!doctype html>
@@ -24,11 +30,32 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/png" href="/alert-icon.png" />
-    <link rel="apple-touch-icon" href="/alert-icon.png" />
+
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Census Alert" />
+    <meta property="og:locale" content="es_EC" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imagenAbs} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imagenAbs} />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0f0f0c" />
   </head>
   <body>
     {showSplash && <LoadingSplash />}
