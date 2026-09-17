@@ -1,6 +1,15 @@
 ---
 import LandingLayout from "../layouts/LandingLayout.astro";
 
+// PENDIENTE DE DECIDIR: a dónde van los CTA. El formulario se retiró y los
+// cinco botones apuntaban ahí. Un único sitio a propósito: con cinco `href`
+// sueltos es cuestión de tiempo que uno se quede apuntando a la nada.
+//
+// Cuando se decida (WhatsApp, mailto, página de planes) se cambia AQUÍ.
+// `#` no navega: el data-pendiente lo frena y además los marca en el DOM
+// para que se puedan encontrar.
+const CTA = "#";
+
 // Los 19 sellos de la sección de cobertura. El orden agrupa por materia:
 // primero lo tributario y laboral, luego judicial, control, y al final las
 // listas internacionales.
@@ -53,7 +62,7 @@ const PORTALES = [
     <ul class="nav__links" id="navLinks">
       <li><a href="#rutas">Qué hacemos</a></li>
       <li><a href="#fuentes">Fuentes</a></li>
-      <li><a href="/formulario" class="bt bt--sm">Solicitar servicio</a></li>
+      <li><a href={CTA} data-pendiente class="bt bt--sm">Solicitar servicio</a></li>
     </ul>
   </div>
 </nav>
@@ -76,7 +85,7 @@ const PORTALES = [
         y te avisamos el mismo día que algo cambia.
       </p>
       <div class="ctas rv">
-        <a href="/formulario" class="bt">Quiero monitorear mi empresa</a>
+        <a href={CTA} data-pendiente class="bt">Quiero monitorear mi empresa</a>
         <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
       </div>
       <p class="pie rv">
@@ -118,7 +127,7 @@ const PORTALES = [
           </div>
           <div class="doc__regla"></div>
 
-          <div class="doc__cuerpo">
+          <div class="doc__cuerpo" id="cuerpoDoc">
             <p class="doc__rot">Consultado</p>
             <div class="doc__sujeto">
               <p class="doc__nm">COMERCIAL DEL PACÍFICO S.A.</p>
@@ -132,21 +141,22 @@ const PORTALES = [
               <p class="doc__vd">25 sin novedades · 2 sin verificar</p>
             </div>
 
+            <span class="barrido" aria-hidden="true"></span>
             <p class="doc__rot doc__rot--sep">Resumen por fuente</p>
             <table class="doc__tbl">
               <tr class="doc__th"><th colspan="2">Fuente</th><th>Estado</th><th class="v">Valor</th></tr>
-              <tr class="hay"><td class="pt"><i></i></td><td class="f">SRI<span>Deudas tributarias</span></td><td>Deuda vigente</td><td class="v">$ 1.240,00</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">IESS<span>Mora patronal</span></td><td>Sin mora patronal</td><td class="v">Sin deudas</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">Función Judicial<span>Causas judiciales</span></td><td>Sin novedades</td><td class="v">Sin causas</td></tr>
-              <tr class="info"><td class="pt"><i></i></td><td class="f">Supercías<span>Ficha societaria</span></td><td>Compañía activa</td><td class="v">3 accionistas</td></tr>
-              <tr class="hay"><td class="pt"><i></i></td><td class="f">Fiscalía<span>Noticias del delito</span></td><td>Denuncias nuevas</td><td class="v">2 denuncias</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">SERCOP<span>Contratación pública</span></td><td>Sin incumplir</td><td class="v">Habilitado</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">ANT<span>Multas nacionales</span></td><td>Sin novedades</td><td class="v">Sin multas</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">MDT<span>Obligaciones laborales</span></td><td>Al día</td><td class="v">Sin deudas</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">SUPA<span>Pensiones alimenticias</span></td><td>Sin pensiones</td><td class="v">Sin deudas</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">Municipios<span>Impuestos prediales</span></td><td>Sin deuda</td><td class="v">Sin deudas</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">OFAC<span>Listas de sanciones</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
-              <tr class="ok"><td class="pt"><i></i></td><td class="f">Superintendencia de Bancos<span>No autorizadas</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
+              <tr class="fila hay" style="--i:0"><td class="pt"><i></i></td><td class="f">SRI<span>Deudas tributarias</span></td><td>Deuda vigente</td><td class="v">$ 1.240,00</td></tr>
+              <tr class="fila ok" style="--i:1"><td class="pt"><i></i></td><td class="f">IESS<span>Mora patronal</span></td><td>Sin mora patronal</td><td class="v">Sin deudas</td></tr>
+              <tr class="fila ok" style="--i:2"><td class="pt"><i></i></td><td class="f">Función Judicial<span>Causas judiciales</span></td><td>Sin novedades</td><td class="v">Sin causas</td></tr>
+              <tr class="fila info" style="--i:3"><td class="pt"><i></i></td><td class="f">Supercías<span>Ficha societaria</span></td><td>Compañía activa</td><td class="v">3 accionistas</td></tr>
+              <tr class="fila hay" style="--i:4"><td class="pt"><i></i></td><td class="f">Fiscalía<span>Noticias del delito</span></td><td>Denuncias nuevas</td><td class="v">2 denuncias</td></tr>
+              <tr class="fila ok" style="--i:5"><td class="pt"><i></i></td><td class="f">SERCOP<span>Contratación pública</span></td><td>Sin incumplir</td><td class="v">Habilitado</td></tr>
+              <tr class="fila ok" style="--i:6"><td class="pt"><i></i></td><td class="f">ANT<span>Multas nacionales</span></td><td>Sin novedades</td><td class="v">Sin multas</td></tr>
+              <tr class="fila ok" style="--i:7"><td class="pt"><i></i></td><td class="f">MDT<span>Obligaciones laborales</span></td><td>Al día</td><td class="v">Sin deudas</td></tr>
+              <tr class="fila ok" style="--i:8"><td class="pt"><i></i></td><td class="f">SUPA<span>Pensiones alimenticias</span></td><td>Sin pensiones</td><td class="v">Sin deudas</td></tr>
+              <tr class="fila ok" style="--i:9"><td class="pt"><i></i></td><td class="f">Municipios<span>Impuestos prediales</span></td><td>Sin deuda</td><td class="v">Sin deudas</td></tr>
+              <tr class="fila ok" style="--i:10"><td class="pt"><i></i></td><td class="f">OFAC<span>Listas de sanciones</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
+              <tr class="fila ok" style="--i:11"><td class="pt"><i></i></td><td class="f">Superintendencia de Bancos<span>No autorizadas</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
             </table>
           </div>
 
@@ -221,7 +231,7 @@ const PORTALES = [
         </p>
         <div class="barra" aria-hidden="true"><span style="width:41%"></span></div>
         <p class="barra__l"><b>12 portales</b>, todos los días</p>
-        <a href="/formulario" class="flecha">Contratar monitoreo <span aria-hidden="true">→</span></a>
+        <a href={CTA} data-pendiente class="flecha">Contratar monitoreo <span aria-hidden="true">→</span></a>
       </article>
 
       <article class="ruta ruta--b rv">
@@ -235,7 +245,7 @@ const PORTALES = [
           <span style="width:41%"></span><span class="barra__x" style="width:59%"></span>
         </div>
         <p class="barra__l"><b>29 fuentes</b> — esos mismos 12, y 17 más</p>
-        <a href="/formulario" class="flecha">Pedir un informe <span aria-hidden="true">→</span></a>
+        <a href={CTA} data-pendiente class="flecha">Pedir un informe <span aria-hidden="true">→</span></a>
       </article>
     </div>
   </div>
@@ -295,7 +305,7 @@ const PORTALES = [
     <h2 class="rv">¿Sabes qué dice el Estado de tu contraparte?</h2>
     <p class="lead rv">La única forma de saberlo es mirarlo.</p>
     <div class="ctas rv">
-      <a href="/formulario" class="bt">Solicitar servicio</a>
+      <a href={CTA} data-pendiente class="bt">Solicitar servicio</a>
       <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
     </div>
   </div>
@@ -699,7 +709,7 @@ a { color: inherit; text-decoration: none; }
 .doc__d { font-size: 5.8px; color: #A79878; margin-top: 2px; }
 .doc__regla { height: 2px; background: #A87C1E; }
 
-.doc__cuerpo { padding: 11px 13px 14px; }
+.doc__cuerpo { position: relative; padding: 11px 13px 14px; }
 .doc__rot { font-size: 6.2px; letter-spacing: .24em; text-transform: uppercase; color: #8A7F6A; margin-bottom: 5px; }
 .doc__rot--sep { margin-top: 13px; }
 
@@ -744,6 +754,117 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 880px) {
   .portada__in { grid-template-columns: 1fr; }
   .portada__vis { max-width: 260px; margin: 0 auto; }
+}
+
+/* ═══ La secuencia del informe ═══════════════════════════════════
+   Cuenta lo que hace el producto en tres segundos: se rellena el
+   informe, una línea recorre las fuentes, y al topar con un hallazgo
+   la fila se tiñe y su tarjeta salta afuera.
+
+   Todo con retardos en cascada sobre el MISMO reloj: cada pieza sabe
+   en qué milisegundo le toca, sin JavaScript encadenando pasos. El
+   único JS es el que añade `.anima` cuando la escena entra en pantalla.
+
+   Sin la clase, todo se ve en su estado final: si el observador no
+   llega a disparar, la portada no queda a medias. */
+
+/* ── Estado de partida, solo cuando la animación está armada ── */
+.escena.armada .doc__tbl tr.fila { opacity: 0; }
+.escena.armada .doc__sujeto,
+.escena.armada .doc__ver { opacity: 0; }
+.escena.armada .nota { opacity: 0; }
+.escena.armada .nota::after { width: 0; }
+
+/* ── El reparto ── */
+.escena.anima .doc__sujeto { animation: subeEntra .5s var(--out) .18s both; }
+.escena.anima .doc__ver    { animation: subeEntra .5s var(--out) .36s both; }
+
+.escena.anima .doc__tbl tr.fila {
+  animation: filaEntra .42s var(--out) both;
+  animation-delay: calc(.62s + var(--i) * .07s);
+}
+
+/* La línea de barrido: baja por la tabla mientras las filas entran. */
+.barrido {
+  position: absolute; left: 13px; right: 13px; top: 0; height: 34px;
+  pointer-events: none; opacity: 0; z-index: 2; border-radius: 3px;
+  /* Un halo con FILO en la base. Sin la línea inferior el degradado
+     solo se leía como una sombra difusa; el filo es lo que convierte
+     el gesto en un escáner que avanza. */
+  background: linear-gradient(180deg,
+    rgba(201, 168, 76, 0) 0%, rgba(201, 168, 76, .26) 62%,
+    rgba(168, 124, 30, .5) 96%, rgba(168, 124, 30, .62) 100%);
+}
+.escena.anima .barrido { animation: barre 1.5s cubic-bezier(.4, .05, .3, 1) .58s both; }
+
+/* Las dos filas con hallazgo se tiñen justo cuando la línea las cruza:
+   1,22 s la del SRI (fila 0) y 1,58 s la de Fiscalía (fila 4). */
+.escena.anima tr.fila.hay td { animation: tine .5s var(--out) both; }
+.escena.anima tr.fila.hay:nth-of-type(2) td  { animation-delay: 1.22s; }
+.escena.anima tr.fila.hay:nth-of-type(6) td  { animation-delay: 1.58s; }
+.escena.anima tr.fila.hay td.pt i { animation: late .9s ease-out both; }
+.escena.anima tr.fila.hay:nth-of-type(2) td.pt i { animation-delay: 1.22s; }
+.escena.anima tr.fila.hay:nth-of-type(6) td.pt i { animation-delay: 1.58s; }
+
+/* Las tarjetas salen DESPUÉS de que su fila se tiña: primero se
+   encuentra, luego se enseña. Al revés no se entendería la causa. */
+.escena.anima .nota--alerta  { animation: salta .58s var(--out) 1.4s both; }
+.escena.anima .nota--barrido { animation: salta .58s var(--out) 1.78s both; }
+.escena.anima .nota::after   { animation: tira .4s var(--out) both; }
+.escena.anima .nota--alerta::after  { animation-delay: 1.72s; }
+.escena.anima .nota--barrido::after { animation-delay: 2.1s; }
+
+/* El veredicto se subraya al final: ya se vio de dónde salen las dos. */
+.escena.anima .doc__ver { animation: subeEntra .5s var(--out) .36s both, remata 1s ease-out 2.5s; }
+
+@keyframes subeEntra {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes filaEntra {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes barre {
+  0%   { opacity: 0; transform: translateY(150px); }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(560px); }
+}
+@keyframes tine {
+  from { background: #fff; }
+  to   { background: #FCF1EE; }
+}
+/* El punto late una vez y se queda. No parpadea en bucle: un hallazgo
+   se señala, no se anuncia sin parar. */
+@keyframes late {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0   rgba(179, 38, 30, .55); }
+  35%  { transform: scale(1.7); box-shadow: 0 0 0 4px rgba(179, 38, 30, 0); }
+  100% { transform: scale(1);   box-shadow: 0 0 0 0   rgba(179, 38, 30, 0); }
+}
+/* Con un pelo de rebase: sin él el salto se lee como un fundido. */
+@keyframes salta {
+  0%   { opacity: 0; transform: translateY(-50%) translateX(-22px) scale(.9); }
+  62%  { opacity: 1; transform: translateY(-50%) translateX(4px)   scale(1.03); }
+  100% { opacity: 1; transform: translateY(-50%) translateX(0)     scale(1); }
+}
+@keyframes tira {
+  from { width: 0; }
+  to   { width: 34px; }
+}
+@keyframes remata {
+  0%, 100% { box-shadow: none; }
+  40%      { box-shadow: 0 0 0 2px rgba(179, 38, 30, .28); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .escena.armada .doc__tbl tr.fila,
+  .escena.armada .doc__sujeto,
+  .escena.armada .doc__ver,
+  .escena.armada .nota { opacity: 1; }
+  .escena.armada .nota::after { width: 34px; }
+  .escena.anima * { animation: none !important; }
+  .barrido { display: none; }
 }
 
 /* ── Secciones ─────────────────────────────────────────────── */
@@ -982,6 +1103,33 @@ a { color: inherit; text-decoration: none; }
       { rootMargin: "0px" },
     ).observe(centinela);
   }
+
+  // La secuencia del informe. Se ARMA en cuanto carga —así el estado
+  // de partida no se ve saltar— y se DISPARA cuando la escena entra en
+  // pantalla. Si el navegador no soporta el observador, se queda como
+  // está: todo visible, que es el estado final.
+  const escena = document.querySelector(".escena");
+  if (escena && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    escena.classList.add("armada");
+    if ("IntersectionObserver" in window) {
+      const obs = new IntersectionObserver((entradas) => {
+        for (const e of entradas) {
+          if (e.isIntersecting) { escena.classList.add("anima"); obs.disconnect(); }
+        }
+      }, { threshold: .25 });
+      obs.observe(escena);
+    } else {
+      escena.classList.add("anima");
+    }
+  }
+
+  // Mientras el destino esté sin decidir, el clic no lleva a ninguna
+  // parte en vez de saltar al principio de la página.
+  document.querySelectorAll('[data-pendiente]').forEach((a) => {
+    a.addEventListener("click", (e) => {
+      if (a.getAttribute("href") === "#") e.preventDefault();
+    });
+  });
 
   // Revelado al entrar en pantalla. Escalonado solo dentro de los pares
   // que se leen juntos; el resto entra a su ritmo.

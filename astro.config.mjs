@@ -1,11 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import vercel from '@astrojs/vercel';
 
-// output 'static' en Astro 6+ prerenderea las páginas .astro y permite
-// que los endpoints API (src/pages/api/*) corran server-side en Vercel.
-// Es el equivalente al antiguo 'hybrid' que fue removido.
+// Estático puro. Sin adaptador: la landing se sirve desde Cloudflare
+// Workers con Static Assets, que no ejecuta nada del lado del servidor.
+//
+// Lo único que obligaba a tener adaptador era `src/pages/api/submit.ts`
+// (el endpoint del formulario, que se retiró). Si algún día hace falta
+// una función —el checkout de Stripe, por ejemplo— se añade `main` en
+// wrangler.jsonc, no un adaptador.
 export default defineConfig({
   output: 'static',
-  adapter: vercel(),
 });
