@@ -1,14 +1,21 @@
 ---
 import LandingLayout from "../layouts/LandingLayout.astro";
 
-// PENDIENTE DE DECIDIR: a dónde van los CTA. El formulario se retiró y los
-// cinco botones apuntaban ahí. Un único sitio a propósito: con cinco `href`
-// sueltos es cuestión de tiempo que uno se quede apuntando a la nada.
+// Todos los CTA van a WhatsApp, al mismo número que usan el correo 360 y
+// la webapp (593978863448): un número distinto en la landing sería otro
+// canal que mantener y otro sitio donde quedaría desactualizado.
 //
-// Cuando se decida (WhatsApp, mailto, página de planes) se cambia AQUÍ.
-// `#` no navega: el data-pendiente lo frena y además los marca en el DOM
-// para que se puedan encontrar.
-const CTA = "#";
+// Cada botón lleva SU propio mensaje. Con un texto genérico habría que
+// preguntar «¿qué necesita?» en cada conversación; así el primer mensaje
+// ya dice si viene por monitoreo, por un informe o por un plan concreto.
+const WA = "593978863448";
+const wa = (mensaje: string) =>
+  `https://wa.me/${WA}?text=${encodeURIComponent(mensaje)}`;
+
+const DESDE = "Hola, les escribo desde censusalert.com.";
+const CTA_GENERAL   = wa(`${DESDE} Quisiera información sobre Census Alert.`);
+const CTA_MONITOREO = wa(`${DESDE} Quiero contratar el monitoreo diario.`);
+const CTA_INFORME   = wa(`${DESDE} Quiero pedir un informe consolidado.`);
 
 // Los 19 sellos de la sección de cobertura. El orden agrupa por materia:
 // primero lo tributario y laboral, luego judicial, control, y al final las
@@ -25,6 +32,27 @@ const POLVO = Array.from({ length: 150 }, () => ({
   op: (Math.random() * 0.5 + 0.14).toFixed(2),
   dx: ((Math.random() - 0.5) * 46).toFixed(0),
 }));
+
+// Los planes. En el frontmatter y no en el marcado para que cambiar un
+// precio sea una línea y no una cacería por la plantilla.
+//
+// El anual son 10 meses: los cuatro cuadran exactos con «2 meses gratis».
+//   0,99×12=11,88 → 9,90    3,99×12=47,88 → 39,90
+//  12,99×12=155,88 → 129,90  29,99×12=359,88 → 299,90
+const PLANES = [
+  { id: "vigilancia",   nombre: "Vigilancia",   mes: "0,99",  anio: "9,90",
+    linea: "Para una empresa o una persona",
+    incluye: ["1 monitoreado", "Revisión diaria de 12 portales", "1 informe al mes"] },
+  { id: "familia",      nombre: "Familia",      mes: "3,99",  anio: "39,90",
+    linea: "Para un grupo familiar o societario",
+    incluye: ["5 monitoreados", "Revisión diaria de 12 portales", "3 informes al mes"] },
+  { id: "profesional",  nombre: "Profesional",  mes: "12,99", anio: "129,90",
+    linea: "Para estudios y contadores",
+    incluye: ["20 monitoreados", "Revisión diaria de 12 portales", "10 informes al mes"] },
+  { id: "empresa",      nombre: "Empresa",      mes: "29,99", anio: "299,90",
+    linea: "Para carteras y cumplimiento",
+    incluye: ["50 monitoreados", "Revisión diaria de 12 portales", "30 informes al mes"] },
+];
 
 const PORTALES = [
   { s: "sri",         n: "SRI",                              e: "svg"  },
@@ -62,7 +90,7 @@ const PORTALES = [
     <ul class="nav__links" id="navLinks">
       <li><a href="#rutas">Qué hacemos</a></li>
       <li><a href="#fuentes">Fuentes</a></li>
-      <li><a href={CTA} data-pendiente class="bt bt--sm">Solicitar servicio</a></li>
+      <li><a href={CTA_GENERAL} target="_blank" rel="noopener" class="bt bt--sm">Solicitar servicio</a></li>
     </ul>
   </div>
 </nav>
@@ -85,7 +113,7 @@ const PORTALES = [
         y te avisamos el mismo día que algo cambia.
       </p>
       <div class="ctas rv">
-        <a href={CTA} data-pendiente class="bt">Quiero monitorear mi empresa</a>
+        <a href={CTA_MONITOREO} target="_blank" rel="noopener" class="bt">Quiero monitorear mi empresa</a>
         <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
       </div>
       <p class="pie rv">
@@ -231,7 +259,7 @@ const PORTALES = [
         </p>
         <div class="barra" aria-hidden="true"><span style="width:41%"></span></div>
         <p class="barra__l"><b>12 portales</b>, todos los días</p>
-        <a href={CTA} data-pendiente class="flecha">Contratar monitoreo <span aria-hidden="true">→</span></a>
+        <a href={CTA_MONITOREO} target="_blank" rel="noopener" class="flecha">Contratar monitoreo <span aria-hidden="true">→</span></a>
       </article>
 
       <article class="ruta ruta--b rv">
@@ -245,7 +273,7 @@ const PORTALES = [
           <span style="width:41%"></span><span class="barra__x" style="width:59%"></span>
         </div>
         <p class="barra__l"><b>29 fuentes</b> — esos mismos 12, y 17 más</p>
-        <a href={CTA} data-pendiente class="flecha">Pedir un informe <span aria-hidden="true">→</span></a>
+        <a href={CTA_INFORME} target="_blank" rel="noopener" class="flecha">Pedir un informe <span aria-hidden="true">→</span></a>
       </article>
     </div>
   </div>
@@ -305,9 +333,67 @@ const PORTALES = [
     <h2 class="rv">¿Sabes qué dice el Estado de tu contraparte?</h2>
     <p class="lead rv">La única forma de saberlo es mirarlo.</p>
     <div class="ctas rv">
-      <a href={CTA} data-pendiente class="bt">Solicitar servicio</a>
+      <a href={CTA_GENERAL} target="_blank" rel="noopener" class="bt">Solicitar servicio</a>
       <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
     </div>
+  </div>
+</section>
+
+<section class="precios claro claro--alto grano" id="precios">
+  <div class="wrap">
+    <div class="cab rv">
+      <p class="kick">Precios</p>
+      <h2>Cuánto cuesta estar al día.</h2>
+    </div>
+
+    <div class="ciclo rv" role="group" aria-label="Periodo de facturación">
+      <button type="button" class="ciclo__b is-on" data-ciclo="mes" aria-pressed="true">Mensual</button>
+      <button type="button" class="ciclo__b" data-ciclo="anio" aria-pressed="false">
+        Anual <span class="ciclo__ah">2 meses gratis</span>
+      </button>
+    </div>
+
+    <div class="planes">
+      {PLANES.map((p) => (
+        <article class="plan rv">
+          <h3>{p.nombre}</h3>
+          <p class="plan__q">{p.linea}</p>
+
+          <p class="plan__p">
+            <span class="plan__m">$</span>
+            {/* Los dos precios van en el HTML y se alternan con CSS: sin
+                esto el usuario vería un salto de cifra al cambiar de ciclo,
+                y sin JS no vería ninguna. */}
+            <span class="plan__n" data-mes>{p.mes}</span>
+            <span class="plan__n" data-anio hidden>{p.anio}</span>
+            <span class="plan__per" data-mes>/mes</span>
+            <span class="plan__per" data-anio hidden>/año</span>
+          </p>
+          <p class="plan__eq">
+            <span data-mes>Facturación mensual</span>
+            <span data-anio hidden>Equivale a 10 meses</span>
+          </p>
+
+          <ul class="plan__l">
+            {p.incluye.map((x) => <li>{x}</li>)}
+          </ul>
+
+          {/* Un enlace por ciclo: el mensaje lleva el precio que el
+              visitante está viendo. Con uno solo, quien mira el anual
+              escribiría pidiendo el mensual. */}
+          <a href={wa(`${DESDE} Quiero contratar el plan ${p.nombre} de Census Alert ($${p.mes} al mes).`)}
+             target="_blank" rel="noopener" class="bt bt--l plan__bt" data-mes>Contratar</a>
+          <a href={wa(`${DESDE} Quiero contratar el plan ${p.nombre} de Census Alert ($${p.anio} al año).`)}
+             target="_blank" rel="noopener" class="bt bt--l plan__bt" data-anio hidden>Contratar</a>
+        </article>
+      ))}
+    </div>
+
+    <p class="precios__pie rv">
+      Precios en dólares. El informe consolidado consulta 29 fuentes; el
+      monitoreo diario, 12. Los informes no usados no se acumulan al mes
+      siguiente.
+    </p>
   </div>
 </section>
 
@@ -1043,6 +1129,79 @@ a { color: inherit; text-decoration: none; }
   .chip { flex: 0 0 calc((100% - var(--h) * 2) / 3); }
 }
 
+
+/* `hidden` pone `display:none` desde la hoja del navegador, y cualquier
+   `display` propio le gana: `.bt` es inline-flex, así que los dos botones
+   de ciclo se veían a la vez. El `!important` aquí es correcto —hay que
+   ganarle a una regla de componente— y acotado a este atributo. */
+[hidden] { display: none !important; }
+
+/* ── Precios ───────────────────────────────────────────────────── */
+.precios { padding: var(--s6) 0; }
+
+/* El selector de ciclo. Dos botones y no un interruptor: un interruptor
+   no dice cuál de los dos está activo sin leer su etiqueta. */
+.ciclo {
+  display: inline-flex; gap: 3px; margin: 0 0 var(--s4);
+  padding: 4px; border-radius: 999px;
+  background: rgba(26, 21, 3, .05); border: 1px solid var(--linea);
+}
+.ciclo__b {
+  font: inherit; font-size: var(--t1); color: var(--tenue);
+  padding: 8px 18px; border: 0; border-radius: 999px; background: none;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  transition: background .25s var(--out), color .25s var(--out);
+}
+.ciclo__b:hover { color: var(--papel-ink); }
+.ciclo__b.is-on { background: #17150d; color: var(--oro-cl); }
+.ciclo__ah {
+  font-size: .72rem; letter-spacing: .04em; text-transform: uppercase;
+  font-weight: 600; padding: 2px 7px; border-radius: 999px;
+  background: rgba(30, 122, 75, .13); color: #1E7A4B;
+}
+.ciclo__b.is-on .ciclo__ah { background: rgba(201, 168, 76, .2); color: var(--oro-cl); }
+
+.planes {
+  display: grid; gap: var(--s3);
+  grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
+}
+.plan {
+  display: flex; flex-direction: column;
+  padding: var(--s3); border: 1px solid var(--linea); border-radius: var(--radio);
+  background: #fff;
+}
+.plan h3 { font-size: 1.12rem; color: var(--papel-ink); }
+.plan__q { font-size: var(--t0); color: var(--tenue); margin-top: 3px; min-height: 2.4em; }
+
+/* La cifra manda: es el dato que se viene a buscar. */
+.plan__p { margin-top: var(--s2); display: flex; align-items: baseline; gap: 2px; }
+.plan__m { font-size: 1.05rem; color: #8B6914; align-self: flex-start; margin-top: .35em; }
+.plan__n { font-family: var(--prosa); font-size: 2.5rem; line-height: 1; color: var(--papel-ink); }
+.plan__per { font-size: var(--t0); color: var(--tenue); margin-left: 3px; }
+.plan__eq { font-size: .72rem; color: var(--tenue); margin-top: 5px; min-height: 1.2em; }
+
+.plan__l { list-style: none; margin: var(--s3) 0 var(--s3); padding: 0; }
+.plan__l li {
+  font-size: var(--t0); color: #5f5849; line-height: 1.5;
+  padding: 5px 0 5px 17px; position: relative;
+}
+.plan__l li::before {
+  content: ""; position: absolute; left: 0; top: .95em;
+  width: 5px; height: 5px; border-radius: 50%; background: #A87C1E;
+}
+/* `auto` empuja el botón al fondo: con tarjetas de distinta altura, los
+   botones sin alinear se leen como un error de maquetación. */
+.plan__bt { margin-top: auto; text-align: center; }
+
+.precios__pie {
+  font-size: var(--t0); color: var(--tenue); margin-top: var(--s4);
+  max-width: 62ch; line-height: 1.6;
+}
+
+@media (max-width: 560px) {
+  .planes { grid-template-columns: 1fr; }
+  .plan__q, .plan__eq { min-height: 0; }
+}
 /* ── Cierre ────────────────────────────────────────────────── */
 .cierre { padding: var(--s7) 0; text-align: center; }
 .cierre h2 { font-size: var(--t5); max-width: 18ch; margin: var(--s2) auto 0; }
@@ -1123,11 +1282,24 @@ a { color: inherit; text-decoration: none; }
     }
   }
 
-  // Mientras el destino esté sin decidir, el clic no lleva a ninguna
-  // parte en vez de saltar al principio de la página.
-  document.querySelectorAll('[data-pendiente]').forEach((a) => {
-    a.addEventListener("click", (e) => {
-      if (a.getAttribute("href") === "#") e.preventDefault();
+  // El ciclo de facturación. Los dos precios ya están en el HTML y aquí
+  // solo se alterna cuál se ve: así la página funciona sin JavaScript
+  // —se ve el mensual— y al cambiar no hay salto de cifra.
+  const ciclos = document.querySelectorAll("[data-ciclo]");
+  ciclos.forEach((b) => {
+    b.addEventListener("click", () => {
+      const cual = b.dataset.ciclo;
+      ciclos.forEach((o) => {
+        const on = o === b;
+        o.classList.toggle("is-on", on);
+        o.setAttribute("aria-pressed", String(on));
+      });
+      document.querySelectorAll("[data-mes]").forEach((e) => {
+        e.hidden = cual !== "mes";
+      });
+      document.querySelectorAll("[data-anio]").forEach((e) => {
+        e.hidden = cual !== "anio";
+      });
     });
   });
 
