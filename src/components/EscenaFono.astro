@@ -1,0 +1,209 @@
+---
+// Teléfono 3D generado por código: sin modelo externo ni fotogramas
+// renderizados. Es una caja redondeada con pantalla, iluminada de verdad, y
+// el scroll controla su rotación. Nítido a cualquier resolución y pesa lo
+// que pesa la geometría, no 40 MB de secuencia.
+---
+<div class="escena3d" id="escena3d" aria-hidden="true"><canvas id="lienzoFono"></canvas></div>
+
+<script>
+  import * as THREE from "three";
+
+  const lienzo = document.getElementById("lienzoFono") as HTMLCanvasElement;
+  const caja = document.getElementById("escena3d") as HTMLElement;
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const ren = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true, alpha: true });
+  ren.setPixelRatio(Math.min(devicePixelRatio, 2));
+  ren.toneMapping = THREE.ACESFilmicToneMapping;
+  ren.toneMappingExposure = 1.15;
+
+  const escena = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  cam.position.set(0, 0, 15.5);
+
+  // ── El cuerpo: caja con esquinas redondeadas, hecha por extrusión ──
+  function siluetaRedondeada(an: number, al: number, r: number) {
+    const s = new THREE.Shape();
+    s.moveTo(-an / 2 + r, -al / 2);
+    s.lineTo(an / 2 - r, -al / 2);
+    s.quadraticCurveTo(an / 2, -al / 2, an / 2, -al / 2 + r);
+    s.lineTo(an / 2, al / 2 - r);
+    s.quadraticCurveTo(an / 2, al / 2, an / 2 - r, al / 2);
+    s.lineTo(-an / 2 + r, al / 2);
+    s.quadraticCurveTo(-an / 2, al / 2, -an / 2, al / 2 - r);
+    s.lineTo(-an / 2, -al / 2 + r);
+    s.quadraticCurveTo(-an / 2, -al / 2, -an / 2 + r, -al / 2);
+    return s;
+  }
+
+  const AN = 3.5, AL = 7.2;
+  // El bisel suma su grosor a LOS DOS lados: la profundidad real es
+  // depth + 2*bevelThickness. Sin tenerlo en cuenta, la pantalla queda
+  // DENTRO del cuerpo y el teléfono se ve negro.
+  const PROF = 0.42, BISEL = 0.07;
+  const CARA = PROF / 2 + BISEL;          // z de la cara frontal = 0.28
+  const geoCuerpo = new THREE.ExtrudeGeometry(siluetaRedondeada(AN, AL, 0.55), {
+    depth: PROF, bevelEnabled: true, bevelThickness: BISEL,
+    bevelSize: BISEL, bevelSegments: 6, curveSegments: 24,
+  });
+  geoCuerpo.center();
+
+  // Titanio: metálico y algo rugoso. El oro de la marca entra por las luces,
+  // no por el material, para que no parezca un teléfono dorado de juguete.
+  const matCuerpo = new THREE.MeshStandardMaterial({
+    color: 0x2b2b2e, metalness: 0.94, roughness: 0.32,
+  });
+  const fono = new THREE.Group();
+  fono.add(new THREE.Mesh(geoCuerpo, matCuerpo));
+
+  // ── La pantalla: el informe, pintado a un canvas y usado como textura ──
+  const cv = document.createElement("canvas");
+  cv.width = 620; cv.height = 1280;
+  const g = cv.getContext("2d")!;
+
+  const FILAS: [string, string, string, string][] = [
+    ["SRI", "Deudas tributarias", "$ 1.240,00", "hay"],
+    ["IESS", "Mora patronal", "Sin deudas", "ok"],
+    ["Función Judicial", "Causas judiciales", "Sin causas", "ok"],
+    ["Supercías", "Ficha societaria", "3 accionistas", "info"],
+    ["Fiscalía", "Noticias del delito", "2 denuncias", "hay"],
+    ["SERCOP", "Contratación pública", "Habilitado", "ok"],
+    ["ANT", "Multas nacionales", "Sin multas", "ok"],
+    ["MDT", "Obligaciones laborales", "Sin deudas", "ok"],
+    ["SUPA", "Pensiones alimenticias", "Sin deudas", "ok"],
+    ["Municipios", "Impuestos prediales", "Sin deudas", "ok"],
+  ];
+  const PUNTO: Record<string, string> = { ok: "#1E7A4B", hay: "#B3261E", info: "#5A6C90" };
+
+  // `avance` 0→1: cuántas filas se han pintado ya. El informe se escribe solo
+  // mientras el teléfono gira, que es lo que no puede hacer una secuencia de
+  // imágenes plana.
+  function pintarPantalla(avance: number) {
+    g.fillStyle = "#fff"; g.fillRect(0, 0, 620, 1280);
+
+    g.fillStyle = "#12100C"; g.fillRect(0, 0, 620, 190);
+    g.fillStyle = "#E8C877";
+    g.font = "600 34px 'IBM Plex Sans', system-ui, sans-serif";
+    g.letterSpacing = "8px";
+    g.fillText("CENSUS", 42, 104);
+    g.fillStyle = "#F7F4EC"; g.fillText(" ALERT", 250, 104);
+    g.letterSpacing = "4px";
+    g.font = "400 15px 'IBM Plex Sans', system-ui, sans-serif";
+    g.fillStyle = "#A79878"; g.fillText("INFORME CONSOLIDADO", 42, 140);
+    g.fillStyle = "#A87C1E"; g.fillRect(0, 190, 620, 6);
+
+    g.letterSpacing = "0px";
+    g.fillStyle = "#FCF1EE"; g.fillRect(42, 240, 536, 150);
+    g.fillStyle = "#B3261E"; g.fillRect(42, 240, 7, 150);
+    g.font = "400 19px 'IBM Plex Sans', system-ui, sans-serif";
+    g.fillStyle = "#8A6A62"; g.fillText("RESULTADO DE LA CONSULTA", 70, 285);
+    g.font = "500 36px Georgia, serif";
+    g.fillStyle = "#B3261E"; g.fillText("2 de 27 con hallazgos", 70, 340);
+    g.font = "400 20px 'IBM Plex Sans', system-ui, sans-serif";
+    g.fillStyle = "#6B5B57"; g.fillText("25 sin novedades · 2 sin verificar", 70, 372);
+
+    const visibles = Math.floor(avance * FILAS.length);
+    let y = 460;
+    for (let i = 0; i < FILAS.length; i++) {
+      if (i > visibles) break;
+      const [nom, sub, val, cls] = FILAS[i];
+      // La última fila entra con opacidad parcial: el barrido se ve fluido.
+      const alfa = i === visibles ? Math.min(1, (avance * FILAS.length) % 1 * 2.2) : 1;
+      g.globalAlpha = alfa;
+      if (cls === "hay") { g.fillStyle = "#FCF1EE"; g.fillRect(42, y - 34, 536, 74); }
+      g.fillStyle = PUNTO[cls];
+      g.beginPath(); g.arc(58, y, 7, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#12100C";
+      g.font = "600 22px 'IBM Plex Sans', system-ui, sans-serif";
+      g.fillText(nom, 82, y + 2);
+      g.fillStyle = "#8A7F6A";
+      g.font = "400 17px 'IBM Plex Sans', system-ui, sans-serif";
+      g.fillText(sub, 82, y + 26);
+      g.fillStyle = cls === "hay" ? "#B3261E" : "#4A4437";
+      g.font = "600 21px 'IBM Plex Sans', system-ui, sans-serif";
+      g.textAlign = "right"; g.fillText(val, 578, y + 8); g.textAlign = "left";
+      g.globalAlpha = 1;
+      g.strokeStyle = "#F0EBDD"; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(42, y + 40); g.lineTo(578, y + 40); g.stroke();
+      y += 78;
+    }
+  }
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = ren.capabilities.getMaxAnisotropy();
+  const pantalla = new THREE.Mesh(
+    new THREE.PlaneGeometry(AN - 0.34, AL - 0.34),
+    new THREE.MeshBasicMaterial({ map: tex }),
+  );
+  pantalla.position.z = CARA + 0.004;
+  fono.add(pantalla);
+
+  // El cristal por encima: es lo que da el reflejo que delata que hay vidrio.
+  const cristal = new THREE.Mesh(
+    new THREE.PlaneGeometry(AN - 0.2, AL - 0.2),
+    new THREE.MeshPhysicalMaterial({
+      transparent: true, opacity: 0.16, roughness: 0.06,
+      metalness: 0, transmission: 0.55, thickness: 0.2,
+    }),
+  );
+  cristal.position.z = CARA + 0.010;
+  fono.add(cristal);
+  escena.add(fono);
+
+  // ── Luces: el oro de la marca entra por aquí ──
+  escena.add(new THREE.AmbientLight(0xffffff, 0.55));
+  const clave = new THREE.DirectionalLight(0xfff2d0, 2.6);
+  clave.position.set(4, 6, 8); escena.add(clave);
+  const oro = new THREE.PointLight(0xC9A84C, 34, 22);
+  oro.position.set(-5, 2, 5); escena.add(oro);
+  const contra = new THREE.PointLight(0xffffff, 12, 20);
+  contra.position.set(5, -4, -3); escena.add(contra);
+
+  function medir() {
+    const r = caja.getBoundingClientRect();
+    ren.setSize(r.width, r.height, false);
+    cam.aspect = r.width / r.height;
+    cam.updateProjectionMatrix();
+  }
+  addEventListener("resize", medir); medir();
+
+  // ── El scroll manda ──
+  // Se mide la PISTA (el contenedor alto), no la escena. La escena es
+  // `position: sticky`, así que mientras está pegada su `top` vale 0 y no
+  // se mueve: midiéndola a ella el avance se queda congelado y nada gira.
+  const pista = caja.parentElement as HTMLElement;
+  let objetivo = 0, actual = 0;
+  function avanceDelScroll() {
+    const r = pista.getBoundingClientRect();
+    const recorrido = r.height - innerHeight;   // lo que de verdad se puede scrollear
+    if (recorrido <= 0) return 0;
+    return Math.min(1, Math.max(0, -r.top / recorrido));
+  }
+  addEventListener("scroll", () => { objetivo = avanceDelScroll(); }, { passive: true });
+  addEventListener("resize", () => { objetivo = avanceDelScroll(); });
+  objetivo = avanceDelScroll(); actual = objetivo;
+
+  let ultimoPintado = -1;
+  function cuadro() {
+    // Suavizado: el scroll da saltos y sin esto el giro se ve a tirones.
+    actual += (objetivo - actual) * (quieto ? 1 : 0.075);
+    fono.rotation.y = (-0.85 + actual * 1.55);
+    fono.rotation.x = (0.30 - actual * 0.42);
+    fono.rotation.z = (0.16 - actual * 0.24);
+    fono.position.y = 0.5 - actual * 1.0;
+
+    const paso = Math.round(actual * 40) / 40;
+    if (paso !== ultimoPintado) { pintarPantalla(Math.min(1, actual * 1.5)); tex.needsUpdate = true; ultimoPintado = paso; }
+
+    ren.render(escena, cam);
+    requestAnimationFrame(cuadro);
+  }
+  pintarPantalla(0); cuadro();
+</script>
+
+<style>
+  .escena3d { position: sticky; top: 0; height: 100svh; width: 100%; }
+  .escena3d canvas { display: block; width: 100%; height: 100%; }
+</style>

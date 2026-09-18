@@ -1,5 +1,7 @@
 ---
 import LandingLayout from "../layouts/LandingLayout.astro";
+import Recibes from "../components/Recibes.astro";
+import RecibesVistas from "../components/RecibesVistas.astro";
 
 // Todos los CTA van a WhatsApp, al mismo número que usan el correo 360 y
 // la webapp (593978863448): un número distinto en la landing sería otro
@@ -33,25 +35,56 @@ const POLVO = Array.from({ length: 150 }, () => ({
   dx: ((Math.random() - 0.5) * 46).toFixed(0),
 }));
 
-// Los planes. En el frontmatter y no en el marcado para que cambiar un
-// precio sea una línea y no una cacería por la plantilla.
-//
-// El anual son 10 meses: los cuatro cuadran exactos con «2 meses gratis».
-//   0,99×12=11,88 → 9,90    3,99×12=47,88 → 39,90
-//  12,99×12=155,88 → 129,90  29,99×12=359,88 → 299,90
-const PLANES = [
-  { id: "vigilancia",   nombre: "Vigilancia",   mes: "0,99",  anio: "9,90",
-    linea: "Para una empresa o una persona",
-    incluye: ["1 monitoreado", "Revisión diaria de 12 portales", "1 informe al mes"] },
-  { id: "familia",      nombre: "Familia",      mes: "3,99",  anio: "39,90",
-    linea: "Para un grupo familiar o societario",
-    incluye: ["5 monitoreados", "Revisión diaria de 12 portales", "3 informes al mes"] },
-  { id: "profesional",  nombre: "Profesional",  mes: "12,99", anio: "129,90",
-    linea: "Para estudios y contadores",
-    incluye: ["20 monitoreados", "Revisión diaria de 12 portales", "10 informes al mes"] },
-  { id: "empresa",      nombre: "Empresa",      mes: "29,99", anio: "299,90",
-    linea: "Para carteras y cumplimiento",
-    incluye: ["50 monitoreados", "Revisión diaria de 12 portales", "30 informes al mes"] },
+// Los dos productos. Ya no hay planes por suscripción: se paga por
+// informe o por mes de vigilancia, y ambos son compras sueltas.
+// En el frontmatter para que cambiar un precio sea una línea.
+const INFORMES = [
+  { n: "1 informe",   precio: "2,99",  nota: "Incluye un mes de vigilancia de ese RUC" },
+  { n: "5 informes",  precio: "13,47", antes: "14,95", dto: "−10%", unidad: "2,69 c/u" },
+  { n: "15 informes", precio: "38,17", antes: "44,85", dto: "−15%", unidad: "2,54 c/u" },
+];
+
+const VIGILANCIA = [
+  { n: "1 mes de vigilancia",    precio: "1,99" },
+  { n: "12 meses de vigilancia", precio: "19,12", antes: "23,88", dto: "−20%", unidad: "1,59 al mes" },
+];
+
+// Las situaciones. No son sectores: son MOMENTOS. Un sector es una
+// etiqueta en la que nadie se reconoce; un momento sí, y además dice
+// cuándo se saca la tarjeta.
+const CASOS = [
+  { t: "Antes de arrendar",
+    d: "Saber si quien va a firmar tiene juicios de desalojo o deudas vigentes." },
+  { t: "Antes de contratar",
+    d: "Revisar antecedentes laborales y causas antes de incorporar a alguien." },
+  { t: "Antes de dar crédito",
+    d: "Ver la deuda real con el SRI y el IESS, no la que declara el solicitante." },
+  { t: "Antes de firmar con un proveedor",
+    d: "Comprobar que la compañía existe, está al día y quién está detrás." },
+  { t: "Antes de asociarte",
+    d: "Conocer las otras compañías del socio y si figura en alguna lista." },
+  { t: "Después de firmar",
+    d: "Porque el riesgo no aparece el día del contrato: aparece dos años después." },
+];
+
+// Los tres servicios. El tercero —menciones— es el que no tiene nadie
+// más, y por eso va con el mismo peso que los otros dos.
+const SERVICIOS = [
+  { n: "01", titulo: "Monitoreo diario", q: "Para después de firmar.",
+    d: "Revisamos cada madrugada y te avisamos el mismo día que algo cambia. Si no cambió nada, no recibes correo.",
+    puntos: ["Las mismas fuentes del informe, todos los días",
+             "También a los accionistas y a las compañías vinculadas",
+             "Avisa si venden acciones, cambia el representante o entra en liquidación"] },
+  { n: "02", titulo: "Informe consolidado", q: "Para antes de firmar.",
+    d: "Un RUC o una cédula, y en minutos un PDF con lo que consta en 29 fuentes oficiales.",
+    puntos: ["Ficha societaria completa: kárdex, actos jurídicos, cumplimiento",
+             "Un análisis de todo lo hallado, no 29 respuestas sueltas",
+             "Dice qué fuente no se pudo verificar, en vez de darla por limpia"] },
+  { n: "03", titulo: "Menciones en expedientes", q: "Lo que no hace nadie más.",
+    d: "No nos quedamos en el listado de causas: leemos el texto y establecemos en qué calidad aparece la persona.",
+    puntos: ["Señalado, reclamante o interviniente — no es lo mismo",
+             "Con la frase textual del expediente en que nos apoyamos",
+             "Si el texto no lo permite, lo dice; no elige lo más parecido"] },
 ];
 
 const PORTALES = [
@@ -207,102 +240,124 @@ const PORTALES = [
   </div>
 </header>
 
-<section class="sec claro claro--alto grano" id="rutas">
-  <!-- Fondo esculpido de la sección. Mismo recurso que el de la
-       referencia pero en tonos de papel: sobre claro, una mancha
-       oscura sería una mancha de verdad. -->
-  <svg class="mancha" viewBox="-620 -120 1260 1140" preserveAspectRatio="none" aria-hidden="true">
-    <defs>
-      <linearGradient id="pPanel" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%"   stop-color="#F2ECDC"/>
-        <stop offset="60%"  stop-color="#F7F2E6"/>
-        <stop offset="100%" stop-color="#FBF8EF"/>
-      </linearGradient>
-      <linearGradient id="pAtras" x1="0" y1="1" x2="1" y2="0">
-        <stop offset="0%"   stop-color="#EBE3CF"/>
-        <stop offset="100%" stop-color="#F5F0E2"/>
-      </linearGradient>
-      <linearGradient id="pFilo" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="#A87C1E" stop-opacity="0"/>
-        <stop offset="24%"  stop-color="#A87C1E" stop-opacity=".34"/>
-        <stop offset="74%"  stop-color="#A87C1E" stop-opacity=".22"/>
-        <stop offset="100%" stop-color="#A87C1E" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-    <path d="M-600 -400 L-80 -60 C210 -20 430 90 498 300
-             C566 512 470 700 300 820 C190 898 40 930 -80 906
-             L-600 1300 Z" fill="url(#pAtras)"/>
-    <path d="M-600 -400 L-80 -60 C160 -8 372 104 432 306
-             C494 514 404 686 246 796 C148 864 20 892 -80 872
-             L-600 1300 Z" fill="url(#pPanel)"/>
-    <path d="M-80 -60 C160 -8 372 104 432 306
-             C494 514 404 686 246 796 C148 864 20 892 -80 872"
-          fill="none" stroke="url(#pFilo)" stroke-width="1.6"/>
-    <g fill="none" stroke="#A87C1E" stroke-opacity=".2" stroke-width="1.4">
-      <circle cx="486" cy="168" r="21"/>
-      <rect x="478" y="548" width="27" height="27" rx="3" transform="rotate(16 491 561)"/>
-      <path d="M452 736 h22 M463 725 v22"/>
-    </g>
-  </svg>
+<!-- ═══ 2 · SITUACIONES ═══════════════════════════════════════════
+     Sustituye a la rejilla de sectores que usa la competencia. Un
+     sector es una etiqueta abstracta: nadie se reconoce en «retail».
+     Una situación sí —«antes de arrendar» lo lee el inmobiliario y
+     también el abogado—, y además dice CUÁNDO se usa el producto. -->
+<section class="sec claro claro--alto grano" id="cuando">
   <div class="wrap">
     <div class="cab rv">
-      <p class="kick">Dos formas de usarlo</p>
-      <h2>Vigilancia diaria, o una consulta a fondo.</h2>
+      <p class="kick">Cuándo se usa</p>
+      <h2>Antes de decir que sí.</h2>
+      <p class="cab__sub">Siempre hay un momento en que ya no puedes
+        deshacer la decisión. Census Alert va justo antes de ese momento.</p>
     </div>
 
-    <div class="via">
-      <article class="ruta rv">
-        <h3>Monitoreo</h3>
-        <p class="ruta__q">Para después de firmar.</p>
-        <p class="ruta__d">
-          Revisamos tu cartera cada madrugada. Si no cambió nada, no recibes correo.
-        </p>
-        <div class="barra" aria-hidden="true"><span style="width:41%"></span></div>
-        <p class="barra__l"><b>12 portales</b>, todos los días</p>
-        <a href={CTA_MONITOREO} target="_blank" rel="noopener" class="flecha">Contratar monitoreo <span aria-hidden="true">→</span></a>
-      </article>
+    <ul class="caso">
+      {CASOS.map((c) => (
+        <li class="rv">
+          <p class="caso__t">{c.t}</p>
+          <p class="caso__d">{c.d}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
 
-      <article class="ruta ruta--b rv">
-        <h3>Informe</h3>
-        <p class="ruta__q">Para antes de firmar.</p>
-        <p class="ruta__d">
-          Un RUC o una cédula, y en minutos un documento con todo lo que consta
-          en fuentes públicas.
-        </p>
-        <div class="barra" aria-hidden="true">
-          <span style="width:41%"></span><span class="barra__x" style="width:59%"></span>
-        </div>
-        <p class="barra__l"><b>29 fuentes</b> — esos mismos 12, y 17 más</p>
-        <a href={CTA_INFORME} target="_blank" rel="noopener" class="flecha">Pedir un informe <span aria-hidden="true">→</span></a>
-      </article>
+<!-- ═══ 3 · LOS TRES SERVICIOS ════════════════════════════════════ -->
+<section class="sec claro grano" id="servicios">
+  <div class="wrap">
+    <div class="cab rv">
+      <p class="kick">Qué hacemos</p>
+      <h2>Tres formas de mirar.</h2>
+    </div>
+
+    <div class="serv">
+      {SERVICIOS.map((s) => (
+        <article class="sv rv">
+          <p class="sv__n">{s.n}</p>
+          <h3>{s.titulo}</h3>
+          <p class="sv__q">{s.q}</p>
+          <p class="sv__d">{s.d}</p>
+          <ul class="sv__l">
+            {s.puntos.map((x) => <li>{x}</li>)}
+          </ul>
+        </article>
+      ))}
     </div>
   </div>
 </section>
 
-<section class="sec claro grano">
+<Recibes><RecibesVistas /></Recibes>
+
+<section class="precios claro claro--alto grano" id="precios">
   <div class="wrap">
     <div class="cab rv">
-      <p class="kick">Por qué el mismo día</p>
-      <h2>Una deuda no avisa. El portal sí.</h2>
+      <p class="kick">Precios</p>
+      <h2>Pagas lo que usas.</h2>
+      <p class="precios__sub">Sin suscripción y sin renovación automática.
+        Compras informes o meses de vigilancia, y los aplicas al RUC o la
+        cédula que quieras.</p>
     </div>
-    <div class="reloj">
-      <div class="col col--antes rv">
-        <p class="col__t">Sin monitoreo</p>
-        <ol class="hitos">
-          <li><time>Día 1</time><p>Se registra la obligación. Nadie la ve.</p></li>
-          <li><time>Semanas</time><p>El interés corre. Sigue sin verse.</p></li>
-          <li><time>Meses</time><p>Llega la notificación. El margen se agotó.</p></li>
-        </ol>
-      </div>
-      <div class="col col--con rv">
-        <p class="col__t">Con Census Alert</p>
-        <ol class="hitos">
-          <li><time>Día 1 · 06:45</time><p>El correo dice qué apareció y por cuánto.</p></li>
-          <li><time>Ese día</time><p>Impugnas, pagas o te asesoras.</p></li>
-          <li><time>Meses</time><p>No hay «meses».</p></li>
-        </ol>
-      </div>
+
+    <div class="pro">
+      <article class="prod rv">
+        <div class="prod__cab">
+          <h3>Informe consolidado</h3>
+          <p class="prod__q">Una consulta, una vez.</p>
+          <p class="prod__d">Cédula o RUC ante el catálogo de 29 fuentes, en PDF.</p>
+        </div>
+        <ul class="tarifa">
+          {INFORMES.map((x) => (
+            <li>
+              <div class="tarifa__t">
+                <b>{x.n}</b>
+                {x.dto && <span class="dto">{x.dto}</span>}
+                {x.unidad && <span class="unidad">{x.unidad}</span>}
+                {x.nota && <span class="nota-t">{x.nota}</span>}
+              </div>
+              <div class="tarifa__p">
+                {x.antes && <s>US$ {x.antes}</s>}
+                <b>US$ {x.precio}</b><span class="iva">+ IVA</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <a href={CTA_INFORME} target="_blank" rel="noopener" class="bt bt--l">Pedir un informe</a>
+      </article>
+
+      <article class="prod prod--b rv">
+        <div class="prod__cab">
+          <h3>Vigilancia diaria</h3>
+          <p class="prod__q">Se compra por meses.</p>
+          <p class="prod__d">Revisamos las fuentes cada madrugada y te avisamos
+            el mismo día. Cada mes cubre un vigilado durante 30 días.</p>
+        </div>
+        <ul class="tarifa">
+          {VIGILANCIA.map((x) => (
+            <li>
+              <div class="tarifa__t">
+                <b>{x.n}</b>
+                {x.dto && <span class="dto">{x.dto}</span>}
+                {x.unidad && <span class="unidad">{x.unidad}</span>}
+              </div>
+              <div class="tarifa__p">
+                {x.antes && <s>US$ {x.antes}</s>}
+                <b>US$ {x.precio}</b><span class="iva">+ IVA</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <a href={CTA_MONITOREO} target="_blank" rel="noopener" class="bt">Contratar vigilancia</a>
+      </article>
     </div>
+
+    <p class="precios__pie rv">
+      Los precios son netos: la tienda cobra el IVA aparte y la factura la
+      emite Census. Todo son pagos únicos —cuando se acaban los informes o
+      los meses, se acaban— sin cobros automáticos.
+    </p>
   </div>
 </section>
 
@@ -339,63 +394,6 @@ const PORTALES = [
   </div>
 </section>
 
-<section class="precios claro claro--alto grano" id="precios">
-  <div class="wrap">
-    <div class="cab rv">
-      <p class="kick">Precios</p>
-      <h2>Cuánto cuesta estar al día.</h2>
-    </div>
-
-    <div class="ciclo rv" role="group" aria-label="Periodo de facturación">
-      <button type="button" class="ciclo__b is-on" data-ciclo="mes" aria-pressed="true">Mensual</button>
-      <button type="button" class="ciclo__b" data-ciclo="anio" aria-pressed="false">
-        Anual <span class="ciclo__ah">2 meses gratis</span>
-      </button>
-    </div>
-
-    <div class="planes">
-      {PLANES.map((p) => (
-        <article class="plan rv">
-          <h3>{p.nombre}</h3>
-          <p class="plan__q">{p.linea}</p>
-
-          <p class="plan__p">
-            <span class="plan__m">$</span>
-            {/* Los dos precios van en el HTML y se alternan con CSS: sin
-                esto el usuario vería un salto de cifra al cambiar de ciclo,
-                y sin JS no vería ninguna. */}
-            <span class="plan__n" data-mes>{p.mes}</span>
-            <span class="plan__n" data-anio hidden>{p.anio}</span>
-            <span class="plan__per" data-mes>/mes</span>
-            <span class="plan__per" data-anio hidden>/año</span>
-          </p>
-          <p class="plan__eq">
-            <span data-mes>Facturación mensual</span>
-            <span data-anio hidden>Equivale a 10 meses</span>
-          </p>
-
-          <ul class="plan__l">
-            {p.incluye.map((x) => <li>{x}</li>)}
-          </ul>
-
-          {/* Un enlace por ciclo: el mensaje lleva el precio que el
-              visitante está viendo. Con uno solo, quien mira el anual
-              escribiría pidiendo el mensual. */}
-          <a href={wa(`${DESDE} Quiero contratar el plan ${p.nombre} de Census Alert ($${p.mes} al mes).`)}
-             target="_blank" rel="noopener" class="bt bt--l plan__bt" data-mes>Contratar</a>
-          <a href={wa(`${DESDE} Quiero contratar el plan ${p.nombre} de Census Alert ($${p.anio} al año).`)}
-             target="_blank" rel="noopener" class="bt bt--l plan__bt" data-anio hidden>Contratar</a>
-        </article>
-      ))}
-    </div>
-
-    <p class="precios__pie rv">
-      Precios en dólares. El informe consolidado consulta 29 fuentes; el
-      monitoreo diario, 12. Los informes no usados no se acumulan al mes
-      siguiente.
-    </p>
-  </div>
-</section>
 
 <footer class="pie-sitio">
   <div class="wrap pie-sitio__in">
@@ -682,7 +680,7 @@ a { color: inherit; text-decoration: none; }
 }
 .corte::before { right: 100%; }
 .corte::after  { left: 100%; }
-@media (max-width: 880px) { .corte { display: none; } }
+
 /* Halo cálido tras el teléfono. Un degradado, no una forma: el hero
    ya carga con el polvo, el grano y el filete del rebaje. */
 .escena__arco {
@@ -736,7 +734,7 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 1240px) { .nota { width: 142px; padding: 8px 10px; } }
 
-@media (max-width: 880px)  { .nota { display: none; } .escena__arco { width: 130%; } }
+
 
 /* ── La hoja: la primera página del informe ─────────────────────
    Un informe es un A4, no una pantalla de móvil. En un marco de
@@ -827,8 +825,7 @@ a { color: inherit; text-decoration: none; }
 .doc__tbl tr.info td.pt i { background: #5A6C90; }
 .doc__tbl tr.hay td { background: #FCF1EE; }
 
-@media (max-width: 880px) { .hoja { max-width: 300px; margin-left: 0; margin-top: 24px; margin-bottom: -30svh; }
-  .escena { justify-content: center; } }
+
 
 .et { font-size: 7.5px; font-weight: 700; padding: 2.5px 7px; border-radius: 99px; white-space: nowrap; border: 1px solid; }
 .et--ok { color: #1E7A4B; background: #F1F8F3; border-color: rgba(30, 122, 75, .35); }
@@ -836,11 +833,8 @@ a { color: inherit; text-decoration: none; }
 .et--pd { color: #B7791F; background: #FBF3E2; border-color: rgba(183, 121, 31, .4); }
 .et--no { color: #6E6555; background: #F7F4EC; border-color: #DDD5C3; }
 
-@media (max-width: 880px) { .fono { max-width: 260px; } }
-@media (max-width: 880px) {
-  .portada__in { grid-template-columns: 1fr; }
-  .portada__vis { max-width: 260px; margin: 0 auto; }
-}
+
+
 
 /* ═══ La secuencia del informe ═══════════════════════════════════
    Cuenta lo que hace el producto en tres segundos: se rellena el
@@ -943,6 +937,112 @@ a { color: inherit; text-decoration: none; }
   40%      { box-shadow: 0 0 0 2px rgba(179, 38, 30, .28); }
 }
 
+
+/* ── Precios: dos productos, sin planes ────────────────────────
+   Se paga por informe o por mes de vigilancia. No hay suscripción,
+   así que tampoco hay selector de ciclo ni comparativa de niveles:
+   son dos cosas distintas, no cuatro versiones de la misma. */
+.precios__sub { max-width: 52ch; margin: var(--s2) auto 0; color: var(--papel-2);
+  font-family: var(--prosa); font-size: var(--t2); line-height: 1.6; }
+
+.pro { display: grid; gap: var(--s4); margin-top: var(--s5); }
+@media (min-width: 880px) { .pro { grid-template-columns: 1fr 1fr; align-items: start; } }
+
+.prod { border: 1px solid var(--linea); border-radius: var(--radio);
+  background: var(--papel-alto); padding: var(--s4); display: flex; flex-direction: column; }
+.prod--b { border-color: rgba(168, 124, 30, .35); }
+.prod__cab h3 { font-size: var(--t4); color: var(--papel-ink); }
+.prod__q { font-family: var(--prosa); font-style: italic; color: #8B6914; margin-top: 2px; }
+.prod__d { font-size: var(--t1); color: #5f5849; line-height: 1.55; margin-top: var(--s2); }
+
+.tarifa { list-style: none; margin: var(--s3) 0 var(--s4); padding: 0;
+  display: flex; flex-direction: column; gap: 1px; background: var(--linea); }
+.tarifa li { background: var(--papel-alto); padding: 11px 13px;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.tarifa__t b { font-size: var(--t2); color: var(--papel-ink); }
+/* La cifra y su tachado a la derecha, en columna: alineados en fila el
+   precio viejo y el nuevo se leían como un rango. */
+.tarifa__p { text-align: right; white-space: nowrap; }
+.tarifa__p s { display: block; font-size: var(--t0); color: #9c9381; }
+.tarifa__p b { font-size: var(--t3); color: var(--papel-ink); font-variant-numeric: tabular-nums; }
+.iva { display: block; font-size: var(--t0); color: var(--papel-2); }
+
+.dto { display: inline-block; margin-left: 7px; font-size: var(--t0); font-weight: 700;
+  color: #1E7A4B; background: #F1F8F3; border: 1px solid rgba(30,122,75,.3);
+  border-radius: 99px; padding: 1px 7px; }
+.unidad, .nota-t { display: block; font-size: var(--t0); color: var(--papel-2); margin-top: 2px; }
+
+.prod .bt { margin-top: auto; text-align: center; }
+.precios__pie { margin-top: var(--s4); font-size: var(--t0); color: var(--papel-2);
+  line-height: 1.6; max-width: 62ch; }
+
+/* ── Situaciones ──────────────────────────────────────────────── */
+.cab__sub { max-width: 46ch; margin: var(--s2) auto 0; color: var(--papel-2);
+  font-family: var(--prosa); font-size: var(--t2); line-height: 1.6; }
+
+/* Sin tarjetas: seis cajas con borde serían seis cajas con borde, que es
+   justo el patrón que se repite en todas las landings. Aquí mandan el
+   filete y el aire. */
+.caso { list-style: none; margin: var(--s5) 0 0; padding: 0; display: grid; gap: 0; }
+.caso li { padding: var(--s3) 0; border-top: 1px solid var(--linea); }
+.caso li:last-child { border-bottom: 1px solid var(--linea); }
+.caso__t { font-size: var(--t3); color: var(--papel-ink); line-height: 1.2; }
+.caso__d { font-size: var(--t1); color: #5f5849; line-height: 1.55; margin-top: 5px;
+  max-width: 54ch; }
+@media (min-width: 760px) {
+  .caso { grid-template-columns: 1fr 1fr; column-gap: var(--s5); }
+  /* El filete de arriba solo en las dos primeras: en dos columnas, las
+     demás ya lo reciben de la fila anterior. */
+  .caso li:nth-child(n+3) { border-top: 1px solid var(--linea); }
+  .caso li:last-child, .caso li:nth-last-child(2) { border-bottom: 1px solid var(--linea); }
+}
+
+/* ── Los tres servicios ───────────────────────────────────────── */
+.serv { display: grid; gap: var(--s4); margin-top: var(--s5); }
+@media (min-width: 900px) { .serv { grid-template-columns: repeat(3, 1fr); } }
+
+.sv { border-top: 2px solid #A87C1E; padding-top: var(--s3); }
+.sv__n { font-family: var(--prosa); font-size: var(--t2); color: #A87C1E;
+  font-variant-numeric: tabular-nums; }
+.sv h3 { font-size: var(--t3); color: var(--papel-ink); margin-top: 4px; line-height: 1.15; }
+.sv__q { font-family: var(--prosa); font-style: italic; color: #8B6914; margin-top: 3px; }
+.sv__d { font-size: var(--t1); color: #5f5849; line-height: 1.6; margin-top: var(--s2); }
+.sv__l { list-style: none; margin: var(--s3) 0 0; padding: 0; }
+.sv__l li { font-size: var(--t0); color: #6b6455; line-height: 1.5;
+  padding: 7px 0 7px 15px; position: relative; border-top: 1px solid var(--linea); }
+.sv__l li:before { content: ""; position: absolute; left: 0; top: 14px;
+  width: 5px; height: 5px; border-radius: 50%; background: #A87C1E; }
+
+/* ═══ MÓVIL ═══════════════════════════════════════════════════════
+   Una sola regla para toda la portada. Antes había SIETE media
+   queries de 880px repartidas por el archivo, escritas en distintas
+   rondas, y se pisaban: la que colapsaba la rejilla limitaba
+   `.portada__vis`, pero el ancho lo manda `.hoja`, y esa vivía en
+   otra. El resultado era un teléfono que tapaba el titular. */
+@media (max-width: 880px) {
+  /* El titular PRIMERO: en 390 px el mensaje es el texto, no la
+     maqueta. El teléfono pasa debajo. */
+  .portada__in { grid-template-columns: 1fr; gap: var(--s4); }
+  .portada__txt { order: 1; }
+  .portada__vis { order: 2; }
+
+  /* Sin alto forzado: con `min-height:100svh` y un teléfono igual de
+     alto dentro, el texto no cabía y quedaba por debajo. */
+  .portada { min-height: 0; padding-bottom: 0; }
+
+  /* Y sin sangrado: el margen negativo es lo que subía el contenido
+     por debajo del móvil. Aquí el teléfono se recorta por su propio
+     contenedor, no arrastrando lo que viene después. */
+  .hoja {
+    max-width: 290px; margin: 0 auto;
+    height: 62svh; overflow: hidden;
+  }
+  .doc { height: 100%; min-height: 0; }
+
+  .nota, .corte, .mancha { display: none; }
+  .escena { justify-content: center; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .escena.armada .doc__tbl tr.fila,
   .escena.armada .doc__sujeto,
@@ -977,7 +1077,7 @@ a { color: inherit; text-decoration: none; }
   width: 118%; height: 128%; z-index: 0; pointer-events: none;
 }
 .sec, .rej { position: relative; overflow: hidden; }
-@media (max-width: 880px) { .mancha { display: none; } }
+
 .claro--hondo { background: var(--papel-hondo); }
 .claro .kick { color: var(--oro-os); }
 .claro .ruta__d, .claro .hitos p, .claro .rej__sub, .claro .rej__pie { color: #5f5849; }
@@ -1141,25 +1241,6 @@ a { color: inherit; text-decoration: none; }
 
 /* El selector de ciclo. Dos botones y no un interruptor: un interruptor
    no dice cuál de los dos está activo sin leer su etiqueta. */
-.ciclo {
-  display: inline-flex; gap: 3px; margin: 0 0 var(--s4);
-  padding: 4px; border-radius: 999px;
-  background: rgba(26, 21, 3, .05); border: 1px solid var(--linea);
-}
-.ciclo__b {
-  font: inherit; font-size: var(--t1); color: var(--tenue);
-  padding: 8px 18px; border: 0; border-radius: 999px; background: none;
-  cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-  transition: background .25s var(--out), color .25s var(--out);
-}
-.ciclo__b:hover { color: var(--papel-ink); }
-.ciclo__b.is-on { background: #17150d; color: var(--oro-cl); }
-.ciclo__ah {
-  font-size: .72rem; letter-spacing: .04em; text-transform: uppercase;
-  font-weight: 600; padding: 2px 7px; border-radius: 999px;
-  background: rgba(30, 122, 75, .13); color: #1E7A4B;
-}
-.ciclo__b.is-on .ciclo__ah { background: rgba(201, 168, 76, .2); color: var(--oro-cl); }
 
 .planes {
   display: grid; gap: var(--s3);
@@ -1282,26 +1363,6 @@ a { color: inherit; text-decoration: none; }
     }
   }
 
-  // El ciclo de facturación. Los dos precios ya están en el HTML y aquí
-  // solo se alterna cuál se ve: así la página funciona sin JavaScript
-  // —se ve el mensual— y al cambiar no hay salto de cifra.
-  const ciclos = document.querySelectorAll("[data-ciclo]");
-  ciclos.forEach((b) => {
-    b.addEventListener("click", () => {
-      const cual = b.dataset.ciclo;
-      ciclos.forEach((o) => {
-        const on = o === b;
-        o.classList.toggle("is-on", on);
-        o.setAttribute("aria-pressed", String(on));
-      });
-      document.querySelectorAll("[data-mes]").forEach((e) => {
-        e.hidden = cual !== "mes";
-      });
-      document.querySelectorAll("[data-anio]").forEach((e) => {
-        e.hidden = cual !== "anio";
-      });
-    });
-  });
 
   // Revelado al entrar en pantalla. Escalonado solo dentro de los pares
   // que se leen juntos; el resto entra a su ritmo.

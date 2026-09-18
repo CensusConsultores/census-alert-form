@@ -11,12 +11,13 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://censusalert.com',
   output: 'static',
-  integrations: [
-    sitemap({
-      // El formulario va con `noindex`: incluirlo en el sitemap sería
-      // pedirle a Google que indexe una página que le dice que no.
-      // Señales contradictorias es lo peor que se le puede dar.
-      filter: (pagina) => !pagina.includes("/formulario"),
-    }),
-  ],
+  // El formulario se eliminó y todo se atiende por WhatsApp. La ruta se
+  // redirige en vez de devolver 404: hay enlaces repartidos —correos,
+  // QR impresos, marcadores— y romperlos pierde al cliente en el punto
+  // exacto en el que iba a escribirnos.
+  redirects: {
+    '/formulario': 'https://wa.me/593978863448?text=' +
+      encodeURIComponent('Hola, les escribo desde censusalert.com. Quisiera información sobre Census Alert.'),
+  },
+  integrations: [sitemap()],
 });

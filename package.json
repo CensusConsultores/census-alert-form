@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "astro": "^6.4.2",
-    "libphonenumber-js": "^1.13.4"
+    "libphonenumber-js": "^1.13.4",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.4"

@@ -76,6 +76,15 @@ const PUNTOS = [
         ))}
       </ul>
 
+      <!-- Indicador de posición. Solo se ve en móvil, donde la lista se
+           esconde y no hay otra forma de saber que son cinco. -->
+      <div class="puntos" role="tablist" aria-label="Punto mostrado">
+        {PUNTOS.map((p, i) => (
+          <button type="button" class="punto" data-punto-ir={i}
+                  aria-label={p.t} aria-selected={i === 0 ? "true" : "false"} role="tab"></button>
+        ))}
+      </div>
+
       <!-- Columna de pantallas. Todas en el DOM; se muestra la activa. -->
       <div class="rec__vis">
         <div class="marco">
@@ -311,12 +320,65 @@ const PUNTOS = [
     transition: opacity .36s ease; }
   .marco.cambiando .velo { opacity: .62; }
 
+  /* ── Móvil: deja de ser lista ──────────────────────────────────── */
+  /* Apilar cinco píldoras en vertical empuja el teléfono fuera de la
+     pantalla: hay que hacer scroll para ver aquello de lo que habla el
+     texto, que es justo lo contrario de lo que hace la sección. En móvil
+     manda la pantalla, y el punto abierto flota ENCIMA con las flechas
+     a los lados —el mismo patrón que usa Apple en su visor. */
   @media (max-width: 899px) {
-    /* En móvil las flechas sobran: el pulgar ya recorre la lista. */
-    .rec__lista { padding-left: 0; }
-    .flechas { display: none !important; }
+    .rec { position: relative; gap: 0; }
+    .rec__vis { order: -1; }
+    .marco { max-width: 320px; }
+
+    /* La lista ya no ocupa flujo: se posa sobre el bajo del teléfono.
+       `pointer-events` solo en la tarjeta, para no capturar el deslizado
+       en el resto de la franja. */
+    .rec__lista { position: absolute; left: 0; right: 0; bottom: 22px;
+      z-index: 6; padding: 0 46px; gap: 0; pointer-events: none; }
+    .rec__li { pointer-events: auto; }
+    .rec__li:not(.is-on) { display: none; }
+    .pil { display: none; }
+
+    /* Sin acordeón no hay alto que animar: la caja es la tarjeta. El
+       `!important` es contra el alto en píxeles que pone el JS, que en
+       móvil no aplica pero podría quedar de un giro de pantalla. */
+    .caja { height: auto !important; overflow: visible; }
+    .caja > .tarj { position: static; width: 100%; max-width: none;
+      background: rgba(20, 19, 13, .86); border: 1px solid rgba(247,244,236,.11);
+      -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+      box-shadow: 0 14px 34px rgba(0,0,0,.45); }
+    .tarj p { font-size: 14px; }
+
+    /* La leyenda entra cada vez que cambias de punto. Es una animación,
+       no una transición: la saliente se va con su `display:none` y no
+       habría estado desde el que transicionar. */
+    @keyframes leyenda-entra {
+      from { opacity: 0; transform: translateY(16px) scale(.975); }
+      to   { opacity: 1; transform: none; } }
+    .rec__li.is-on .tarj { animation: leyenda-entra .48s var(--muelle) both; }
+
+    /* Las flechas se salen a los pasillos de 46 px que dejó el padding. */
+    .flechas { display: flex; flex-direction: row; gap: 0;
+      position: absolute; left: -46px; right: -46px; top: 50%;
+      transform: translateY(-50%); justify-content: space-between; }
+    .fle { width: 38px; height: 38px;
+      background: rgba(12, 11, 7, .6); backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); }
+
+    /* Cuántos son y por cuál vas. Sin esto, cinco pantallas detrás de dos
+       flechas no se adivinan. */
+    .puntos { position: absolute; left: 0; right: 0; bottom: 6px; z-index: 6;
+      display: flex; justify-content: center; gap: 6px; }
+    .punto { width: 6px; height: 6px; border-radius: 50%; padding: 0; border: 0;
+      background: rgba(247,244,236,.26); cursor: pointer;
+      transition: background .3s ease, width .3s var(--muelle); }
+    .punto.is-on { background: var(--oro); width: 17px; border-radius: 99px; }
+
     .pil__t { white-space: normal; }
   }
+  /* En escritorio los puntos sobran: la lista ya enseña los cinco. */
+  @media (min-width: 900px) { .puntos { display: none; } }
 
   @media (prefers-reduced-motion: reduce) {
     .caja, .pil, .tarj, .fle, .velo { transition: none !important; }
