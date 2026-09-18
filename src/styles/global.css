@@ -35,6 +35,12 @@ html, body {
   min-height: 100vh;
 }
 
+/* Los enlaces a #ancla saltaban de golpe en toda la página. */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 body {
   background:
     radial-gradient(ellipse 900px 700px at 50% -120px,

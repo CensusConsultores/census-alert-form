@@ -17,10 +17,9 @@
 interface Fuente { s: string; n: string; e: string }
 interface Props {
   portales: Fuente[];
-  ctaMonitoreo: string;
   ctaComoFunciona: string;
 }
-const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
+const { portales, ctaComoFunciona } = Astro.props;
 ---
 
 <header class="hg" id="top">
@@ -33,7 +32,6 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
         <h1 class="hg__h1">Census Alert</h1>
         <p class="hg__sub">Vigilancia total diaria de las fuentes públicas del Estado.</p>
         <div class="hg__ctas">
-          <a href={ctaMonitoreo} target="_blank" rel="noopener" class="hg__bt">Quiero monitorear mi empresa</a>
           <a href={ctaComoFunciona} class="hg__bt hg__bt--l">Ver cómo funciona</a>
         </div>
         <p class="hg__pie">
