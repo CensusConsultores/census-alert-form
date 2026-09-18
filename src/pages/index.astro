@@ -34,22 +34,23 @@ const VIGILANCIA = [
   { n: "12 meses de vigilancia", precio: "19,12", antes: "23,88", dto: "−20%", unidad: "1,59 al mes" },
 ];
 
-// Las situaciones. No son sectores: son MOMENTOS. Un sector es una
-// etiqueta en la que nadie se reconoce; un momento sí, y además dice
-// cuándo se saca la tarjeta.
-const CASOS = [
-  { t: "Antes de arrendar",
-    d: "Saber si quien va a firmar tiene juicios de desalojo o deudas vigentes." },
-  { t: "Antes de contratar",
-    d: "Revisar antecedentes laborales y causas antes de incorporar a alguien." },
-  { t: "Antes de dar crédito",
-    d: "Ver la deuda real con el SRI y el IESS, no la que declara el solicitante." },
-  { t: "Antes de firmar con un proveedor",
-    d: "Comprobar que la compañía existe, está al día y quién está detrás." },
-  { t: "Antes de asociarte",
-    d: "Conocer las otras compañías del socio y si figura en alguna lista." },
-  { t: "Después de firmar",
-    d: "Porque el riesgo no aparece el día del contrato: aparece dos años después." },
+// Las mismas 19 fuentes de siempre, pero agrupadas por la pregunta que
+// responden en vez de listadas en una cuadrícula plana —eso ya sale en el
+// remate del hero—. Cuatro preguntas, no seis situaciones: es lo que la
+// gente de verdad se pregunta antes de firmar, no un catálogo de momentos.
+const PREGUNTAS = [
+  { q: "¿Puede pagar?",
+    a: "SRI —deuda firme, impugnada, facilidades de pago— y la ficha del contribuyente, IESS, Ministerio del Trabajo, valores adeudados a Supercías, SERCOP, ANT, ATM Guayaquil, impuestos prediales y pensiones alimenticias.",
+    ico: "moneda" },
+  { q: "¿Está en juicios?",
+    a: "Función Judicial, Fiscalía, resoluciones penales del COIP, insolvencias y quiebras, e impedimentos de salida del país.",
+    ico: "balanza" },
+  { q: "¿Con quién estoy tratando?",
+    a: "La ficha societaria de Supercías: accionistas, administradores, situación legal, en qué otras compañías figura la persona, el ranking con ingresos y patrimonio, y el catastro de cooperativas.",
+    ico: "carnet" },
+  { q: "¿Está señalada en alguna lista?",
+    a: "OFAC, Naciones Unidas, los más buscados de la Unión Europea, el FBI, la Policía Nacional, la Superintendencia de Bancos y el catastro de empresas fantasma del SRI. Más exposición política y certificación BASC.",
+    ico: "bandera" },
 ];
 
 // Los tres servicios. El tercero —menciones— es el que no tiene nadie
@@ -145,28 +146,65 @@ const PORTALES = [
 
 <HeroCrece portales={PORTALES} ctaMonitoreo={CTA_MONITOREO} ctaComoFunciona="#servicios" />
 
-<!-- ═══ 2 · SITUACIONES ═══════════════════════════════════════════
-     Sustituye a la rejilla de sectores que usa la competencia. Un
-     sector es una etiqueta abstracta: nadie se reconoce en «retail».
-     Una situación sí —«antes de arrendar» lo lee el inmobiliario y
-     también el abogado—, y además dice CUÁNDO se usa el producto. -->
+<!-- ═══ 2 · PREGUNTAS ══════════════════════════════════════════════
+     Antes iba por SITUACIONES («antes de arrendar»…). Mostrar 19 logos
+     sueltos (el remate del hero) no es interesante por sí solo; agrupados
+     por la pregunta que responden sí lo es. Cuatro tarjetas, no seis
+     situaciones. En móvil son un carrusel deslizable con puntos —el mismo
+     patrón que ya usa «Qué recibes»—; en escritorio, una rejilla fija. -->
 <section class="sec claro claro--alto grano" id="cuando">
   <div class="wrap">
     <div class="cab rv">
-      <p class="kick">Cuándo se usa</p>
-      <h2>Antes de decir que sí.</h2>
-      <p class="cab__sub">Siempre hay un momento en que ya no puedes
-        deshacer la decisión. Census Alert va justo antes de ese momento.</p>
+      <p class="kick">Qué buscamos</p>
+      <h2>¿Qué se busca, y en dónde?</h2>
+      <p class="cab__sub">Cada pregunta agrupa las fuentes oficiales que la responden.</p>
     </div>
 
-    <ul class="caso">
-      {CASOS.map((c) => (
-        <li class="rv">
-          <p class="caso__t">{c.t}</p>
-          <p class="caso__d">{c.d}</p>
+    <ul class="preg">
+      {PREGUNTAS.map((p) => (
+        <li class="preg__item rv">
+          <span class="preg__ico" aria-hidden="true">
+            {p.ico === "moneda" && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="7.4"/>
+                <path d="M12 8v8M9.6 9.7c0-.9 1-1.6 2.4-1.6s2.3.6 2.3 1.4c0 1.9-4.7 1-4.7 2.9 0 .8 1 1.5 2.4 1.5s2.4-.7 2.4-1.5"/>
+              </svg>
+            )}
+            {p.ico === "balanza" && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v14.5M8.3 18.5h7.4M6.2 8.4h4.6M13.2 8.4h4.6"/>
+                <path d="M6.2 8.4 4 12.6h4.4L6.2 8.4ZM17.8 8.4l-2.2 4.2h4.4l-2.2-4.2Z"/>
+              </svg>
+            )}
+            {p.ico === "carnet" && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3.3" y="5.8" width="17.4" height="12.4" rx="1.6"/>
+                <circle cx="8.4" cy="11" r="1.7"/>
+                <path d="M5.7 15.3c0-1.4 1.2-2.4 2.7-2.4s2.7 1 2.7 2.4M14 9.6h4.2M14 12.8h4.2"/>
+              </svg>
+            )}
+            {p.ico === "bandera" && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 3.5v17"/>
+                <path d="M6 4.3h11.5l-2.9 3.7 2.9 3.7H6"/>
+              </svg>
+            )}
+          </span>
+          <p class="preg__q">{p.q}</p>
+          <p class="preg__a">{p.a}</p>
         </li>
       ))}
     </ul>
+
+    <div class="preg__puntos" role="tablist" aria-label="Pregunta mostrada">
+      {PREGUNTAS.map((p, i) => (
+        <button type="button" class="preg__punto" data-punto-ir={i} aria-label={p.q}></button>
+      ))}
+    </div>
   </div>
 </section>
 
@@ -580,25 +618,48 @@ a { color: inherit; text-decoration: none; }
 .precios__pie { margin-top: var(--s4); font-size: var(--t0); color: var(--papel-2);
   line-height: 1.6; max-width: 62ch; }
 
-/* ── Situaciones ──────────────────────────────────────────────── */
+/* ── Preguntas ────────────────────────────────────────────────── */
 .cab__sub { max-width: 46ch; margin: var(--s2) auto 0; color: var(--papel-2);
   font-family: var(--prosa); font-size: var(--t2); line-height: 1.6; }
 
-/* Sin tarjetas: seis cajas con borde serían seis cajas con borde, que es
-   justo el patrón que se repite en todas las landings. Aquí mandan el
-   filete y el aire. */
-.caso { list-style: none; margin: var(--s5) 0 0; padding: 0; display: grid; gap: 0; }
-.caso li { padding: var(--s3) 0; border-top: 1px solid var(--linea); }
-.caso li:last-child { border-bottom: 1px solid var(--linea); }
-.caso__t { font-size: var(--t3); color: var(--papel-ink); line-height: 1.2; }
-.caso__d { font-size: var(--t1); color: #5f5849; line-height: 1.55; margin-top: 5px;
-  max-width: 54ch; }
+/* Esta vez SÍ son tarjetas: cuatro cajas con ícono, no seis filas con
+   filete. En escritorio, rejilla fija de dos columnas; en móvil, un
+   carrusel deslizable con puntos —mismo patrón que el visor de
+   «Qué recibes», adaptado a tarjeta horizontal en vez de acordeón. */
+.preg { list-style: none; margin: var(--s5) 0 0; padding: 0;
+  display: flex; gap: var(--s3); overflow-x: auto; scroll-snap-type: x mandatory;
+  scroll-padding-left: clamp(20px, 5vw, 40px);
+  /* Sangra hasta el borde del viewport pero conserva el aire de `.wrap`
+     en el primer y último tarjetón, para que no queden a ras. */
+  margin-inline: clamp(-40px, -5vw, -20px);
+  padding-inline: clamp(20px, 5vw, 40px);
+  scrollbar-width: none; }
+.preg::-webkit-scrollbar { display: none; }
+.preg__item {
+  flex: 0 0 82%; scroll-snap-align: center;
+  border: 1px solid var(--linea); border-radius: var(--radio);
+  background: var(--papel-alto); padding: var(--s4);
+}
+.preg__ico { display: grid; place-items: center; width: 50px; height: 50px;
+  border-radius: 50%; margin-bottom: var(--s3);
+  background: linear-gradient(160deg, rgba(201,168,76,.16), rgba(201,168,76,.05));
+  border: 1px solid rgba(201, 168, 76, .3); color: var(--oro-os); }
+.preg__ico svg { width: 24px; height: 24px; }
+.preg__q { font-size: var(--t3); color: var(--papel-ink); line-height: 1.2; font-weight: 600; }
+.preg__a { font-size: var(--t1); color: #5f5849; line-height: 1.55; margin-top: var(--s2); }
+
+/* Los puntos: solo hacen falta donde el carrusel se desliza. En
+   escritorio la rejilla ya enseña las cuatro a la vez. */
+.preg__puntos { display: flex; justify-content: center; gap: 7px; margin-top: var(--s4); }
+.preg__punto { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--linea); cursor: pointer; transition: background .25s var(--out), width .25s var(--out); }
+.preg__punto.is-on { background: var(--oro-os); width: 20px; border-radius: 99px; }
+
 @media (min-width: 760px) {
-  .caso { grid-template-columns: 1fr 1fr; column-gap: var(--s5); }
-  /* El filete de arriba solo en las dos primeras: en dos columnas, las
-     demás ya lo reciben de la fila anterior. */
-  .caso li:nth-child(n+3) { border-top: 1px solid var(--linea); }
-  .caso li:last-child, .caso li:nth-last-child(2) { border-bottom: 1px solid var(--linea); }
+  .preg { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4);
+    overflow-x: visible; margin-inline: 0; padding-inline: 0; }
+  .preg__item { flex: initial; }
+  .preg__puntos { display: none; }
 }
 
 /* ── Los tres servicios ───────────────────────────────────────── */
@@ -666,10 +727,21 @@ a { color: inherit; text-decoration: none; }
 .claro .grano::before, .claro.grano::before { opacity: .07; }
 .cab { max-width: 36ch; }
 .cab h2 { font-size: var(--t5); margin-top: var(--s2); }
+/* Ese margin-top separa el h2 del kicker de arriba. Sin kicker —FAQ y
+   Precios ya no lo llevan— el h2 es el primer hijo de `.cab`, que no
+   tiene padding ni borde: el margen COLABSA hacia afuera, atraviesa
+   `.wrap` y la sección entera, y aparece como una línea entre esta
+   sección y la anterior, sobre el fondo oscuro del <body>. */
+.cab h2:first-child { margin-top: 0; }
 /* «Preguntas frecuentes» es ahora el título, no el texto de apoyo:
    más grande que el resto de cabeceras de sección para que pese como
-   tal. */
-.faq .cab h2 { font-size: var(--t6); }
+   tal. Sin el límite de 36ch —pensado para un párrafo, no un título
+   corto— envolvía en dos líneas aunque hubiera espacio de sobra. */
+.faq .cab { max-width: none; }
+.faq .cab h2 { font-size: var(--t6); white-space: nowrap; }
+@media (max-width: 640px) {
+  .faq .cab h2 { white-space: normal; }
+}
 
 /* ── Las dos rutas ─────────────────────────────────────────── */
 .via { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--s5); }
@@ -918,4 +990,31 @@ a { color: inherit; text-decoration: none; }
     });
   });
   document.querySelectorAll(".rv").forEach((el) => io.observe(el));
+
+  // El carrusel de preguntas (móvil). Los puntos siguen al deslizado con
+  // un IntersectionObserver sobre la propia lista —igual de fiable que
+  // medir scrollLeft a mano y no se desincroniza si el usuario frena a
+  // media tarjeta—; el 50% de umbral es lo que decide cuál "es" la
+  // activa cuando dos tarjetas están parcialmente visibles a la vez.
+  const preg = document.querySelector<HTMLElement>(".preg");
+  const pregPuntos = Array.from(document.querySelectorAll<HTMLButtonElement>(".preg__punto"));
+  if (preg && pregPuntos.length) {
+    const tarjetas = Array.from(preg.querySelectorAll<HTMLElement>(".preg__item"));
+    const marcar = (i: number) =>
+      pregPuntos.forEach((b, k) => b.classList.toggle("is-on", k === i));
+
+    const obsCarrusel = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (e.isIntersecting) marcar(tarjetas.indexOf(e.target as HTMLElement));
+        });
+      },
+      { root: preg, threshold: 0.5 },
+    );
+    tarjetas.forEach((t) => obsCarrusel.observe(t));
+
+    pregPuntos.forEach((b, i) =>
+      b.addEventListener("click", () =>
+        tarjetas[i].scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })));
+  }
 </script>
