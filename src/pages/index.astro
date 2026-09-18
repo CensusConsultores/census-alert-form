@@ -270,8 +270,8 @@ const PORTALES = [
 <section class="faq claro claro--alto" id="faq">
   <div class="wrap">
     <div class="cab rv">
-      <p class="kick">Preguntas frecuentes</p>
-      <h2>Antes de escribirnos.</h2>
+      <p class="kick">Antes de escribirnos</p>
+      <h2>Preguntas frecuentes.</h2>
     </div>
     <div class="faq__lista">
       {FAQ.map((f) => (
@@ -619,6 +619,10 @@ a { color: inherit; text-decoration: none; }
 .claro .grano::before, .claro.grano::before { opacity: .07; }
 .cab { max-width: 36ch; }
 .cab h2 { font-size: var(--t5); margin-top: var(--s2); }
+/* «Preguntas frecuentes» es ahora el título, no el texto de apoyo:
+   más grande que el resto de cabeceras de sección para que pese como
+   tal. */
+.faq .cab h2 { font-size: var(--t6); }
 
 /* ── Las dos rutas ─────────────────────────────────────────── */
 .via { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--s5); }
