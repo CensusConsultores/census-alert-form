@@ -275,14 +275,33 @@ const PUNTOS = [
 
   /* Fondo oscuro propio. El ámbito de Astro le da a cada componente su
      hash, así que las reglas de paleta de index.astro no llegan aquí. */
-  .rec-sec { background: #18170f; color: var(--crema); padding: var(--s6) 0;
+  .rec-sec { position: relative; overflow: hidden;
+    background: #18170f; color: var(--crema); padding: var(--s6) 0;
     /* el navbar flota encima: sin esto un enlace a #recibes deja la
        primera píldora debajo de la isla */
     scroll-margin-top: calc(var(--nav-h) + 12px); }
 
+  /* El fondo texturizado. En una capa APARTE (::before), no en
+     `background` del propio `.rec-sec`: `filter:blur()` afecta a TODO
+     el elemento al que se aplica, contenido incluido —si el desenfoque
+     fuera del `.rec-sec` mismo, se vería la píldora y el teléfono
+     borrosos también—. El `inset` negativo le da al blur margen donde
+     "morder" para que no se note un borde más claro en el canto de la
+     sección; el degradado oscuro por encima es lo que evita que la
+     imagen le quite protagonismo a la data, como se pidió. */
+  .rec-sec::before {
+    content: ""; position: absolute; inset: -50px; z-index: 0;
+    background:
+      linear-gradient(180deg, rgba(15, 14, 8, .74), rgba(15, 14, 8, .88)),
+      url("/fondo-recibes.webp") center / cover no-repeat;
+    filter: blur(34px) saturate(1.15);
+    pointer-events: none;
+  }
+
   /* Y por lo mismo `.wrap` de index.astro tampoco llega: sin esto la lista
      sale pegada al borde izquierdo en móvil. Mismos valores que allí. */
-  .rec-sec .wrap { max-width: var(--wrap); margin: 0 auto;
+  .rec-sec .wrap { position: relative; z-index: 1;
+    max-width: var(--wrap); margin: 0 auto;
     padding: 0 clamp(20px, 5vw, 40px); }
   .rec-sec .kick { color: var(--oro); }
   .rec-sec h2 { color: var(--crema); }
@@ -291,6 +310,26 @@ const PUNTOS = [
   @media (min-width: 900px) {
     .rec { grid-template-columns: minmax(340px, 1fr) 1fr; gap: var(--s6); align-items: start; }
     .rec__vis { position: sticky; top: calc(var(--nav-h) + 20px); }
+  }
+  /* En pantallas grandes el `.wrap` deja de crecer (tope en --wrap), pero
+     la rejilla de dos columnas de arriba sigue repartiendo TODO ese ancho
+     fijo entre lista y teléfono — y como la lista no necesita tanto, el
+     teléfono queda centrado en su columna, no en la sección: medido, su
+     centro caía 297px a la derecha del centro real del `.wrap`. Una
+     tercera columna vacía, del mismo ancho que la de la lista, deja al
+     teléfono (columna del medio, del ancho de su contenido) exactamente
+     en el medio real, sin tocar el marcado — `.puntos` está en
+     `display:none` aquí, así que el auto-placement solo ve dos hijos
+     y el tercer hueco queda libre solo. */
+  @media (min-width: 1400px) {
+    /* `auto` en vez de un ancho fijo colapsaba el teléfono a casi nada:
+       `.marco` mide `width:100%` de `.rec__vis`, y una columna que se
+       mide por el contenido de un hijo que a su vez se mide por la
+       columna es una dependencia circular. Los navegadores la resuelven
+       encogiendo al mínimo, no al ancho real —medido: la tarjeta quedó
+       en unos pocos px—. Un ancho fijo (350px: los 330 del marco más
+       aire) le da a la columna algo concreto que medir. */
+    .rec { grid-template-columns: minmax(300px, 1fr) 350px minmax(300px, 1fr); }
   }
 
   /* La lista se desplaza a la derecha para dejar sitio a las flechas. */
