@@ -46,7 +46,7 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
         <span class="hg__isla" aria-hidden="true"></span>
 
         <div class="hg__pantalla">
-          <img src="/logo-robot.png" alt="" class="hg__logo-brillo" aria-hidden="true" />
+          <img src="/logo-robot-blur.png" alt="" class="hg__logo-brillo" aria-hidden="true" />
           <img src="/logo-robot.png" alt="Census Alert" class="hg__logo" />
 
           <div class="hg__cab-fuentes">
@@ -245,6 +245,13 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
      tener que tocar `top`/`left` por separado. El radio baja a la vez,
      a cero: por eso al final es un panel recto, no un teléfono enorme. */
   .hg__tarjeta {
+    /* `contain:layout paint`: esta caja cambia de ancho y alto en CADA
+       fotograma de scroll. Sin esto, cada cambio obliga al navegador a
+       recalcular el layout y el pintado de TODA la página en cada
+       fotograma —el patrón clásico detrás de un scroll que "se siente
+       pegado"—; con esto, el recálculo queda acotado a esta caja y lo
+       que hay dentro, sin salir a tocar el resto del documento. */
+    contain: layout paint;
     position: relative; z-index: 1; flex-shrink: 0; margin-top: auto;
     width: calc(var(--ancho-chico, 300px) + var(--progreso, 0) * (100vw - var(--ancho-chico, 300px)));
     height: calc(var(--alto-chico, 650px) + var(--progreso, 0) * (100svh - var(--alto-chico, 650px)));
@@ -302,9 +309,16 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
        —posible límite del motor con tantos `calc()` anidados—. En
        viewport no depende de ese cálculo y el resplandor sigue
        leyéndose grande igual. */
+    /* SIN `filter:blur()` en vivo: el desenfoque ya viene horneado en
+       el PNG (logo-robot-blur.png). Animar un blur de 70px sobre un
+       elemento de 100vw en cada fotograma de scroll es justo el tipo
+       de repintado caro que se sentía «pegado» en celulares al
+       aparecer las fuentes —el momento en que este resplandor entra—.
+       Con el blur ya horneado, lo único que anima aquí es OPACIDAD,
+       que la GPU compone sin repintar nada. */
     position: absolute; z-index: 0; width: 100vw; left: 50%; height: auto;
     transform: translateX(-50%);
-    filter: blur(70px); pointer-events: none;
+    pointer-events: none; will-change: opacity;
     opacity: clamp(0, calc((var(--progreso, 0) - .35) * 1.1), .4);
   }
 
@@ -323,6 +337,7 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
     opacity: clamp(0, calc((var(--progreso, 0) - .58) * 2.6), 1);
     transform: translateY(calc((1 - var(--progreso, 0)) * 22px));
     transition: opacity .15s linear;
+    will-change: opacity, transform;
   }
   .hg__portales img {
     flex: 0 0 calc((100% - var(--hg-h) * 5) / 6);
@@ -340,6 +355,7 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
     opacity: clamp(0, calc((var(--progreso, 0) - .5) * 2.6), 1);
     transform: translateY(calc((1 - var(--progreso, 0)) * 22px));
     transition: opacity .15s linear;
+    will-change: opacity, transform;
   }
   .hg__kick-fuentes {
     font-size: var(--t0); font-weight: 700; letter-spacing: .16em;
