@@ -57,7 +57,7 @@ const PREGUNTAS = [
 // más, y por eso va con el mismo peso que los otros dos.
 const SERVICIOS = [
   { n: "01", titulo: "Monitoreo diario", q: "Para después de firmar.",
-    d: "Revisamos cada madrugada y te avisamos el mismo día que algo cambia. Si no cambió nada, no recibes correo.",
+    d: "Revisamos cada madrugada a los clientes, proveedores y contrapartes que nos indiques, y te avisamos el mismo día que algo cambia. Si no cambió nada, no recibes correo.",
     puntos: ["Las mismas fuentes del informe, todos los días",
              "También a los accionistas y a las compañías vinculadas",
              "Avisa si venden acciones, cambia el representante o entra en liquidación"] },
@@ -354,8 +354,8 @@ const PORTALES = [
 <section class="cierre claro claro--hondo grano">
   <div class="wrap">
     <p class="kick rv">Empieza hoy</p>
-    <h2 class="rv">¿Sabes qué dice el Estado de tu contraparte?</h2>
-    <p class="lead rv">La única forma de saberlo es mirarlo.</p>
+    <h2 class="rv">Verifica antes de firmar.</h2>
+    <p class="lead rv">Un informe con lo que consta en las fuentes públicas oficiales.</p>
     <div class="ctas rv">
       <a href={CTA_GENERAL} target="_blank" rel="noopener" class="bt">Solicitar servicio</a>
       <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
@@ -374,9 +374,12 @@ const PORTALES = [
     </div>
     <p class="pie-sitio__legal">
       © {new Date().getFullYear()} Census Consultores · Asesores Legales y Tributarios · Ecuador<br />
-      Census Alert es un servicio de monitoreo de información pública oficial.
-      La información se extrae de portales del Estado ecuatoriano y se presenta
-      con fines informativos.
+      Census Alert es un servicio privado de Census Consultores.
+      <b>No representa a ninguna entidad del Estado ecuatoriano ni está
+      afiliado, autorizado o respaldado por ellas, y no tramita servicios
+      gubernamentales.</b> La información se extrae de portales públicos
+      oficiales, se presenta con fines informativos y debe verificarse en la
+      fuente antes de adoptar decisiones con efectos jurídicos.
     </p>
   </div>
 </footer>

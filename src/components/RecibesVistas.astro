@@ -42,7 +42,7 @@ const NODOS = [
 ];
 
 const AVISOS = [
-  ["Comercial del Pacífico S.A.", "deuda nueva en el SRI por $1.240,00", "ahora"],
+  ["Comercial Ejemplo S.A.", "deuda nueva en el SRI por $1.240,00", "ahora"],
   ["Andes Logística", "2 denuncias nuevas en Fiscalía", "hace 2 min"],
   ["Transportes Litoral", "cambió el representante legal", "hace 9 min"],
 ];
@@ -52,11 +52,11 @@ const AVISOS = [
 <div class="vista" data-vista="correo">
   <div class="v-cab" style="--i:0">
     <p class="v-marca">CENSUS <span>ALERT</span></p>
-    <p class="v-sub">Monitoreo integral 360°</p>
+    <p class="v-sub">Monitoreo integral 360° · Ejemplo</p>
   </div>
   <div class="v-grupo" style="--i:1">
     <p class="v-k">Hoy · 06:45</p>
-    <p class="v-nom">Comercial del Pacífico S.A.</p>
+    <p class="v-nom">Comercial Ejemplo S.A.</p>
   </div>
   <div class="v-cuerpo">
     <p class="v-k v-k--sep" style="--i:2">Resultados de la revisión</p>
@@ -77,18 +77,18 @@ const AVISOS = [
 <div class="vista" data-vista="informe">
   <div class="v-banda" style="--i:0">
     <p class="v-marca">CENSUS <span>ALERT</span></p>
-    <p class="v-kick">Informe consolidado</p>
+    <p class="v-kick">Informe consolidado · Ejemplo</p>
   </div>
   <div class="v-regla"></div>
   <div class="v-cuerpo">
     <p class="v-k" style="--i:1">Consultado</p>
     <div class="v-suj" style="--i:2">
-      <p class="v-sn">COMERCIAL DEL PACÍFICO S.A.</p>
+      <p class="v-sn">COMERCIAL EJEMPLO S.A.</p>
       <p class="v-si">RUC 09•••••••001 · Persona jurídica</p>
     </div>
     <div class="v-ver" style="--i:3">
       <p class="v-vk">Resultado de la consulta</p>
-      <p class="v-vt">{CON_HALLAZGO} de {FUENTES_TOTAL} fuentes con hallazgos</p>
+      <p class="v-vt">{CON_HALLAZGO} de {FUENTES_TOTAL} fuentes con registros</p>
       <p class="v-vd">{FUENTES_TOTAL - CON_HALLAZGO} sin novedades · 0 sin verificar</p>
     </div>
     <p class="v-k v-k--sep" style="--i:4">Resumen por fuente</p>
@@ -107,11 +107,11 @@ const AVISOS = [
 <div class="vista" data-vista="causa">
   <div class="v-banda" style="--i:0">
     <p class="v-marca">CENSUS <span>ALERT</span></p>
-    <p class="v-kick">Menciones en expedientes</p>
+    <p class="v-kick">Menciones en expedientes · Ejemplo</p>
   </div>
   <div class="v-regla"></div>
   <div class="v-cuerpo">
-    <p class="v-k" style="--i:1">Causa 09359-2016-04196</p>
+    <p class="v-k" style="--i:1">Causa 09999-2016-00001</p>
     <div class="v-suj" style="--i:2">
       <p class="v-sn">Indemnización por despido intempestivo</p>
       <p class="v-si">Unidad Judicial de Trabajo · Guayaquil · 2016</p>
@@ -122,15 +122,15 @@ const AVISOS = [
     </div>
     <p class="v-k v-k--sep" style="--i:4">La frase en que nos apoyamos</p>
     <blockquote class="v-cita" style="--i:5">
-      «…se sigue en contra de APOLO ZOHRER HECTOR ADOLFO y COMERCIAL DEL
-      PACÍFICO S.A. en calidad de demandados…»
+      «…se sigue en contra de COMERCIAL EJEMPLO S.A. en
+      calidad de demandada…»
     </blockquote>
     <p class="v-k v-k--sep" style="--i:6">Otras menciones del mismo RUC</p>
     <div class="v-r v-r--ok" style="--i:7">
-      <i></i><span class="v-rn">09359-2019-01180</span><span class="v-rv">Interviniente</span>
+      <i></i><span class="v-rn">09999-2019-00002</span><span class="v-rv">Interviniente</span>
     </div>
     <div class="v-r v-r--info" style="--i:8">
-      <i></i><span class="v-rn">09332-2021-00447</span><span class="v-rv">Reclamante</span>
+      <i></i><span class="v-rn">09999-2021-00003</span><span class="v-rv">Reclamante</span>
     </div>
     <p class="v-pie v-pie--fin" style="--i:9">Si el texto no permite establecer la
       calidad, el informe lo dice en vez de elegir la más parecida.</p>
@@ -141,13 +141,13 @@ const AVISOS = [
 <div class="vista" data-vista="red">
   <div class="v-banda" style="--i:0">
     <p class="v-marca">CENSUS <span>ALERT</span></p>
-    <p class="v-kick">Red de relacionados</p>
+    <p class="v-kick">Red de relacionados · Ejemplo</p>
   </div>
   <div class="v-regla"></div>
   <div class="v-cuerpo">
     <div class="v-raiz" style="--i:1">
       <p class="v-k">Titular</p>
-      <p class="v-rn2">Comercial del Pacífico S.A.</p>
+      <p class="v-rn2">Comercial Ejemplo S.A.</p>
     </div>
     <!-- El riel es lo que hace que esto se lea como un árbol y no como
          una tabla: cada nodo cuelga de la misma línea. -->
