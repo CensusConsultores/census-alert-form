@@ -38,7 +38,7 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
         </div>
         <p class="hg__pie">
           <span class="hg__viva" aria-hidden="true"></span>
-          {portales.length} portales oficiales · Revisión diaria · Sin instalar nada
+          {portales.length} portales oficiales · Revisión diaria
         </p>
       </div>
 
@@ -316,7 +316,13 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
        aparecer las fuentes —el momento en que este resplandor entra—.
        Con el blur ya horneado, lo único que anima aquí es OPACIDAD,
        que la GPU compone sin repintar nada. */
-    position: absolute; z-index: 0; width: 100vw; left: 50%; height: auto;
+    /* `max-width` global (`img{max-width:100%}` en global.css) le ganaba
+       al `width` de aquí SIEMPRE, sin importar el valor —100%, 140%,
+       125vw, daba igual—: `max-width` recorta el resultado de `width`
+       en el algoritmo de caja, no compite por especificidad con él. No
+       era el `%` contra el `vw` de los intentos anteriores; era esto. */
+    max-width: none;
+    position: absolute; z-index: 0; width: 125vw; left: 50%; height: auto;
     transform: translateX(-50%);
     pointer-events: none; will-change: opacity;
     opacity: clamp(0, calc((var(--progreso, 0) - .35) * 1.1), .4);
