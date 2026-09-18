@@ -137,7 +137,7 @@ const PORTALES = [
     </button>
     <ul class="nav__links" id="navLinks">
       <li><a href="#rutas">Qué hacemos</a></li>
-      <li><a href="#fuentes">Fuentes</a></li>
+      <li><a href="#top">Fuentes</a></li>
       <li><a href={CTA_GENERAL} target="_blank" rel="noopener" class="bt bt--sm">Solicitar servicio</a></li>
     </ul>
   </div>
@@ -266,26 +266,6 @@ const PORTALES = [
   </div>
 </section>
 
-<section class="rej claro claro--alto" id="fuentes">
-  <div class="wrap">
-    <div class="rej__cab rv">
-      <p class="kick">Cobertura</p>
-      <h2>¿Qué fuentes puedes consultar?</h2>
-      <p class="rej__sub">Vamos al portal de cada institución, no a un intermediario.</p>
-    </div>
-    <div class="rej__g">
-      {PORTALES.map(({ s, n, e }) => (
-        <div class="chip" title={n}>
-          <img src={`/logos/${s}.${e}`} alt={n} loading="lazy" />
-        </div>
-      ))}
-    </div>
-    <p class="rej__pie rv">
-      De estos mismos portales salen además las insolvencias, las resoluciones
-      penales, las pensiones alimenticias y el texto completo de los expedientes.
-    </p>
-  </div>
-</section>
 
 <section class="faq claro claro--alto" id="faq">
   <div class="wrap">
@@ -610,11 +590,11 @@ a { color: inherit; text-decoration: none; }
    crecer de ancho lo extienda hacia fuera sin mover la curva, y con
    `preserveAspectRatio="none"` para que el viewBox mapee exacto:
    con `slice` la curva acababa donde no se había calculado. */
-.sec .mancha, .rej .mancha {
+.sec .mancha {
   position: absolute; right: -8%; top: 50%; transform: translateY(-50%);
   width: 118%; height: 128%; z-index: 0; pointer-events: none;
 }
-.sec, .rej { position: relative; overflow: hidden; }
+.sec { position: relative; overflow: hidden; }
 
 .claro--hondo { background: var(--papel-hondo); }
 .claro .kick { color: var(--oro-os); }
@@ -723,49 +703,6 @@ a { color: inherit; text-decoration: none; }
   .col--con { padding: var(--s4) 0 0; border-left: 0; border-top: 1px solid var(--linea); }
 }
 
-/* ── Portales, sobre papel ─────────────────────────────────── */
-.rej { padding: var(--s6) 0; }
-.rej__cab { max-width: 48ch; margin: 0 auto var(--s5); text-align: center; }
-.rej__cab .kick { color: var(--oro-os); }
-.rej h2 { font-size: clamp(1.55rem, 2.9vw, 2.2rem); white-space: nowrap; }
-.rej__sub {
-  margin-top: var(--s2); color: var(--papel-2);
-  font-family: var(--prosa); font-size: var(--t2);
-}
-/* Flex y no grid: en una rejilla la última fila se pega a la izquierda
-   y rompe la simetría; así cada fila queda centrada. */
-.rej__g {
-  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
-  --h: clamp(16px, 2.4vw, 34px);
-  gap: clamp(24px, 3.2vw, 42px) var(--h);
-}
-.chip {
-  flex: 0 0 calc((100% - var(--h) * 6) / 7);
-  display: flex; align-items: center; justify-content: center;
-  height: clamp(40px, 4.6vw, 56px);
-}
-/* `min-*: 0` deja que la imagen encoja dentro del flex; sin ello los
-   sellos verticales (FBI, OFAC, Policía) se salen de su hueco. */
-.chip img {
-  width: 100%; height: 100%; min-width: 0; min-height: 0;
-  object-fit: contain;
-  filter: grayscale(1) contrast(.86) opacity(.5);
-  transition: filter .3s var(--out);
-}
-.chip:hover img { filter: none; }
-.rej__pie {
-  margin: var(--s5) auto 0; max-width: 74ch; text-align: center;
-  font-family: var(--prosa); font-size: var(--t1);
-  color: var(--papel-2); line-height: 1.6;
-}
-@media (max-width: 900px) {
-  .rej__g { --h: 18px; }
-  .chip { flex: 0 0 calc((100% - var(--h) * 3) / 4); }
-}
-@media (max-width: 620px) {
-  .rej h2 { white-space: normal; }
-  .chip { flex: 0 0 calc((100% - var(--h) * 2) / 3); }
-}
 
 /* ── FAQ ───────────────────────────────────────────────────────── */
 /* <details> nativo: acordeón accesible sin una línea de JS, con
