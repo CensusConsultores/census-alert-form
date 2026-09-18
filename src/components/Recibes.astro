@@ -1,0 +1,325 @@
+---
+// Lo que el cliente recibe. Acordeón: una píldora abierta a la vez y la
+// pantalla de la derecha responde.
+//
+// No cuenta QUÉ SERVICIOS hay —eso ya lo hace la sección de servicios— sino
+// QUÉ LLEGA A SUS MANOS. Es un solo hilo, y es lo que la competencia no
+// enseña: dicen «verificamos antecedentes» y no muestran nada.
+const PUNTOS = [
+  {
+    id: "correo",
+    t: "El correo de cada mañana",
+    d: "Llega antes de las siete y solo si algo cambió. Trae el saldo vigente de cada fuente aunque no haya novedad: una deuda que no cambió sigue siendo una deuda.",
+  },
+  {
+    id: "informe",
+    t: "El informe en PDF",
+    d: "Un RUC o una cédula, y en minutos el documento con lo que consta en 29 fuentes. Abre diciendo cuántas traen hallazgo y por cuánto.",
+  },
+  {
+    id: "causa",
+    t: "El detalle de una causa",
+    d: "No listamos causas y ya. Establecemos en qué calidad aparece la persona —señalado, reclamante o interviniente— y citamos la frase del expediente en que nos apoyamos.",
+  },
+  {
+    id: "red",
+    t: "La red de relacionados",
+    d: "Quién está detrás de la compañía y en qué otras figura cada socio. También se vigila: si venden acciones o cambia el representante, te enteras.",
+  },
+  {
+    id: "bolsillo",
+    t: "En tu bolsillo",
+    d: "Los avisos llegan al teléfono y consultas un RUC desde donde estés. Disponible en App Store y Google Play.",
+  },
+];
+---
+
+<section class="rec-sec" id="recibes">
+  <div class="wrap">
+    <div class="rec">
+      <!-- Columna de píldoras.
+           UNA CAJA POR PUNTO, no dos. Es el modelo de Apple: el elemento
+           que anima es uno solo y su altura va de «alto de píldora» a «alto
+           de tarjeta». Los dos contenidos viven dentro, superpuestos y en
+           posición absoluta, así que no aportan alto y el cruce no puede
+           dejar ver los dos a la vez —que es justo lo que pasaba con el
+           esquema anterior de dos celdas animándose por separado. -->
+      <ul class="rec__lista">
+        {PUNTOS.map((p, i) => (
+          <li class="rec__li" data-li={p.id}>
+            <!-- Flechas: fuera de la caja que recorta, o el overflow las
+                 comería. Van dentro del <li>, así siguen solas al abierto. -->
+            <div class="flechas" aria-hidden={i === 0 ? "false" : "true"}>
+              <button type="button" class="fle" data-mover="-1" aria-label="Anterior">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                     stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+              </button>
+              <button type="button" class="fle" data-mover="1" aria-label="Siguiente">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                     stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+
+            <div class="caja">
+              <button type="button" class="pil" data-punto={p.id}
+                      aria-expanded={i === 0 ? "true" : "false"}
+                      aria-controls={`cuerpo-${p.id}`}>
+                <span class="pil__ico" aria-hidden="true"></span>
+                <span class="pil__t">{p.t}</span>
+              </button>
+
+              <div class="tarj" id={`cuerpo-${p.id}`}>
+                <p><b>{p.t}.</b> {p.d}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Columna de pantallas. Todas en el DOM; se muestra la activa. -->
+      <div class="rec__vis">
+        <div class="marco">
+          <span class="marco__isla" aria-hidden="true"></span>
+          <div class="marco__pantalla">
+            <slot />
+            <!-- El velo: oscurece a mitad del cambio. Sin él, la pantalla
+                 «corta» — la vista saliente y la entrante se cruzan y el ojo
+                 lee un salto, no una transición. -->
+            <span class="velo" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const seccion = document.getElementById("recibes");
+  if (seccion) {
+    const pilds = Array.from(seccion.querySelectorAll<HTMLButtonElement>(".pil"));
+    const cajas = Array.from(seccion.querySelectorAll<HTMLElement>(".caja"));
+    const items = Array.from(seccion.querySelectorAll<HTMLElement>(".rec__li"));
+    const vistas = Array.from(document.querySelectorAll<HTMLElement>("[data-vista]"));
+    const ids = pilds.map((b) => b.dataset.punto!);
+    let actual = 0;
+    let marcado = false;
+
+    // Los dos altos de cada punto, medidos una vez. Los hijos van en
+    // posición absoluta, así que su `offsetHeight` es su alto natural
+    // sea cual sea el alto de la caja: no hace falta desplegar nada
+    // para medir, que era de donde salían las medidas sucias.
+    const altos: { pil: number; tarj: number }[] = [];
+    function medir() {
+      cajas.forEach((c, k) => {
+        altos[k] = {
+          pil:  c.querySelector<HTMLElement>(".pil")!.offsetHeight,
+          tarj: c.querySelector<HTMLElement>(".tarj")!.offsetHeight,
+        };
+      });
+    }
+
+    // Las dos cajas —la que cierra y la que abre— reciben su alto en el
+    // MISMO fotograma, con la misma duración y el mismo muelle. Por eso se
+    // leen como un solo movimiento y no como dos pasos.
+    function aplicarAltos(sinAnimar = false) {
+      cajas.forEach((c, k) => {
+        if (sinAnimar) c.style.transition = "none";
+        c.style.height = (k === actual ? altos[k].tarj : altos[k].pil) + "px";
+      });
+      if (sinAnimar) requestAnimationFrame(() =>
+        cajas.forEach((c) => { c.style.transition = ""; }));
+    }
+
+    function abrir(n: number) {
+      actual = (n + ids.length) % ids.length;   // da la vuelta por los dos lados
+      const id = ids[actual];
+      items.forEach((li, k) => li.classList.toggle("is-on", k === actual));
+      aplicarAltos(!marcado); marcado = true;
+      pilds.forEach((b, k) => b.setAttribute("aria-expanded", k === actual ? "true" : "false"));
+      seccion.querySelectorAll(".flechas").forEach((f, k) =>
+        f.setAttribute("aria-hidden", k === actual ? "false" : "true"));
+      pintarVistas(id);
+    }
+
+    // El cambio de pantalla va en tres tiempos: oscurecer, conmutar,
+    // aclarar. Conmutar en el punto más oscuro es lo que evita que se vea
+    // el corte entre una vista y la siguiente.
+    const marco = seccion.querySelector<HTMLElement>(".marco");
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let pendiente: number | undefined;
+
+    function pintarVistas(id: string) {
+      const aplicar = () => vistas.forEach((v) => {
+        const suyo = v.dataset.vista === id;
+        v.classList.toggle("is-on", suyo);
+        v.setAttribute("aria-hidden", suyo ? "false" : "true");
+      });
+      if (!marco || quieto || !marco.dataset.listo) {
+        aplicar();
+        if (marco) marco.dataset.listo = "1";   // el primer pintado no se vela
+        return;
+      }
+      clearTimeout(pendiente);
+      marco.classList.add("cambiando");
+      pendiente = window.setTimeout(() => {
+        aplicar();
+        marco.classList.remove("cambiando");
+      }, 360);
+    }
+
+    pilds.forEach((b, k) => b.addEventListener("click", () => abrir(k)));
+    seccion.querySelectorAll<HTMLButtonElement>("[data-mover]").forEach((b) =>
+      b.addEventListener("click", (e) => {
+        e.stopPropagation();
+        abrir(actual + Number(b.dataset.mover));
+      }));
+
+    let remedir: number | undefined;
+    addEventListener("resize", () => {
+      clearTimeout(remedir);
+      remedir = window.setTimeout(() => { medir(); aplicarAltos(true); }, 120);
+    });
+
+    medir();
+    abrir(0);
+    // Las tipografías web cambian el alto de la tarjeta al cargar; sin
+    // volver a medir, el acordeón se queda con el alto del fallback.
+    if (document.fonts) document.fonts.ready.then(() => { medir(); aplicarAltos(true); });
+  }
+</script>
+
+<style>
+  /* El muelle. Apple usa spring(masa 1, rigidez 100, amortiguación 14) en
+     1 s; este tiene la misma FORMA —amortiguación relativa 0,7, sobrepasa
+     un 4,5 % y vuelve— pero más flojo (rigidez 35) para que el recorrido
+     dure lo que pediste, no lo que Apple considera rápido: llega al 99 %
+     en 540 ms y asienta el resto. `linear()` es cómo se escribe un muelle
+     en CSS; un cubic-bezier no puede pasarse del 100 % y volver. */
+  .rec-sec {
+    --muelle: linear(0, 0.0234, 0.0839, 0.1686, 0.267, 0.371, 0.4745, 0.573,
+      0.6635, 0.7441, 0.814, 0.873, 0.9215, 0.9601, 0.99, 1.012, 1.0275,
+      1.0376, 1.0432, 1.0453, 1.0448, 1.0425, 1.0389, 1.0346, 1.0299, 1.0252,
+      1.0206, 1.0164, 1.0126, 1.0093, 1.0065, 1.0041, 1.0023, 1.0008, 0.9997,
+      0.9989, 0.9984, 0.9981, 0.998, 0.9979, 0.998, 0.9982, 0.9984, 0.9986, 1);
+  }
+
+  /* Fondo oscuro propio. El ámbito de Astro le da a cada componente su
+     hash, así que las reglas de paleta de index.astro no llegan aquí. */
+  .rec-sec { background: #18170f; color: var(--crema); padding: var(--s6) 0;
+    /* el navbar flota encima: sin esto un enlace a #recibes deja la
+       primera píldora debajo de la isla */
+    scroll-margin-top: calc(var(--nav-h) + 12px); }
+
+  /* Y por lo mismo `.wrap` de index.astro tampoco llega: sin esto la lista
+     sale pegada al borde izquierdo en móvil. Mismos valores que allí. */
+  .rec-sec .wrap { max-width: var(--wrap); margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 40px); }
+  .rec-sec .kick { color: var(--oro); }
+  .rec-sec h2 { color: var(--crema); }
+
+  .rec { display: grid; gap: var(--s5); }
+  @media (min-width: 900px) {
+    .rec { grid-template-columns: minmax(340px, 1fr) 1fr; gap: var(--s6); align-items: start; }
+    .rec__vis { position: sticky; top: calc(var(--nav-h) + 20px); }
+  }
+
+  /* La lista se desplaza a la derecha para dejar sitio a las flechas. */
+  .rec__lista { list-style: none; margin: 0; padding: 0 0 0 56px;
+    display: flex; flex-direction: column; gap: 11px; }
+  .rec__li { position: relative; }
+
+  /* ── La caja: lo único que anima ── */
+  /* Un solo elemento por punto. JS le pone el alto de la píldora o el de la
+     tarjeta; el muelle hace el resto. Los dos contenidos van superpuestos
+     en absoluto: no aportan alto, no se empujan y no pueden verse los dos
+     abiertos a la vez. */
+  .caja { position: relative; overflow: hidden;
+    transition: height 1.7s var(--muelle); }
+  .caja > .pil, .caja > .tarj { position: absolute; left: 0; top: 0; }
+
+  /* ── Píldora ── */
+  .pil { display: inline-flex; align-items: center; gap: 12px;
+    background: rgba(247, 244, 236, .07); border: 0; border-radius: 99px;
+    padding: 13px 24px 13px 13px; cursor: pointer;
+    font: inherit; color: var(--crema); text-align: left;
+    transition: background .38s ease; }
+  .pil:hover { background: rgba(247, 244, 236, .12); }
+  .pil__t { font-size: var(--t2); font-weight: 600; white-space: nowrap; }
+
+  .pil__ico { position: relative; width: 26px; height: 26px; flex: none;
+    border: 1.5px solid currentColor; border-radius: 50%; opacity: .75; }
+  .pil__ico::before, .pil__ico::after { content: ""; position: absolute;
+    left: 50%; top: 50%; background: currentColor; }
+  .pil__ico::before { width: 10px; height: 1.6px; transform: translate(-50%, -50%); }
+  .pil__ico::after  { width: 1.6px; height: 10px; transform: translate(-50%, -50%); }
+
+  /* ── Tarjeta ── */
+  .tarj { width: 100%; max-width: 46ch;
+    background: rgba(247, 244, 236, .07); border-radius: 22px;
+    padding: 20px 24px; }
+  /* El reset de `index.astro` no llega aquí: el ámbito de Astro le da a
+     cada componente su propio hash. Sin esto el <p> se trae los 16,32 px
+     de margen que pone el navegador. */
+  .tarj p { margin: 0; font-size: var(--t2); line-height: 1.62; color: #cfc8b6; }
+  .tarj b { color: var(--crema); font-weight: 600; }
+
+  /* ── El cruce ── */
+  /* Apple deja la píldora 200 ms y solo entonces la funde, porque en su
+     acordeón los dos contenidos no comparten sitio. Aquí sí: píldora y
+     tarjeta arrancan en el mismo punto y con el mismo fondo, así que ese
+     desfase hacía leer el título DOS VECES, uno encima del otro, entre
+     los 50 y los 300 ms —se ve en la captura b_160—. Invertido: primero
+     se va la píldora, y la tarjeta entra cuando ya no hay nada debajo.
+     Al CERRAR es instantáneo: la tarjeta desaparece y vuelve la píldora;
+     lo único que se mueve es la caja encogiéndose. */
+  .pil  { opacity: 1; transition: background .38s ease, opacity 0s; }
+  .tarj { opacity: 0; transform: translateY(20px);
+    pointer-events: none; transition: opacity 0s, transform 0s; }
+
+  .rec__li.is-on .pil { opacity: 0; pointer-events: none;
+    transition: opacity .14s linear; }
+  .rec__li.is-on .tarj { opacity: 1; transform: none; pointer-events: auto;
+    transition: opacity .42s ease .18s, transform .6s var(--muelle) .18s; }
+
+  /* ── Flechas ── */
+  .flechas { position: absolute; left: -56px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 9px; }
+  .flechas[aria-hidden="true"] { display: none; }
+  .fle { width: 40px; height: 40px; border: 0; border-radius: 50%; cursor: pointer;
+    background: rgba(247, 244, 236, .07); color: var(--crema);
+    display: grid; place-items: center; padding: 0;
+    transition: background .2s ease; }
+  .fle:hover { background: rgba(247, 244, 236, .16); }
+  .fle svg { width: 19px; height: 19px; }
+
+  /* ── El marco de la pantalla ── */
+  .rec__vis { display: flex; justify-content: center; }
+  .marco { position: relative; width: 100%; max-width: 330px;
+    border-radius: 42px; padding: 10px;
+    background: linear-gradient(152deg, #3a3a3d, #0a0a0b 34%, #17171a 68%, #3a3a3d);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(0, 0, 0, .6); }
+  .marco__isla { position: absolute; top: 19px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 22px; border-radius: 12px; background: #070708; z-index: 3; }
+  .marco__pantalla { background: #fff; border-radius: 33px; overflow: hidden;
+    aspect-ratio: 9 / 17.6; position: relative; }
+
+  /* El velo. Sube a .62 en la primera mitad del cambio y baja en la
+     segunda; la vista se conmuta justo en el punto más oscuro, así que el
+     corte ocurre cuando no se ve. */
+  .velo { position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    background: #0d0c08; opacity: 0;
+    transition: opacity .36s ease; }
+  .marco.cambiando .velo { opacity: .62; }
+
+  @media (max-width: 899px) {
+    /* En móvil las flechas sobran: el pulgar ya recorre la lista. */
+    .rec__lista { padding-left: 0; }
+    .flechas { display: none !important; }
+    .pil__t { white-space: normal; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caja, .pil, .tarj, .fle, .velo { transition: none !important; }
+    .tarj { transform: none; }
+  }
+</style>
