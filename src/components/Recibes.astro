@@ -132,6 +132,29 @@ const PUNTOS = [
     // MISMO fotograma, con la misma duración y el mismo muelle. Por eso se
     // leen como un solo movimiento y no como dos pasos.
     const escritorio = matchMedia("(min-width: 900px)");
+    const rec = seccion.querySelector<HTMLElement>(".rec")!;
+    const lista = seccion.querySelector<HTMLElement>(".rec__lista")!;
+
+    // En móvil la tarjeta flota sobre el teléfono, pero solo debe tapar
+    // su franja inferior —lo mismo que hace Apple—, no el cuerpo. El resto
+    // de su alto cuelga POR DEBAJO del marco, así que hay que reservarle
+    // ese espacio de verdad en el flujo (`padding-bottom` en `.rec`): si
+    // no, ese sobrante cae fuera de la sección y el fondo oscuro no lo
+    // cubre —se ve la sección siguiente asomando detrás de la tarjeta—.
+    const SOLAPE_MOVIL = 60;      // px del teléfono que la tarjeta tapa
+    const RESERVA_PUNTOS = 40;    // hueco bajo la tarjeta para los puntos
+
+    function posicionarMovil() {
+      if (escritorio.matches) {
+        rec.style.paddingBottom = ""; lista.style.top = "";
+        return;
+      }
+      const marcoAlto = marco?.offsetHeight ?? 0;
+      const tarjAlto = altos[actual]?.tarj ?? 0;
+      lista.style.top = Math.max(0, marcoAlto - SOLAPE_MOVIL) + "px";
+      rec.style.paddingBottom =
+        Math.max(0, tarjAlto - SOLAPE_MOVIL) + RESERVA_PUNTOS + "px";
+    }
 
     function aplicarAltos(sinAnimar = false) {
       // En móvil no hay acordeón: la caja ES la tarjeta y la gobierna el
@@ -150,7 +173,13 @@ const PUNTOS = [
       actual = (n + ids.length) % ids.length;   // da la vuelta por los dos lados
       const id = ids[actual];
       items.forEach((li, k) => li.classList.toggle("is-on", k === actual));
+      // En móvil las tarjetas no activas están en `display:none` —así se
+      // esconde la lista entera—, y eso mide su `.tarj` a 0. Solo se puede
+      // medir con exactitud la que se ACABA de volver visible, así que hay
+      // que remedir aquí, después del toggle de arriba, no antes.
+      medir();
       aplicarAltos(!marcado); marcado = true;
+      posicionarMovil();
       pilds.forEach((b, k) => b.setAttribute("aria-expanded", k === actual ? "true" : "false"));
       seccion.querySelectorAll(".flechas").forEach((f, k) =>
         f.setAttribute("aria-hidden", k === actual ? "false" : "true"));
@@ -214,7 +243,7 @@ const PUNTOS = [
       }));
 
     let remedir: number | undefined;
-    const recalcular = () => { medir(); aplicarAltos(true); };
+    const recalcular = () => { medir(); aplicarAltos(true); posicionarMovil(); };
     addEventListener("resize", () => {
       clearTimeout(remedir);
       remedir = window.setTimeout(recalcular, 120);
@@ -366,8 +395,11 @@ const PUNTOS = [
     /* La lista ya no ocupa flujo: se posa sobre el bajo del teléfono.
        `pointer-events` solo en la tarjeta, para no capturar el deslizado
        en el resto de la franja. */
-    .rec__lista { position: absolute; left: 0; right: 0; bottom: 34px;
-      z-index: 6; padding: 0 24px; gap: 0; pointer-events: none; }
+    /* `top` lo calcula JS (posicionarMovil): solo debe tapar la franja
+       inferior del teléfono —lo mismo que Apple—, el resto de la tarjeta
+       cuelga por debajo, sobre el fondo oscuro que crece para alojarla. */
+    .rec__lista { position: absolute; left: 0; right: 0; top: 0;
+      z-index: 6; padding: 0 38px; gap: 0; pointer-events: none; }
     .rec__li { pointer-events: auto; }
     .rec__li:not(.is-on) { display: none; }
     .pil { display: none; }
@@ -393,8 +425,11 @@ const PUNTOS = [
 
     /* Las flechas montan sobre los bordes de la tarjeta, como en el visor
        de Apple: van a los cantos de la pantalla, no en un pasillo aparte. */
+    /* 38 px de padding en la lista + 54 de vuelo dejan 16 px de aire
+       real entre la flecha y el borde de la tarjeta —antes eran 2 px,
+       casi tocándose—, sin sacar la flecha de la pantalla. */
     .flechas { display: flex; flex-direction: row; gap: 0;
-      position: absolute; left: -22px; right: -22px; top: 50%;
+      position: absolute; left: -54px; right: -54px; top: 50%;
       transform: translateY(-50%); justify-content: space-between; }
     .fle { width: 38px; height: 38px;
       background: rgba(12, 11, 7, .72); backdrop-filter: blur(10px);
