@@ -296,12 +296,12 @@ const PUNTOS = [
        ANCHO y recorta casi todo el ALTO —justo la mitad de la imagen que
        se pedía ver—. `scale()` no lo arregla: agranda el mismo recorte,
        no muestra más imagen. Fijar el alto explícito sí: 100% de ancho
-       (sin recortar los lados) y 132% de alto (dos veces 15% acumulado
+       (sin recortar los lados) y 145% de alto (tres subidas acumuladas
        sobre el alto que ya daba `cover`), a costa de estirar un poco la
        imagen —invisible con este desenfoque—. */
     background:
       linear-gradient(180deg, rgba(15, 14, 8, .74), rgba(15, 14, 8, .88)),
-      url("/fondo-recibes.webp") center / 100% 132% no-repeat;
+      url("/fondo-recibes.webp") center / 100% 145% no-repeat;
     filter: blur(34px) saturate(1.15);
     pointer-events: none;
   }
@@ -314,7 +314,12 @@ const PUNTOS = [
   .rec-sec .kick { color: var(--oro); }
   .rec-sec h2 { color: var(--crema); }
 
-  .rec { display: grid; gap: var(--s5); }
+  /* `padding-top:10%` y no más `--s6` en `.rec-sec`: la sección entera
+     ya tenía ese aire, pero el navbar flota ENCIMA (position:fixed) y con
+     el fondo ahora cubriendo todo el color se nota que la lista y el
+     teléfono quedan pegados a él. Este aire es aparte, solo para esos
+     dos, no para el resto de la sección. */
+  .rec { display: grid; gap: var(--s5); padding-top: 10%; }
   @media (min-width: 900px) {
     /* `align-items: center`, no `start`: el teléfono (columna derecha)
        ya estaba bien puesto —eso no se toca—. Lo que pidió es la LISTA
