@@ -1,0 +1,378 @@
+---
+// Las cinco pantallas del acordeón. Todas viven en el DOM y se muestra la
+// activa: cambiar `hidden` no se puede animar, una clase sí.
+//
+// Cada pantalla LLENA el alto del teléfono. La versión anterior se quedaba a
+// media altura con tipografías de 7 px: se leía como una maqueta encogida,
+// no como una app. Aquí el cuerpo es una columna flexible y el pie se va al
+// fondo, así no queda hueco muerto debajo.
+//
+// La entrada es escalonada y se REPITE en cada cambio: las reglas cuelgan de
+// `.vista.is-on`, así que al quitar y poner la clase la animación vuelve a
+// empezar sola, sin JS.
+
+// Números de fuentes: los mismos que dice la píldora de la izquierda.
+const FUENTES_TOTAL = 29;
+const CON_HALLAZGO = 2;
+
+const REVISION = [
+  ["SRI", "$1.240,00 · sin cambios", "al"],
+  ["IESS", "Sin mora patronal", "ok"],
+  ["Función Judicial", "Sin causas", "ok"],
+  ["Supercías", "$817,06 · sin cambios", "al"],
+  ["Fiscalía", "2 denuncias nuevas", "al"],
+  ["SERCOP", "Habilitado", "ok"],
+  ["ANT", "Sin multas", "ok"],
+  ["MDT", "Al día", "ok"],
+];
+
+const RESUMEN = [
+  ["SRI", "$ 1.240,00", "hay"],
+  ["IESS", "Sin deudas", "ok"],
+  ["Función Judicial", "Sin causas", "ok"],
+  ["Supercías", "3 accionistas", "info"],
+  ["Fiscalía", "2 denuncias", "hay"],
+];
+
+const NODOS = [
+  ["Accionista", "María Ordóñez G.", "41 %", "3 compañías"],
+  ["Accionista", "Luis Vargas M.", "34 %", "1 compañía"],
+  ["Accionista", "Inversiones Andes", "25 %", "—"],
+  ["Rep. legal", "Luis Vargas M.", "—", "desde 2019"],
+];
+
+const AVISOS = [
+  ["Comercial del Pacífico S.A.", "deuda nueva en el SRI por $1.240,00", "ahora"],
+  ["Andes Logística", "2 denuncias nuevas en Fiscalía", "hace 2 min"],
+  ["Transportes Litoral", "cambió el representante legal", "hace 9 min"],
+];
+---
+
+<!-- 1 · El correo ───────────────────────────────────────────────── -->
+<div class="vista" data-vista="correo">
+  <div class="v-cab" style="--i:0">
+    <p class="v-marca">CENSUS <span>ALERT</span></p>
+    <p class="v-sub">Monitoreo integral 360°</p>
+  </div>
+  <div class="v-grupo" style="--i:1">
+    <p class="v-k">Hoy · 06:45</p>
+    <p class="v-nom">Comercial del Pacífico S.A.</p>
+  </div>
+  <div class="v-cuerpo">
+    <p class="v-k v-k--sep" style="--i:2">Resultados de la revisión</p>
+    {REVISION.map(([n, v, c], i) => (
+      <div class="v-f" style={`--i:${3 + i}`}>
+        <span class="v-fn">{n}</span>
+        <span class={`v-et v-et--${c}`}>{v}</span>
+      </div>
+    ))}
+    <p class="v-pie v-pie--fin" style={`--i:${3 + REVISION.length}`}>
+      Los saldos van aunque no haya cambiado nada: una deuda que sigue
+      igual sigue siendo una deuda.
+    </p>
+  </div>
+</div>
+
+<!-- 2 · El informe ──────────────────────────────────────────────── -->
+<div class="vista" data-vista="informe">
+  <div class="v-banda" style="--i:0">
+    <p class="v-marca">CENSUS <span>ALERT</span></p>
+    <p class="v-kick">Informe consolidado</p>
+  </div>
+  <div class="v-regla"></div>
+  <div class="v-cuerpo">
+    <p class="v-k" style="--i:1">Consultado</p>
+    <div class="v-suj" style="--i:2">
+      <p class="v-sn">COMERCIAL DEL PACÍFICO S.A.</p>
+      <p class="v-si">RUC 09•••••••001 · Persona jurídica</p>
+    </div>
+    <div class="v-ver" style="--i:3">
+      <p class="v-vk">Resultado de la consulta</p>
+      <p class="v-vt">{CON_HALLAZGO} de {FUENTES_TOTAL} fuentes con hallazgos</p>
+      <p class="v-vd">{FUENTES_TOTAL - CON_HALLAZGO} sin novedades · 0 sin verificar</p>
+    </div>
+    <p class="v-k v-k--sep" style="--i:4">Resumen por fuente</p>
+    {RESUMEN.map(([n, v, c], i) => (
+      <div class={`v-r v-r--${c}`} style={`--i:${5 + i}`}>
+        <i></i><span class="v-rn">{n}</span><span class="v-rv">{v}</span>
+      </div>
+    ))}
+    <p class="v-pie v-pie--fin" style={`--i:${5 + RESUMEN.length}`}>
+      Cada fila dice de qué portal salió y a qué hora se consultó.
+    </p>
+  </div>
+</div>
+
+<!-- 3 · El detalle de una causa ─────────────────────────────────── -->
+<div class="vista" data-vista="causa">
+  <div class="v-banda" style="--i:0">
+    <p class="v-marca">CENSUS <span>ALERT</span></p>
+    <p class="v-kick">Menciones en expedientes</p>
+  </div>
+  <div class="v-regla"></div>
+  <div class="v-cuerpo">
+    <p class="v-k" style="--i:1">Causa 09359-2016-04196</p>
+    <div class="v-suj" style="--i:2">
+      <p class="v-sn">Indemnización por despido intempestivo</p>
+      <p class="v-si">Unidad Judicial de Trabajo · Guayaquil · 2016</p>
+    </div>
+    <div class="v-cal" style="--i:3">
+      <span class="v-badge">Señalado</span>
+      <p class="v-cald">El consultado figura como parte demandada.</p>
+    </div>
+    <p class="v-k v-k--sep" style="--i:4">La frase en que nos apoyamos</p>
+    <blockquote class="v-cita" style="--i:5">
+      «…se sigue en contra de APOLO ZOHRER HECTOR ADOLFO y COMERCIAL DEL
+      PACÍFICO S.A. en calidad de demandados…»
+    </blockquote>
+    <p class="v-k v-k--sep" style="--i:6">Otras menciones del mismo RUC</p>
+    <div class="v-r v-r--ok" style="--i:7">
+      <i></i><span class="v-rn">09359-2019-01180</span><span class="v-rv">Interviniente</span>
+    </div>
+    <div class="v-r v-r--info" style="--i:8">
+      <i></i><span class="v-rn">09332-2021-00447</span><span class="v-rv">Reclamante</span>
+    </div>
+    <p class="v-pie v-pie--fin" style="--i:9">Si el texto no permite establecer la
+      calidad, el informe lo dice en vez de elegir la más parecida.</p>
+  </div>
+</div>
+
+<!-- 4 · La red ──────────────────────────────────────────────────── -->
+<div class="vista" data-vista="red">
+  <div class="v-banda" style="--i:0">
+    <p class="v-marca">CENSUS <span>ALERT</span></p>
+    <p class="v-kick">Red de relacionados</p>
+  </div>
+  <div class="v-regla"></div>
+  <div class="v-cuerpo">
+    <div class="v-raiz" style="--i:1">
+      <p class="v-k">Titular</p>
+      <p class="v-rn2">Comercial del Pacífico S.A.</p>
+    </div>
+    <!-- El riel es lo que hace que esto se lea como un árbol y no como
+         una tabla: cada nodo cuelga de la misma línea. -->
+    <div class="v-arbol">
+      {NODOS.map(([rol, nom, part, extra], i) => (
+        <div class="v-nodo" style={`--i:${2 + i}`}>
+          <div><p class="v-nr">{rol}</p><p class="v-nn">{nom}</p></div>
+          <div class="v-nd"><span>{part}</span><span class="v-ne">{extra}</span></div>
+        </div>
+      ))}
+    </div>
+    <p class="v-pie v-pie--fin" style={`--i:${2 + NODOS.length}`}>
+      Cada vínculo se vigila igual que el titular: si venden acciones o
+      cambia el representante, llega el aviso.
+    </p>
+  </div>
+</div>
+
+<!-- 5 · En tu bolsillo ──────────────────────────────────────────── -->
+<!-- Pantalla de bloqueo. El reloj grande es lo que la hace reconocible
+     de un vistazo y de paso llena el alto que antes quedaba negro. -->
+<div class="vista vista--app" data-vista="bolsillo">
+  <div class="v-lock">
+    <div class="v-reloj" style="--i:0">
+      <p class="v-fecha">Jueves 18 de septiembre</p>
+      <p class="v-hora">06:45</p>
+    </div>
+
+    <div class="v-avisos">
+      {AVISOS.map(([quien, que, cuando], i) => (
+        <div class="v-notif" style={`--i:${i}`}>
+          <span class="v-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="1" y="1" width="22" height="22" rx="6" fill="#12100C"/>
+              <g fill="#C9A84C">
+                <rect x="6" y="8" width="1.6" height="9"/><rect x="9" y="6" width="1.6" height="11"/>
+                <rect x="12" y="9" width="1.6" height="8"/><rect x="15" y="7" width="1.6" height="10"/>
+              </g>
+              <rect x="5" y="18" width="14" height="1.4" fill="#C9A84C"/>
+            </svg>
+          </span>
+          <div class="v-ntxt">
+            <p class="v-nt">Census Alert<span class="v-ncuando">{cuando}</span></p>
+            <p class="v-nb"><b>{quien}</b> — {que}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="v-tiendas" style="--i:3">
+      <span class="v-tienda">
+        <svg class="v-tlogo" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+        </svg>
+        <span class="v-tt"><b>App Store</b><i>Descárgala en el</i></span>
+      </span>
+      <span class="v-tienda">
+        <svg class="v-tlogo" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+          <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+        </svg>
+        <span class="v-tt"><b>Google Play</b><i>Disponible en</i></span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Las vistas se apilan en el mismo hueco y solo una es visible. Con
+     `hidden` no se puede transicionar; con clase e `inset:0` sí. */
+  /* Sin `visibility` en la transición: al conmutar, la saliente y la
+     entrante se cruzaban con las dos ocultas y la pantalla parpadeaba en
+     blanco. Con opacidad y `pointer-events` el cruce es limpio. */
+  .vista { position: absolute; inset: 0; overflow: hidden;
+    font-family: "IBM Plex Sans", system-ui, sans-serif; background: #fff;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none; transform: translateY(8px);
+    transition: opacity .34s var(--out), transform .34s var(--out); }
+  .vista.is-on { opacity: 1; pointer-events: auto; transform: none; z-index: 2; }
+
+  /* El cuerpo se estira y su último hijo se va al fondo. Es lo que mata el
+     hueco negro que quedaba bajo el contenido. */
+  .v-cuerpo { flex: 1; display: flex; flex-direction: column;
+    padding: 11px 16px 13px; color: #2A2419; }
+  .v-pie--fin { margin-top: auto; }
+
+  /* ── La entrada escalonada ── */
+  /* Las reglas cuelgan de `.is-on`: al poner la clase la animación arranca
+     de cero, así que el numerito se repite en cada cambio de pantalla sin
+     una línea de JS. `both` deja el estado final fijado al terminar. */
+  @keyframes v-sube { from { opacity: 0; transform: translateY(16px); }
+                      to   { opacity: 1; transform: none; } }
+  .vista.is-on > *, .vista.is-on .v-cuerpo > * {
+    animation: v-sube .52s var(--out) both;
+    animation-delay: calc(var(--i, 0) * 42ms + 110ms); }
+  /* La cabecera y la regla no se escalonan: son el marco, no el contenido. */
+  .vista.is-on > .v-cab, .vista.is-on > .v-banda, .vista.is-on > .v-regla,
+  .vista.is-on > .v-cuerpo { animation: none; }
+
+  .v-cab, .v-banda { background: #12100C; padding: 30px 16px 12px; }
+  .v-cab { text-align: center; border-bottom: 2px solid #A87C1E; }
+  .v-marca { font-size: 14px; letter-spacing: .24em; font-weight: 600; color: #E8C877; }
+  .v-marca span { color: #F7F4EC; font-weight: 300; }
+  .v-sub, .v-kick { font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase;
+    color: #A79878; margin-top: 6px; }
+  .v-regla { height: 3px; background: #A87C1E; }
+
+  .v-grupo { background: #1d1a12; padding: 9px 16px; }
+  .v-nom { font-family: Georgia, serif; font-size: 15px; color: #E8C877; margin-top: 3px; }
+
+  .v-k { font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: #8A7F6A; }
+  .v-k--sep { margin-top: 11px; }
+
+  .v-f { display: flex; justify-content: space-between; align-items: center;
+    gap: 9px; padding: 7px 0; border-bottom: 1px solid #F0EBDD; }
+  .v-fn { font-size: 11.5px; font-weight: 600; }
+  .v-et { font-size: 8.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
+    border: 1px solid; white-space: nowrap; }
+  .v-et--ok { color: #1E7A4B; background: #F1F8F3; border-color: rgba(30,122,75,.35); }
+  .v-et--al { color: #bda02d; background: #FBF6E4; border-color: rgba(189,160,45,.4); }
+
+  .v-suj { border: 1px solid #E4DCC6; border-left: 3px solid #A87C1E;
+    background: #FCFAF4; padding: 8px 11px; margin-top: 5px; }
+  .v-sn { font-family: Georgia, serif; font-size: 14px; line-height: 1.25; }
+  .v-si { font-size: 10px; color: #6E6555; margin-top: 5px; }
+
+  .v-ver { background: #FCF1EE; border-left: 3px solid #B3261E; padding: 8px 11px; margin-top: 8px; }
+  .v-vk { font-size: 8px; letter-spacing: .18em; text-transform: uppercase; color: #8A6A62; }
+  .v-vt { font-family: Georgia, serif; font-size: 15px; color: #B3261E; margin-top: 3px; }
+  .v-vd { font-size: 9.5px; color: #8A6A62; margin-top: 4px; }
+
+  .v-r { display: flex; align-items: center; gap: 8px; padding: 6px 0;
+    border-bottom: 1px solid #F0EBDD; font-size: 11px; }
+  .v-r i { width: 6px; height: 6px; border-radius: 50%; background: #1E7A4B; flex: none; }
+  .v-r--hay i { background: #B3261E; } .v-r--info i { background: #5A6C90; }
+  .v-r--hay { background: #FCF1EE; }
+  .v-rn { font-weight: 600; } .v-rv { margin-left: auto; color: #4A4437; font-size: 10px; }
+
+  .v-cal { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .v-badge { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: #B3261E; background: #FDF2F1; border: 1px solid rgba(179,38,30,.35);
+    border-radius: 3px; padding: 4px 9px; white-space: nowrap; }
+  .v-cald { font-size: 10px; color: #4A4232; line-height: 1.45; }
+  .v-cita { font-size: 10.5px; line-height: 1.55; color: #4A4232; margin: 5px 0 0;
+    padding: 6px 0 6px 11px; border-left: 2px solid #E4DCC6; font-style: italic; }
+  .v-f:last-of-type, .v-r:last-of-type, .v-nodo:last-of-type { border-bottom: 0; }
+
+  .v-pie { font-size: 9px; color: #8A7F6A; line-height: 1.5;
+    padding-top: 8px; border-top: 1px solid #F0EBDD; }
+
+  /* ── La red, como árbol ── */
+  .v-raiz { border-left: 3px solid #A87C1E; padding: 2px 0 2px 11px; margin-top: 4px; }
+  .v-rn2 { font-family: Georgia, serif; font-size: 13.5px; margin-top: 2px; }
+  .v-arbol { position: relative; padding-left: 20px; margin-top: 4px; }
+  /* El riel: una línea que baja y de la que cuelga cada nodo. Sin él esto
+     es una tabla; con él se lee que todos dependen del mismo titular. */
+  .v-arbol::before { content: ""; position: absolute; left: 1px; top: -4px; bottom: 22px;
+    width: 1px; background: #E0D8C2; }
+  .v-nodo { position: relative; display: flex; justify-content: space-between;
+    align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #F0EBDD; }
+  .v-nodo::before { content: ""; position: absolute; left: -19px; top: 50%;
+    width: 13px; height: 1px; background: #E0D8C2; }
+  .v-nodo::after { content: ""; position: absolute; left: -8px; top: 50%;
+    transform: translateY(-50%); width: 5px; height: 5px; border-radius: 50%;
+    background: #fff; border: 1px solid #C9B98D; }
+  .v-nr { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8A7F6A; }
+  .v-nn { font-size: 11.5px; font-weight: 600; margin-top: 2px; }
+  .v-nd { text-align: right; font-size: 11.5px; font-weight: 600; color: #A87C1E; }
+  .v-ne { display: block; font-size: 9px; font-weight: 400; color: #8A7F6A; margin-top: 1px; }
+
+  /* ── Pantalla de bloqueo ── */
+  .vista--app { background:
+    radial-gradient(120% 70% at 50% 0%, #241f13 0%, #12100C 55%, #080704 100%); }
+  .v-lock { flex: 1; display: flex; flex-direction: column;
+    padding: 34px 13px 15px; }
+  .v-reloj { text-align: center; }
+  .v-hora { font-size: 56px; font-weight: 250; letter-spacing: -.02em;
+    line-height: .96; color: #F7F4EC; font-variant-numeric: tabular-nums;
+    margin-top: 2px; }
+  .v-fecha { font-size: 11.5px; color: #C9C0AA; }
+
+  .v-avisos { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .v-notif { display: flex; gap: 10px; align-items: flex-start;
+    background: rgba(247,244,236,.11); border: 1px solid rgba(201,168,76,.2);
+    border-radius: 15px; padding: 9px 11px;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .v-ico { flex: none; width: 26px; height: 26px; }
+  .v-ico svg { width: 100%; height: 100%; border-radius: 7px;
+    box-shadow: 0 0 0 1px rgba(201,168,76,.3); }
+  .v-ntxt { min-width: 0; }
+  .v-nt { display: flex; align-items: baseline; gap: 6px;
+    font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase; color: #C9A84C; }
+  .v-ncuando { margin-left: auto; letter-spacing: .04em; text-transform: none;
+    color: #7d7361; font-size: 8.5px; white-space: nowrap; }
+  .v-nb { font-size: 10.5px; color: #F0EAD8; line-height: 1.45; margin-top: 4px; }
+  .v-nb b { color: #fff; }
+
+  /* Los avisos caen desde arriba, uno detrás de otro, como los de verdad. */
+  @keyframes v-cae {
+    from { opacity: 0; transform: translateY(-14px) scale(.94); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; transform: none; } }
+  /* Solo el contenedor: con `.v-lock > *` esta regla empataba en
+     especificidad con las de arriba y, por ir después, dejaba quietos
+     el reloj y las tiendas. */
+  .vista--app.is-on > .v-lock { animation: none; }
+  .vista--app.is-on .v-notif { animation: v-cae .58s var(--out) both;
+    animation-delay: calc(var(--i) * 260ms + 380ms); }
+  .vista--app.is-on .v-reloj { animation: v-sube .5s var(--out) both; animation-delay: 90ms; }
+  .vista--app.is-on .v-tiendas { animation: v-sube .5s var(--out) both;
+    animation-delay: calc(3 * 260ms + 420ms); }
+
+  .v-tiendas { margin-top: auto; padding-top: 16px; display: flex; gap: 8px; }
+  .v-tienda { flex: 1; display: flex; align-items: center; justify-content: center;
+    gap: 7px; color: #F0EAD8; background: rgba(247,244,236,.06);
+    border: 1px solid rgba(240,234,216,.28); border-radius: 9px; padding: 8px 6px; }
+  .v-tlogo { width: 17px; height: 17px; flex: none; }
+  .v-tt { display: flex; flex-direction: column; line-height: 1.1; }
+  .v-tt i { font-style: normal; font-size: 6.5px; letter-spacing: .06em;
+    color: #A79878; order: -1; }
+  .v-tt b { font-size: 10.5px; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vista { transition: none; }
+    .vista.is-on > *, .vista.is-on .v-cuerpo > *,
+    .vista--app.is-on .v-notif, .vista--app.is-on .v-reloj,
+    .vista--app.is-on .v-tiendas { animation: none !important; }
+  }
+</style>
