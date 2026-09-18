@@ -87,10 +87,15 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
       fijo.style.setProperty("--intro-alto", altoIntro + "px");
 
       const holgura = 28;   // aire arriba y abajo de la tarjeta chica
-      const disponible = innerHeight - altoIntro - holgura * 2;
-      // Tope superior en 420: en escritorio el hueco sobrante es enorme
-      // y una tarjeta «chica» de 800 px deja de leerse como chica.
-      const alto = Math.max(150, Math.min(disponible, 420));
+      const disponible = Math.max(150, innerHeight - altoIntro - holgura * 2);
+
+      // La tarjeta mide el DOBLE de lo que cabe: como cuelga de
+      // `margin-top:auto` dentro de una `.hg__fijo` con overflow
+      // oculto, si es más alta que el hueco disponible ese margen se
+      // queda en cero y el sobrante se recorta por abajo. El resultado
+      // —pedido— es que solo se ve la mitad de arriba de la tarjeta,
+      // no la tarjeta entera.
+      const alto = Math.min(disponible * 2, 1400);
       const ancho = Math.min(alto * (9 / 19.5), innerWidth * 0.6);
       fijo.style.setProperty("--ancho-chico", ancho + "px");
       fijo.style.setProperty("--alto-chico", alto + "px");
@@ -159,6 +164,13 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
      dibujaba encima: 374 px de solape medidos antes de este cambio.
      `--intro-alto` lo mide JS con `scrollHeight` (medirChico). */
   .hg__intro {
+    /* `flex-shrink:0`: ahora que la tarjeta se pide a propósito más
+       alta que el hueco disponible (para que solo se le vea la mitad),
+       el flex necesitaba encoger ALGO para que las dos cupieran —y con
+       `overflow:hidden` el mínimo automático de este bloque es CERO,
+       así que el texto entero desaparecía en vez de la tarjeta
+       recortarse por abajo, que es lo que sí debe pasar—. */
+    flex-shrink: 0;
     /* Sin la clase `.wrap`: compartir esa clase con `margin:0 auto` le
        ganaba por especificidad (2 selectores de clase vs 1) al
        `margin-top` de aquí abajo, aunque este viniera después en la
@@ -268,10 +280,15 @@ const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
      vez —opacidad, desenfoque, escala—, así que es un solo movimiento
      continuo, no un cambio en dos pasos. */
   .hg__logo {
-    position: absolute; z-index: 2; width: min(150px, 42%); height: auto;
+    /* Al 25% del alto de la pantalla, no centrado —lo pedido—. El
+       `translate(-50%,-50%)` ancla por el CENTRO del logo a ese punto,
+       así que sigue centrado horizontalmente sin quedar pegado al
+       borde superior. */
+    position: absolute; top: 25%; left: 50%; z-index: 2;
+    width: min(150px, 42%); height: auto;
     opacity: clamp(0, calc(1 - var(--progreso, 0) * 2.3), 1);
     filter: blur(calc(var(--progreso, 0) * 40px));
-    transform: scale(calc(1 + var(--progreso, 0) * .7));
+    transform: translate(-50%, -50%) scale(calc(1 + var(--progreso, 0) * .7));
     transition: opacity .15s linear;
   }
   /* El resplandor: el MISMO logo, mucho más grande y siempre borroso,
