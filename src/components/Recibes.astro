@@ -291,13 +291,17 @@ const PUNTOS = [
      imagen le quite protagonismo a la data, como se pidió. */
   .rec-sec::before {
     content: ""; position: absolute; inset: -50px; z-index: 0;
+    /* `cover` ajusta por el lado que sobra: como la imagen es vertical
+       (900×1599) y la sección es más ancha que alta, `cover` estira por
+       ANCHO y recorta casi todo el ALTO —justo la mitad de la imagen que
+       se pedía ver—. `scale()` no lo arregla: agranda el mismo recorte,
+       no muestra más imagen. Fijar el alto explícito sí: 100% de ancho
+       (sin recortar los lados) y 132% de alto (dos veces 15% acumulado
+       sobre el alto que ya daba `cover`), a costa de estirar un poco la
+       imagen —invisible con este desenfoque—. */
     background:
       linear-gradient(180deg, rgba(15, 14, 8, .74), rgba(15, 14, 8, .88)),
-      url("/fondo-recibes.webp") center / cover no-repeat;
-    /* 15% más grande de lo que ya cubre `cover`: deja más imagen visible
-       (menos recortada en los bordes) y de paso le da más margen al blur
-       para morder sin que se note el canto. */
-    transform: scale(1.15);
+      url("/fondo-recibes.webp") center / 100% 132% no-repeat;
     filter: blur(34px) saturate(1.15);
     pointer-events: none;
   }
