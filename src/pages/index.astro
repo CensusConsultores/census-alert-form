@@ -2,6 +2,7 @@
 import LandingLayout from "../layouts/LandingLayout.astro";
 import Recibes from "../components/Recibes.astro";
 import RecibesVistas from "../components/RecibesVistas.astro";
+import HeroCrece from "../components/HeroCrece.astro";
 
 // Todos los CTA van a WhatsApp, al mismo número que usan el correo 360 y
 // la webapp (593978863448): un número distinto en la landing sería otro
@@ -18,22 +19,6 @@ const DESDE = "Hola, les escribo desde censusalert.com.";
 const CTA_GENERAL   = wa(`${DESDE} Quisiera información sobre Census Alert.`);
 const CTA_MONITOREO = wa(`${DESDE} Quiero contratar el monitoreo diario.`);
 const CTA_INFORME   = wa(`${DESDE} Quiero pedir un informe consolidado.`);
-
-// Los 19 sellos de la sección de cobertura. El orden agrupa por materia:
-// primero lo tributario y laboral, luego judicial, control, y al final las
-// listas internacionales.
-// Polvo dorado de la portada. Se genera AQUÍ y no en el navegador: el
-// CSS con ámbito de Astro solo alcanza a los elementos de la plantilla,
-// así que unos <span> creados por JavaScript se quedaban sin estilo.
-const POLVO = Array.from({ length: 150 }, () => ({
-  tam: (Math.random() * 3.4 + 0.9).toFixed(1),
-  x: (Math.random() * 100).toFixed(1),
-  y: (Math.random() * 100).toFixed(1),
-  dur: (Math.random() * 8 + 5).toFixed(1),
-  del: (Math.random() * 13).toFixed(1),
-  op: (Math.random() * 0.5 + 0.14).toFixed(2),
-  dx: ((Math.random() - 0.5) * 46).toFixed(0),
-}));
 
 // Los dos productos. Ya no hay planes por suscripción: se paga por
 // informe o por mes de vigilancia, y ambos son compras sueltas.
@@ -87,6 +72,36 @@ const SERVICIOS = [
              "Si el texto no lo permite, lo dice; no elige lo más parecido"] },
 ];
 
+// Preguntas reales que la gente hace antes de contratar. Texto visible
+// Y datos estructurados: el <details> es lo que lee un visitante, el
+// FAQPage de abajo es lo que puede tomar Google para la vista de acordeón
+// en el propio resultado de búsqueda.
+const FAQ = [
+  {
+    q: "¿Qué es Census Alert?",
+    a: "Un servicio de monitoreo que revisa a diario los portales oficiales del Estado ecuatoriano (SRI, IESS, Supercías, Función Judicial, Fiscalía y otros) y avisa el mismo día que aparece una deuda, una multa, una causa judicial o una denuncia a nombre de la empresa o persona que se está vigilando.",
+  },
+  {
+    q: "¿En qué se diferencia del informe consolidado?",
+    a: "El monitoreo es vigilancia diaria y continua sobre una cartera de RUC o cédulas. El informe consolidado es una consulta puntual, de una sola vez, contra 29 fuentes, entregada en PDF. Uno sirve para vigilar después de contratar; el otro, para revisar antes de firmar.",
+  },
+  {
+    q: "¿De dónde saca los datos Census Alert?",
+    a: "De los portales públicos oficiales de cada institución del Estado ecuatoriano, no de intermediarios ni de bases revendidas. La información se presenta tal como aparece en el portal a la fecha de la consulta.",
+  },
+  {
+    q: "¿Cuánto cuesta el servicio?",
+    a: "El informe consolidado y el monitoreo se cobran por uso: se compran informes o meses de vigilancia y se aplican al RUC o la cédula que se necesite, sin suscripción y sin renovación automática. El detalle de tarifas está en la sección de Precios de esta página.",
+  },
+  {
+    q: "¿Qué pasa si una fuente no se pudo consultar?",
+    a: "El informe lo dice explícitamente en vez de presentarla como si estuviera limpia. Que una fuente no se haya podido verificar no significa que no existan registros: significa que no se pudo comprobar, y así se marca.",
+  },
+];
+
+// Los 19 sellos de la sección de cobertura. El orden agrupa por materia:
+// primero lo tributario y laboral, luego judicial, control, y al final las
+// listas internacionales.
 const PORTALES = [
   { s: "sri",         n: "SRI",                              e: "svg"  },
   { s: "iess",        n: "IESS",                             e: "webp" },
@@ -128,117 +143,7 @@ const PORTALES = [
   </div>
 </nav>
 
-<span class="centinela" aria-hidden="true"></span>
-
-<header class="portada grano" id="top">
-  <div class="portada__luz" aria-hidden="true"></div>
-  <div class="polvo" aria-hidden="true">
-    {POLVO.map((m) => (
-      <span style={`width:${m.tam}px;height:${m.tam}px;left:${m.x}%;bottom:${m.y}%;--dur:${m.dur}s;--del:-${m.del}s;--op:${m.op};--dx:${m.dx}px`}></span>
-    ))}
-  </div>
-  <div class="wrap portada__in">
-    <div class="portada__txt">
-      <p class="kick rv">Monitoreo integral 360°</p>
-      <h1 class="rv">Antes de<br />cualquier sorpresa:<em>Census Alert.</em></h1>
-      <p class="lead rv">
-        Vigilamos lo que el Estado publica sobre tus empresas, todos los días,
-        y te avisamos el mismo día que algo cambia.
-      </p>
-      <div class="ctas rv">
-        <a href={CTA_MONITOREO} target="_blank" rel="noopener" class="bt">Quiero monitorear mi empresa</a>
-        <a href="#rutas" class="bt bt--l">Ver cómo funciona</a>
-      </div>
-      <p class="pie rv">
-        <span class="viva" aria-hidden="true"></span>
-        12 portales oficiales · Revisión diaria · Sin instalar nada
-      </p>
-    </div>
-    <div class="portada__vis rv">
-      <!-- El filete que cruza la portada y rodea el teléfono. Los dos
-           tramos rectos salen de los diagonales y se pierden por los
-           lados; el móvil pasa por delante del fondo del rebaje. -->
-      <div class="corte" aria-hidden="true">
-        <svg viewBox="0 0 620 50" preserveAspectRatio="none" fill="none">
-          <path d="M0 1 H70 L115 49 H505 L550 1 H620"
-                stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke" />
-        </svg>
-      </div>
-      <!-- El correo 360° dentro de un teléfono. Datos inventados y RUC
-           enmascarado: es una portada pública, no una demo con datos de
-           un cliente. -->
-      <div class="escena">
-      <div class="escena__arco" aria-hidden="true"></div>
-
-      <div class="hoja" role="img" aria-label="Primera página de un informe consolidado: identificación del consultado, resultado de la consulta con un hallazgo en el SRI, y el resumen por fuente">
-        <div class="fono__marco">
-        <span class="fono__isla" aria-hidden="true"></span>
-        <div class="doc">
-
-          <div class="doc__banda">
-            <div>
-              <p class="doc__marca">CENSUS <span>ALERT</span></p>
-              <p class="doc__kick">Informe consolidado</p>
-            </div>
-            <div class="doc__meta">
-              <p class="doc__n">CENS-ALERT-0000000184</p>
-              <p class="doc__d">Emitido 14-09-2026 09:12</p>
-              <p class="doc__d">Modo en vivo · 29 fuentes</p>
-            </div>
-          </div>
-          <div class="doc__regla"></div>
-
-          <div class="doc__cuerpo" id="cuerpoDoc">
-            <p class="doc__rot">Consultado</p>
-            <div class="doc__sujeto">
-              <p class="doc__nm">COMERCIAL DEL PACÍFICO S.A.</p>
-              <p class="doc__id">RUC <b>09•••••••001</b> · Persona jurídica · Modo <b>En vivo</b></p>
-            </div>
-
-            <div class="doc__ver">
-              <p class="doc__vk">Resultado de la consulta</p>
-              <p class="doc__vt">2 de 27 fuentes con hallazgos</p>
-              <p class="doc__vs">Hay registros vigentes a nombre del consultado.</p>
-              <p class="doc__vd">25 sin novedades · 2 sin verificar</p>
-            </div>
-
-            <span class="barrido" aria-hidden="true"></span>
-            <p class="doc__rot doc__rot--sep">Resumen por fuente</p>
-            <table class="doc__tbl">
-              <tr class="doc__th"><th colspan="2">Fuente</th><th>Estado</th><th class="v">Valor</th></tr>
-              <tr class="fila hay" style="--i:0"><td class="pt"><i></i></td><td class="f">SRI<span>Deudas tributarias</span></td><td>Deuda vigente</td><td class="v">$ 1.240,00</td></tr>
-              <tr class="fila ok" style="--i:1"><td class="pt"><i></i></td><td class="f">IESS<span>Mora patronal</span></td><td>Sin mora patronal</td><td class="v">Sin deudas</td></tr>
-              <tr class="fila ok" style="--i:2"><td class="pt"><i></i></td><td class="f">Función Judicial<span>Causas judiciales</span></td><td>Sin novedades</td><td class="v">Sin causas</td></tr>
-              <tr class="fila info" style="--i:3"><td class="pt"><i></i></td><td class="f">Supercías<span>Ficha societaria</span></td><td>Compañía activa</td><td class="v">3 accionistas</td></tr>
-              <tr class="fila hay" style="--i:4"><td class="pt"><i></i></td><td class="f">Fiscalía<span>Noticias del delito</span></td><td>Denuncias nuevas</td><td class="v">2 denuncias</td></tr>
-              <tr class="fila ok" style="--i:5"><td class="pt"><i></i></td><td class="f">SERCOP<span>Contratación pública</span></td><td>Sin incumplir</td><td class="v">Habilitado</td></tr>
-              <tr class="fila ok" style="--i:6"><td class="pt"><i></i></td><td class="f">ANT<span>Multas nacionales</span></td><td>Sin novedades</td><td class="v">Sin multas</td></tr>
-              <tr class="fila ok" style="--i:7"><td class="pt"><i></i></td><td class="f">MDT<span>Obligaciones laborales</span></td><td>Al día</td><td class="v">Sin deudas</td></tr>
-              <tr class="fila ok" style="--i:8"><td class="pt"><i></i></td><td class="f">SUPA<span>Pensiones alimenticias</span></td><td>Sin pensiones</td><td class="v">Sin deudas</td></tr>
-              <tr class="fila ok" style="--i:9"><td class="pt"><i></i></td><td class="f">Municipios<span>Impuestos prediales</span></td><td>Sin deuda</td><td class="v">Sin deudas</td></tr>
-              <tr class="fila ok" style="--i:10"><td class="pt"><i></i></td><td class="f">OFAC<span>Listas de sanciones</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
-              <tr class="fila ok" style="--i:11"><td class="pt"><i></i></td><td class="f">Superintendencia de Bancos<span>No autorizadas</span></td><td>Sin coincidencias</td><td class="v">Sin coincidencias</td></tr>
-            </table>
-          </div>
-
-        </div>
-        </div>
-      <div class="nota nota--alerta" aria-hidden="true">
-        <p class="nota__k">Hoy · 06:12</p>
-        <div class="nota__l"><span class="nota__f">SRI</span><span class="et et--al">Deuda nueva</span></div>
-        <p class="nota__c">$ 1.240,00</p>
-      </div>
-
-      <div class="nota nota--barrido" aria-hidden="true">
-        <p class="nota__n nota__n--al">2</p>
-        <p class="nota__k">denuncias nuevas<br>en Fiscalía</p>
-      </div>
-
-      </div>
-      </div>
-    </div>
-  </div>
-</header>
+<HeroCrece portales={PORTALES} ctaMonitoreo={CTA_MONITOREO} ctaComoFunciona="#servicios" />
 
 <!-- ═══ 2 · SITUACIONES ═══════════════════════════════════════════
      Sustituye a la rejilla de sectores que usa la competencia. Un
@@ -380,6 +285,37 @@ const PORTALES = [
       penales, las pensiones alimenticias y el texto completo de los expedientes.
     </p>
   </div>
+</section>
+
+<section class="faq claro claro--alto" id="faq">
+  <div class="wrap">
+    <div class="cab rv">
+      <p class="kick">Preguntas frecuentes</p>
+      <h2>Antes de escribirnos.</h2>
+    </div>
+    <div class="faq__lista">
+      {FAQ.map((f) => (
+        <details class="faq__item rv">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+
+  {/* Un segundo bloque LD+JSON, junto a su contenido: la constante FAQ
+      vive en esta página, no en LandingLayout, así que su schema va
+      aquí. Una página puede llevar varios script type="application/
+      ld+json" — Google los combina, no exige uno solo. */}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQ.map((f) => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a },
+    })),
+  })} />
 </section>
 
 <section class="cierre claro claro--hondo grano">
@@ -577,365 +513,6 @@ a { color: inherit; text-decoration: none; }
   .nav__links.is-open { display: flex; }
 }
 
-/* ── Portada ───────────────────────────────────────────────── */
-/* El negro plano se leía como un vacío. Tres capas le dan aire sin
-   meter un color nuevo: un halo cálido tras el teléfono, un lavado
-   claro muy tenue arriba a la derecha, y el polvo dorado en
-   movimiento que ya existía en la versión anterior. */
-/* Ocupa la pantalla entera: el oscuro no debe cortarse a media
-   ventana dejando ver la sección clara antes de tiempo. */
-.portada {
-  position: relative; overflow: hidden; min-height: 100svh;
-  /* La barra ya no ocupa flujo, así que se compensa aquí; y el aire
-     superior queda a la mitad, como se pidió. */
-  /* El aire de arriba se reparte entre este relleno y el margen del
-     teléfono; recortar los dos a la vez sube todo el bloque sin
-     cambiar el trozo de móvil que se ve. */
-  padding: calc(var(--nav-h) + var(--s6) * .1) 0 var(--s6);
-}
-.portada__luz {
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse 50% 56% at 26% 42%, rgba(201, 168, 76, .2), transparent 64%),
-    radial-gradient(ellipse 64% 48% at 86% 6%,  rgba(240, 234, 216, .07), transparent 62%),
-    linear-gradient(178deg, #14130e 0%, #0f0f0c 46%, #100f0b 100%);
-}
-.portada .wrap { position: relative; z-index: 2; }
-
-/* ── Polvo dorado ──────────────────────────────────────────── */
-.polvo { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
-.polvo span {
-  position: absolute; border-radius: 50%; background: var(--oro);
-  will-change: transform, opacity;
-  animation: subir var(--dur) var(--del) infinite ease-in-out;
-}
-@keyframes subir {
-  0%   { transform: translate(0, 0) scale(1); opacity: 0; }
-  15%  { opacity: var(--op); }
-  85%  { opacity: var(--op); }
-  100% { transform: translate(var(--dx), -130px) scale(.6); opacity: 0; }
-}
-/* El teléfono va a la izquierda, pero en el marcado el titular va
-   primero: es lo que debe leer un lector de pantalla, y en móvil el
-   orden natural ya es el correcto. */
-.portada__in {
-  display: grid; grid-template-columns: .95fr 1.05fr;
-  gap: clamp(24px, 4.6vw, 56px); align-items: center;
-}
-.portada__txt { order: 2; }
-.portada__vis { order: 1; }
-.portada h1 { font-size: var(--t6); margin-top: var(--s3); }
-.portada h1 em {
-  font-family: var(--prosa); font-style: italic; font-weight: 400;
-  color: var(--oro); display: block; letter-spacing: -.01em;
-}
-.lead {
-  font-family: var(--prosa); font-size: var(--t3); line-height: 1.5;
-  color: #c6bfab; max-width: 36ch; margin-top: var(--s3);
-}
-.ctas { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s4); }
-.pie {
-  margin-top: var(--s3); font-size: var(--t0); color: var(--tenue);
-  display: flex; align-items: center; gap: var(--s2);
-}
-.viva {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--oro);
-  box-shadow: 0 0 0 0 rgba(201, 168, 76, .55);
-  animation: latir 2.6s var(--out) infinite;
-}
-@keyframes latir {
-  70%  { box-shadow: 0 0 0 8px rgba(201, 168, 76, 0); }
-  100% { box-shadow: 0 0 0 0  rgba(201, 168, 76, 0); }
-}
-.portada__vis { display: flex; justify-content: center; }
-
-/* ── La escena: el teléfono y sus pruebas alrededor ─────────────
-   El teléfono solo enseñaba UNA cosa. Las notas flotantes muestran
-   tres resultados distintos del producto a la vez, y el arco cálido
-   las agrupa para que no se lean como piezas sueltas. */
-/* La escena es más ancha que el teléfono: las notas viven en ese
-   margen, no encima del correo. Tapar el contenido del móvil
-   arruinaba justo lo que el móvil venía a enseñar. */
-.portada__vis { position: relative; }
-/* Pegado a la izquierda: sangra por el borde de la portada, que
-   lo recorta. Así deja sitio a la derecha para las dos tarjetas. */
-.escena { position: relative; z-index: 1; display: flex; justify-content: flex-start; align-items: flex-end; width: 100%; }
-
-/* ── El filete de la portada ────────────────────────────────────
-   Va anclado a la COLUMNA del teléfono y no a la sección: así el
-   rebaje queda centrado con el móvil a cualquier ancho, sin
-   cuentas sobre la rejilla. Los tramos rectos son pseudos de
-   100vw que el `overflow:hidden` de la portada recorta. */
-.corte {
-  /* El rebaje se desplaza con el móvil: centrado en la columna
-     quedaría a un lado del teléfono. */
-  position: absolute; left: 50%; transform: translateX(calc(-50% - 78px));
-  bottom: -62px; width: 672px; z-index: 0; pointer-events: none;
-  color: rgba(201, 168, 76, .28);
-}
-.corte svg { display: block; width: 100%; height: 50px; }
-.corte::before, .corte::after {
-  content: ""; position: absolute; top: 0; width: 100vw;
-  border-top: 1.4px solid currentColor;
-}
-.corte::before { right: 100%; }
-.corte::after  { left: 100%; }
-
-/* Halo cálido tras el teléfono. Un degradado, no una forma: el hero
-   ya carga con el polvo, el grano y el filete del rebaje. */
-.escena__arco {
-  position: absolute; left: 50%; bottom: 2%; transform: translateX(-50%);
-  width: 150%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(circle at 50% 62%,
-    rgba(201, 168, 76, .15) 0%, rgba(201, 168, 76, .05) 42%, transparent 66%);
-}
-
-.nota {
-  /* Ancho fijo: sin él la tarjeta se encoge a su contenido y
-     «denuncias nuevas» se parte en cuatro líneas. */
-  position: absolute; z-index: 3; width: 168px; transform: translateY(-50%);
-  background: var(--papel-alto); color: var(--papel-ink);
-  border-radius: 6px; padding: 9px 12px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(26, 21, 3, .08);
-  transition: transform .35s var(--out), box-shadow .35s var(--out);
-}
-.nota__k { font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: #8A7F6A; line-height: 1.4; }
-.nota__l { display: flex; align-items: center; gap: 7px; margin-top: 4px; }
-.nota__f { font-size: 11.5px; font-weight: 700; }
-.nota__c { font-family: var(--prosa); font-size: 16px; color: #B3261E; margin-top: 3px; line-height: 1; }
-.nota__n { font-family: var(--prosa); font-size: 26px; line-height: 1; color: #8B6914; }
-.nota__n--al { color: #B3261E; }
-
-/* Las dos al lado DERECHO, cada una a la altura exacta de su fila
-   medida desde el borde del marco: 327 px la del SRI, 456 px la de
-   Fiscalía. Los bloques que van encima de la tabla son de alto
-   fijo, así que estos números no se mueven con la ventana. */
-/* Ancladas por su borde IZQUIERDO y no por el derecho: con `right`
-   la separación dependía de lo ancha que saliera cada tarjeta, y
-   una estrecha quedaba flotando lejos del teléfono. */
-.nota--alerta  { left: calc(100% + 15px); top: 327px; }
-.nota--barrido { left: calc(100% + 15px); top: 456px; text-align: center; }
-.nota--barrido .nota__k { margin-top: 2px; }
-
-/* El hover conserva el centrado: sin repetir la traslación, la
-   tarjeta saltaría media altura al pasar el ratón. */
-.nota:hover {
-  transform: translateY(-50%) scale(1.055);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, .58), inset 0 0 0 1px rgba(26, 21, 3, .1);
-}
-/* El filete que ata la tarjeta con su fila: cruza el bisel y entra
-   hasta el punto de color de la fila. Sin él, dos cosas a la misma
-   altura son solo dos cosas a la misma altura. */
-.nota::after {
-  content: ""; position: absolute; top: 50%; width: 34px;
-  border-top: 1px solid rgba(179, 38, 30, .5);
-}
-.nota--alerta::after, .nota--barrido::after { right: 100%; }
-
-@media (max-width: 1240px) { .nota { width: 142px; padding: 8px 10px; } }
-
-
-
-/* ── La hoja: la primera página del informe ─────────────────────
-   Un informe es un A4, no una pantalla de móvil. En un marco de
-   teléfono se leería como otra cosa —y el móvil-en-el-hero es
-   además el patrón más copiado del género—. Va recortada por
-   abajo: se ve dónde empieza, no hace falta ver dónde acaba.
-   Colores y jerarquía tomados de la plantilla real del PDF. */
-/* El teléfono se CORTA por abajo: sale del hero y lo recorta el
-   `overflow:hidden` de la portada. Un objeto cortado implica que
-   hay más; uno completo flotando en el vacío, no. El margen
-   negativo evita que al crecer empuje la altura de la sección. */
-/* Más ancho y arrancando más abajo: con 296 px y arrancando
-   arriba se veía una franja larguísima y estrecha, que no es como
-   se ve un teléfono. Lo que importa es la PROPORCIÓN del trozo
-   visible, no la del aparato entero. */
-/* El alto del teléfono va en unidades de PANTALLA, no en píxeles:
-   así cruza el borde inferior y se corta ahí sea cual sea la
-   ventana. Con un alto fijo, en pantallas altas se veía entero y
-   flotando, que es justo lo contrario del efecto. */
-.hoja { position: relative; width: 100%; max-width: 404px; margin-left: -64px; margin-top: calc(52px + 9svh); margin-bottom: -35svh; }
-.fono__marco {
-  position: relative; border-radius: 46px; padding: 11px;
-  background: linear-gradient(152deg, #2e2e30, #0a0a0b 34%, #17171a 68%, #313134);
-  box-shadow: 0 34px 64px rgba(0, 0, 0, .68),
-              0 2px 0 rgba(255, 255, 255, .07) inset,
-              0 0 0 1px rgba(0, 0, 0, .8);
-}
-/* Los botones laterales. Son dos barras de 3 px y no se «ven»,
-   pero sin ellos el marco se lee como un rectángulo redondeado. */
-.fono__marco::before, .fono__marco::after {
-  content: ""; position: absolute; right: -2px; width: 3px;
-  border-radius: 0 2px 2px 0; background: linear-gradient(#3a3a3d, #1a1a1c);
-}
-.fono__marco::before { top: 23%; height: 34px; }
-.fono__marco::after  { top: 45%; height: 58px; }
-.fono__isla {
-  position: absolute; top: 21px; left: 50%; transform: translateX(-50%);
-  width: 86px; height: 24px; border-radius: 13px; background: #070708; z-index: 3;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, .05);
-}
-.doc {
-  background: #fff; color: #1A1713; border-radius: 30px;
-  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  height: calc(100svh - 122px); min-height: 540px; overflow: hidden;
-}
-
-.doc__banda {
-  background: #12100C; padding: 44px 13px 11px;
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-}
-.doc__marca { font-size: 11.5px; letter-spacing: .2em; white-space: nowrap; font-weight: 600; color: #E8C877; line-height: 1; }
-.doc__marca span { color: #F7F4EC; font-weight: 300; }
-.doc__kick { font-size: 6px; letter-spacing: .3em; text-transform: uppercase; color: #A79878; margin-top: 6px; }
-.doc__meta { text-align: right; white-space: nowrap; }
-.doc__n { font-size: 6.8px; font-weight: 600; color: #F7F4EC; }
-.doc__d { font-size: 5.8px; color: #A79878; margin-top: 2px; }
-.doc__regla { height: 2px; background: #A87C1E; }
-
-.doc__cuerpo { position: relative; padding: 11px 13px 14px; }
-.doc__rot { font-size: 6.2px; letter-spacing: .24em; text-transform: uppercase; color: #8A7F6A; margin-bottom: 5px; }
-.doc__rot--sep { margin-top: 13px; }
-
-.doc__sujeto { border: 1px solid #E4DCC6; border-left: 2.5px solid #A87C1E; background: #FCFAF4; padding: 9px 11px; }
-.doc__nm { font-family: var(--prosa); font-size: 14px; line-height: 1.15; color: #12100C; }
-.doc__id { font-size: 7.4px; color: #6E6555; margin-top: 4px; }
-.doc__id b { color: #3B362C; font-weight: 600; }
-
-.doc__ver { margin-top: 11px; background: #FCF1EE; border-left: 2.5px solid #B3261E; padding: 9px 12px; }
-.doc__vk { font-size: 6px; letter-spacing: .2em; text-transform: uppercase; color: #8A6A62; }
-.doc__vt { font-family: var(--prosa); font-size: 14.5px; line-height: 1.1; color: #B3261E; margin-top: 4px; }
-.doc__vs { font-size: 7.4px; color: #6B5B57; margin-top: 4px; line-height: 1.45; }
-.doc__vd { font-size: 6.8px; color: #8A6A62; margin-top: 4px; }
-
-.doc__tbl { width: 100%; border-collapse: collapse; }
-.doc__th th { font-size: 6px; letter-spacing: .2em; text-transform: uppercase; color: #8A7F6A;
-               font-weight: 600; text-align: left; padding: 0 6px 5px 0; border-bottom: 1px solid #12100C; }
-.doc__tbl td { font-size: 7.8px; padding: 4px 6px 4px 0; border-bottom: 1px solid #F0EBDD; vertical-align: middle; color: #4A4437; }
-.doc__tbl td.f { font-weight: 600; color: #12100C; }
-.doc__tbl td.f span { display: block; font-size: 6.4px; font-weight: 400; color: #8A7F6A; margin-top: .5px; }
-.doc__tbl .v, .doc__tbl th.v { text-align: right; padding-right: 0; font-variant-numeric: tabular-nums; }
-.doc__tbl td.pt { width: 9px; padding-right: 0; }
-/* Tres colores, tres cosas distintas —igual que en el PDF—: verde
-   consultado y limpio, rojo con hallazgo, azul con datos que no
-   acusan a nadie. */
-.doc__tbl td.pt i { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #C9CCC6; }
-.doc__tbl tr.ok td.pt i   { background: #1E7A4B; }
-.doc__tbl tr.hay td.pt i  { background: #B3261E; }
-.doc__tbl tr.info td.pt i { background: #5A6C90; }
-.doc__tbl tr.hay td { background: #FCF1EE; }
-
-
-
-.et { font-size: 7.5px; font-weight: 700; padding: 2.5px 7px; border-radius: 99px; white-space: nowrap; border: 1px solid; }
-.et--ok { color: #1E7A4B; background: #F1F8F3; border-color: rgba(30, 122, 75, .35); }
-.et--al { color: #B3261E; background: #FDF2F1; border-color: rgba(179, 38, 30, .35); }
-.et--pd { color: #B7791F; background: #FBF3E2; border-color: rgba(183, 121, 31, .4); }
-.et--no { color: #6E6555; background: #F7F4EC; border-color: #DDD5C3; }
-
-
-
-
-/* ═══ La secuencia del informe ═══════════════════════════════════
-   Cuenta lo que hace el producto en tres segundos: se rellena el
-   informe, una línea recorre las fuentes, y al topar con un hallazgo
-   la fila se tiñe y su tarjeta salta afuera.
-
-   Todo con retardos en cascada sobre el MISMO reloj: cada pieza sabe
-   en qué milisegundo le toca, sin JavaScript encadenando pasos. El
-   único JS es el que añade `.anima` cuando la escena entra en pantalla.
-
-   Sin la clase, todo se ve en su estado final: si el observador no
-   llega a disparar, la portada no queda a medias. */
-
-/* ── Estado de partida, solo cuando la animación está armada ── */
-.escena.armada .doc__tbl tr.fila { opacity: 0; }
-.escena.armada .doc__sujeto,
-.escena.armada .doc__ver { opacity: 0; }
-.escena.armada .nota { opacity: 0; }
-.escena.armada .nota::after { width: 0; }
-
-/* ── El reparto ── */
-.escena.anima .doc__sujeto { animation: subeEntra .5s var(--out) .18s both; }
-.escena.anima .doc__ver    { animation: subeEntra .5s var(--out) .36s both; }
-
-.escena.anima .doc__tbl tr.fila {
-  animation: filaEntra .42s var(--out) both;
-  animation-delay: calc(.62s + var(--i) * .07s);
-}
-
-/* La línea de barrido: baja por la tabla mientras las filas entran. */
-.barrido {
-  position: absolute; left: 13px; right: 13px; top: 0; height: 34px;
-  pointer-events: none; opacity: 0; z-index: 2; border-radius: 3px;
-  /* Un halo con FILO en la base. Sin la línea inferior el degradado
-     solo se leía como una sombra difusa; el filo es lo que convierte
-     el gesto en un escáner que avanza. */
-  background: linear-gradient(180deg,
-    rgba(201, 168, 76, 0) 0%, rgba(201, 168, 76, .26) 62%,
-    rgba(168, 124, 30, .5) 96%, rgba(168, 124, 30, .62) 100%);
-}
-.escena.anima .barrido { animation: barre 1.5s cubic-bezier(.4, .05, .3, 1) .58s both; }
-
-/* Las dos filas con hallazgo se tiñen justo cuando la línea las cruza:
-   1,22 s la del SRI (fila 0) y 1,58 s la de Fiscalía (fila 4). */
-.escena.anima tr.fila.hay td { animation: tine .5s var(--out) both; }
-.escena.anima tr.fila.hay:nth-of-type(2) td  { animation-delay: 1.22s; }
-.escena.anima tr.fila.hay:nth-of-type(6) td  { animation-delay: 1.58s; }
-.escena.anima tr.fila.hay td.pt i { animation: late .9s ease-out both; }
-.escena.anima tr.fila.hay:nth-of-type(2) td.pt i { animation-delay: 1.22s; }
-.escena.anima tr.fila.hay:nth-of-type(6) td.pt i { animation-delay: 1.58s; }
-
-/* Las tarjetas salen DESPUÉS de que su fila se tiña: primero se
-   encuentra, luego se enseña. Al revés no se entendería la causa. */
-.escena.anima .nota--alerta  { animation: salta .58s var(--out) 1.4s both; }
-.escena.anima .nota--barrido { animation: salta .58s var(--out) 1.78s both; }
-.escena.anima .nota::after   { animation: tira .4s var(--out) both; }
-.escena.anima .nota--alerta::after  { animation-delay: 1.72s; }
-.escena.anima .nota--barrido::after { animation-delay: 2.1s; }
-
-/* El veredicto se subraya al final: ya se vio de dónde salen las dos. */
-.escena.anima .doc__ver { animation: subeEntra .5s var(--out) .36s both, remata 1s ease-out 2.5s; }
-
-@keyframes subeEntra {
-  from { opacity: 0; transform: translateY(7px); }
-  to   { opacity: 1; transform: none; }
-}
-@keyframes filaEntra {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes barre {
-  0%   { opacity: 0; transform: translateY(150px); }
-  12%  { opacity: 1; }
-  88%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(560px); }
-}
-@keyframes tine {
-  from { background: #fff; }
-  to   { background: #FCF1EE; }
-}
-/* El punto late una vez y se queda. No parpadea en bucle: un hallazgo
-   se señala, no se anuncia sin parar. */
-@keyframes late {
-  0%   { transform: scale(1);   box-shadow: 0 0 0 0   rgba(179, 38, 30, .55); }
-  35%  { transform: scale(1.7); box-shadow: 0 0 0 4px rgba(179, 38, 30, 0); }
-  100% { transform: scale(1);   box-shadow: 0 0 0 0   rgba(179, 38, 30, 0); }
-}
-/* Con un pelo de rebase: sin él el salto se lee como un fundido. */
-@keyframes salta {
-  0%   { opacity: 0; transform: translateY(-50%) translateX(-22px) scale(.9); }
-  62%  { opacity: 1; transform: translateY(-50%) translateX(4px)   scale(1.03); }
-  100% { opacity: 1; transform: translateY(-50%) translateX(0)     scale(1); }
-}
-@keyframes tira {
-  from { width: 0; }
-  to   { width: 34px; }
-}
-@keyframes remata {
-  0%, 100% { box-shadow: none; }
-  40%      { box-shadow: 0 0 0 2px rgba(179, 38, 30, .28); }
-}
 
 
 /* ── Precios: dos productos, sin planes ────────────────────────
@@ -1013,45 +590,6 @@ a { color: inherit; text-decoration: none; }
 .sv__l li:before { content: ""; position: absolute; left: 0; top: 14px;
   width: 5px; height: 5px; border-radius: 50%; background: #A87C1E; }
 
-/* ═══ MÓVIL ═══════════════════════════════════════════════════════
-   Una sola regla para toda la portada. Antes había SIETE media
-   queries de 880px repartidas por el archivo, escritas en distintas
-   rondas, y se pisaban: la que colapsaba la rejilla limitaba
-   `.portada__vis`, pero el ancho lo manda `.hoja`, y esa vivía en
-   otra. El resultado era un teléfono que tapaba el titular. */
-@media (max-width: 880px) {
-  /* El titular PRIMERO: en 390 px el mensaje es el texto, no la
-     maqueta. El teléfono pasa debajo. */
-  .portada__in { grid-template-columns: 1fr; gap: var(--s4); }
-  .portada__txt { order: 1; }
-  .portada__vis { order: 2; }
-
-  /* Sin alto forzado: con `min-height:100svh` y un teléfono igual de
-     alto dentro, el texto no cabía y quedaba por debajo. */
-  .portada { min-height: 0; padding-bottom: 0; }
-
-  /* Y sin sangrado: el margen negativo es lo que subía el contenido
-     por debajo del móvil. Aquí el teléfono se recorta por su propio
-     contenedor, no arrastrando lo que viene después. */
-  .hoja {
-    max-width: 290px; margin: 0 auto;
-    height: 62svh; overflow: hidden;
-  }
-  .doc { height: 100%; min-height: 0; }
-
-  .nota, .corte, .mancha { display: none; }
-  .escena { justify-content: center; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .escena.armada .doc__tbl tr.fila,
-  .escena.armada .doc__sujeto,
-  .escena.armada .doc__ver,
-  .escena.armada .nota { opacity: 1; }
-  .escena.armada .nota::after { width: 34px; }
-  .escena.anima * { animation: none !important; }
-  .barrido { display: none; }
-}
 
 /* ── Secciones ─────────────────────────────────────────────── */
 /* El ritmo lo da la SUPERFICIE, no el espaciado: la página alterna
@@ -1229,6 +767,36 @@ a { color: inherit; text-decoration: none; }
   .chip { flex: 0 0 calc((100% - var(--h) * 2) / 3); }
 }
 
+/* ── FAQ ───────────────────────────────────────────────────────── */
+/* <details> nativo: acordeón accesible sin una línea de JS, con
+   teclado y lector de pantalla gratis. */
+.faq__lista {
+  max-width: 74ch; margin: var(--s5) auto 0;
+  display: flex; flex-direction: column; gap: 1px;
+}
+.faq__item {
+  border-bottom: 1px solid var(--linea);
+  padding: var(--s3) 0;
+}
+.faq__item summary {
+  cursor: pointer; list-style: none;
+  font-family: var(--display); font-weight: 600;
+  font-size: var(--t2); color: var(--papel-ink);
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3);
+}
+.faq__item summary::-webkit-details-marker { display: none; }
+/* El signo lo dibuja un pseudo-elemento y no un ícono: así rota con
+   una transición en vez de intercambiar dos glifos. */
+.faq__item summary::after {
+  content: "+"; flex: none; font-size: 1.3em; line-height: 1; color: var(--oro-os);
+  transition: transform .25s var(--out);
+}
+.faq__item[open] summary::after { transform: rotate(45deg); }
+.faq__item p {
+  margin-top: var(--s2); font-family: var(--prosa); font-size: var(--t1);
+  color: var(--papel-2); line-height: 1.65; max-width: 68ch;
+}
+
 
 /* `hidden` pone `display:none` desde la hoja del navegador, y cualquier
    `display` propio le gana: `.bt` es inline-flex, así que los dos botones
@@ -1307,8 +875,6 @@ a { color: inherit; text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .rv { opacity: 1; transform: none; transition: none; }
-  .polvo { display: none; }
-  .nota { transition: none; }
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
 }
 :focus-visible { outline: 2px solid var(--oro); outline-offset: 3px; }
@@ -1343,26 +909,6 @@ a { color: inherit; text-decoration: none; }
       { rootMargin: "0px" },
     ).observe(centinela);
   }
-
-  // La secuencia del informe. Se ARMA en cuanto carga —así el estado
-  // de partida no se ve saltar— y se DISPARA cuando la escena entra en
-  // pantalla. Si el navegador no soporta el observador, se queda como
-  // está: todo visible, que es el estado final.
-  const escena = document.querySelector(".escena");
-  if (escena && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    escena.classList.add("armada");
-    if ("IntersectionObserver" in window) {
-      const obs = new IntersectionObserver((entradas) => {
-        for (const e of entradas) {
-          if (e.isIntersecting) { escena.classList.add("anima"); obs.disconnect(); }
-        }
-      }, { threshold: .25 });
-      obs.observe(escena);
-    } else {
-      escena.classList.add("anima");
-    }
-  }
-
 
   // Revelado al entrar en pantalla. Escalonado solo dentro de los pares
   // que se leen juntos; el resto entra a su ritmo.

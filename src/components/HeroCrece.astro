@@ -1,0 +1,334 @@
+---
+// El hero nuevo, con el efecto que se vio en paypal.com/ec/home: una
+// tarjeta pequeña con forma de teléfono que, al hacer scroll, CRECE
+// hasta llenar la pantalla. Cuando llega a llenarla, el bisel del
+// teléfono se disuelve en negro y el logo de dentro se desenfoca hasta
+// convertirse en un resplandor de fondo — el sitio donde aparecen,
+// nítidos, los logos de los portales que se consultan a diario.
+//
+// Mecanismo (calcado del de PayPal, verificado con CDP contra su propia
+// página): una sección `sticky` de un alto de pantalla, dentro de un
+// envoltorio del DOBLE de alto —eso da el sitio para scrollear mientras
+// la sección se queda fija—. JS mide cuánto se ha scrolleado dentro de
+// ese sobrante y lo vuelca como un 0→1 en una variable CSS
+// (`--progreso`); todo lo demás —el tamaño de la tarjeta, el radio de
+// las esquinas, el desenfoque del logo— es CSS puro con `calc()` leyendo
+// esa variable. Nada de JS por fotograma más allá de esa única línea.
+interface Fuente { s: string; n: string; e: string }
+interface Props {
+  portales: Fuente[];
+  ctaMonitoreo: string;
+  ctaComoFunciona: string;
+}
+const { portales, ctaMonitoreo, ctaComoFunciona } = Astro.props;
+---
+
+<header class="hg" id="top">
+  <span class="centinela" aria-hidden="true"></span>
+
+  <div class="hg__espacio">
+    <section class="hg__fijo">
+      <div class="hg__intro">
+        <p class="hg__kick">Monitoreo integral</p>
+        <h1 class="hg__h1">Census Alert</h1>
+        <p class="hg__sub">Vigilancia total diaria de las fuentes públicas del Estado.</p>
+        <div class="hg__ctas">
+          <a href={ctaMonitoreo} target="_blank" rel="noopener" class="hg__bt">Quiero monitorear mi empresa</a>
+          <a href={ctaComoFunciona} class="hg__bt hg__bt--l">Ver cómo funciona</a>
+        </div>
+        <p class="hg__pie">
+          <span class="hg__viva" aria-hidden="true"></span>
+          {portales.length} portales oficiales · Revisión diaria · Sin instalar nada
+        </p>
+      </div>
+
+      <div class="hg__tarjeta">
+        <span class="hg__isla" aria-hidden="true"></span>
+
+        <div class="hg__pantalla">
+          <img src="/logo-census.svg" alt="" class="hg__logo-brillo" aria-hidden="true" />
+          <img src="/logo-census.svg" alt="Census Alert" class="hg__logo" />
+
+          <div class="hg__portales" role="list" aria-label="Portales que se consultan a diario">
+            {portales.map((p) => (
+              <div class="hg__chip" role="listitem" title={p.n}>
+                <img src={`/logos/${p.s}.${p.e}`} alt={p.n} loading="lazy" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</header>
+
+<script>
+  const seccion = document.querySelector<HTMLElement>(".hg");
+  if (seccion) {
+    const espacio = seccion.querySelector<HTMLElement>(".hg__espacio")!;
+    const fijo = seccion.querySelector<HTMLElement>(".hg__fijo")!;
+    const tarjeta = seccion.querySelector<HTMLElement>(".hg__tarjeta")!;
+    const intro = seccion.querySelector<HTMLElement>(".hg__intro")!;
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // El tamaño «chico» de la tarjeta NO sale de una proporción fija:
+    // sale del hueco que deja el texto de encima. Con un objetivo fijo
+    // (antes: 0,72 del alto de pantalla) la tarjeta se dibujaba encima
+    // del propio texto —374 px de solape medidos— porque nada sabía
+    // cuánto ocupaba el bloque de arriba.
+    //
+    // `scrollHeight` mide el alto NATURAL del texto aunque esté con
+    // `max-height` recortado por el propio --progreso; por eso se puede
+    // medir en cualquier momento, no solo en reposo.
+    function medirChico() {
+      const altoIntro = intro.scrollHeight;
+      fijo.style.setProperty("--intro-alto", altoIntro + "px");
+
+      const holgura = 28;   // aire arriba y abajo de la tarjeta chica
+      const disponible = innerHeight - altoIntro - holgura * 2;
+      // Tope superior en 420: en escritorio el hueco sobrante es enorme
+      // y una tarjeta «chica» de 800 px deja de leerse como chica.
+      const alto = Math.max(150, Math.min(disponible, 420));
+      const ancho = Math.min(alto * (9 / 19.5), innerWidth * 0.6);
+      fijo.style.setProperty("--ancho-chico", ancho + "px");
+      fijo.style.setProperty("--alto-chico", alto + "px");
+    }
+
+    if (quieto) {
+      // Sin scroll-jacking para quien pide menos movimiento: se ve todo
+      // en su sitio final, apilado, sin la tarjeta creciendo.
+      medirChico();
+      fijo.style.setProperty("--progreso", "1");
+    } else {
+      let pendiente = false;
+      const actualizar = () => {
+        pendiente = false;
+        const r = espacio.getBoundingClientRect();
+        const total = r.height - innerHeight;   // == 1 alto de pantalla
+        const avanzado = -r.top;
+        const progreso = total > 0 ? Math.min(1, Math.max(0, avanzado / total)) : 1;
+        fijo.style.setProperty("--progreso", progreso.toFixed(4));
+      };
+      const pedirActualizar = () => {
+        if (!pendiente) { pendiente = true; requestAnimationFrame(actualizar); }
+      };
+
+      medirChico();
+      actualizar();
+      addEventListener("scroll", pedirActualizar, { passive: true });
+      addEventListener("resize", () => { medirChico(); pedirActualizar(); });
+    }
+  }
+</script>
+
+<style>
+  /* ── Tokens propios ──────────────────────────────────────────── */
+  /* El ámbito de Astro no deja que las reglas de index.astro lleguen
+     aquí (ver memoria astro-css-ambito-componente): `.wrap`, `.bt` y el
+     resto de clases genéricas se redeclaran, no se heredan. Las
+     VARIABLES de :root sí cruzan —son herencia normal de CSS—, así que
+     --oro / --crema / --out / --nav-h / --wrap se reutilizan tal cual. */
+  .hg { background: #0b0a06; color: var(--crema); }
+  .hg .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px); }
+  .centinela { position: absolute; top: 0; height: 1px; width: 1px; }
+
+  /* ── El andamiaje del scroll ─────────────────────────────────── */
+  /* El envoltorio mide el DOBLE que la sección: esos 100vh de sobra son
+     el recorrido de scroll mientras `.hg__fijo` se queda pegada arriba.
+     Sin este sobrante no hay dónde scrollear y --progreso no se mueve. */
+  .hg__espacio { position: relative; height: 200vh; }
+  .hg__fijo {
+    position: sticky; top: 0; height: 100svh; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+    /* El texto arriba, pegado al aire del navbar; la tarjeta abajo,
+       con `margin-top:auto` empujándola al fondo —así arranca chica y
+       pegada al borde inferior, como en PayPal, en vez de flotando en
+       el centro de la pantalla—. */
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 30%, rgba(201, 168, 76, .16), transparent 68%),
+      linear-gradient(178deg, #14130e 0%, #0f0f0c 46%, #0b0a06 100%);
+  }
+
+  /* ── El texto de entrada ─────────────────────────────────────── */
+  /* EN EL FLUJO, no absoluto: así, cuando su `max-height` se encoge a
+     cero, el `justify-content:center` de `.hg__fijo` recentra SOLO la
+     tarjeta en el hueco que deja. Con `position:absolute` el texto no
+     empujaba nada y la tarjeta —centrada en el alto completo— se
+     dibujaba encima: 374 px de solape medidos antes de este cambio.
+     `--intro-alto` lo mide JS con `scrollHeight` (medirChico). */
+  .hg__intro {
+    /* Sin la clase `.wrap`: compartir esa clase con `margin:0 auto` le
+       ganaba por especificidad (2 selectores de clase vs 1) al
+       `margin-top` de aquí abajo, aunque este viniera después en la
+       hoja. El ancho y el centrado se repiten sueltos. */
+    width: min(100%, var(--wrap)); margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 40px);
+    text-align: center; z-index: 2;
+    /* El aire bajo el navbar fijo vive AQUÍ, no en `.hg__fijo`: si el
+       padding va en el contenedor, el `flex-shrink` por defecto encoge
+       la tarjeta para que quepan las dos —844 de alto pedidos, 758
+       disponibles, medido—. Puesto en el texto, se encoge junto con él
+       y al final del recorrido la tarjeta sí llega a ocupar el 100 %. */
+    /* Se encoge junto con el alto: fijo, se quedaba pegado incluso
+       en progreso 1 y empujaba la tarjeta 86 px fuera de la pantalla
+       —86 px de hueco vacío arriba, 86 px de tarjeta recortados abajo,
+       medido—. */
+    margin-top: calc((1 - var(--progreso, 0)) * var(--nav-h));
+    max-height: calc((1 - var(--progreso, 0)) * var(--intro-alto, 420px));
+    overflow: hidden;
+    opacity: clamp(0, calc(1 - var(--progreso, 0) * 1.9), 1);
+    transform: translateY(calc(var(--progreso, 0) * -20px));
+    transition: opacity .2s linear, transform .2s linear;
+    pointer-events: none;
+  }
+  .hg__kick {
+    font-size: var(--t0); font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--oro-cl);
+  }
+  .hg__h1 {
+    font-family: var(--display); font-weight: 600; letter-spacing: -.018em;
+    font-size: var(--t6); margin-top: var(--s2); line-height: 1.02;
+  }
+  .hg__sub {
+    font-family: var(--prosa); font-size: var(--t3); line-height: 1.5;
+    color: #c6bfab; max-width: 34ch; margin: var(--s2) auto 0;
+  }
+  .hg__ctas {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: var(--s2); margin-top: var(--s4); pointer-events: auto;
+  }
+  .hg__bt {
+    display: inline-flex; align-items: center; gap: var(--s2);
+    font-family: var(--display); font-size: var(--t1); font-weight: 600;
+    padding: .8rem 1.4rem; border-radius: var(--radio);
+    background: var(--oro); color: #17140a;
+    transition: transform .25s var(--out), background .25s var(--out);
+  }
+  .hg__bt:hover { transform: translateY(-2px); background: var(--oro-cl); }
+  .hg__bt--l {
+    background: transparent; color: var(--oro);
+    box-shadow: inset 0 0 0 1px rgba(201, 168, 76, .45);
+  }
+  .hg__bt--l:hover { background: rgba(201, 168, 76, .09); box-shadow: inset 0 0 0 1px var(--oro); }
+  .hg__pie {
+    margin-top: var(--s3); font-size: var(--t0); color: var(--tenue);
+    display: flex; align-items: center; justify-content: center; gap: var(--s2);
+  }
+  .hg__viva {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--oro);
+    box-shadow: 0 0 0 0 rgba(201, 168, 76, .55);
+    animation: hg-latir 2.6s var(--out) infinite;
+  }
+  @keyframes hg-latir {
+    70%  { box-shadow: 0 0 0 8px rgba(201, 168, 76, 0); }
+    100% { box-shadow: 0 0 0 0  rgba(201, 168, 76, 0); }
+  }
+
+  /* ── La tarjeta que crece ────────────────────────────────────── */
+  /* El ancho y el alto van de "tamaño chico" (lo mide JS: proporción de
+     teléfono) a 100vw/100vh. Al centrar con flex en `.hg__fijo`, cuando
+     el tamaño llega al 100% la tarjeta queda pegada a los bordes sin
+     tener que tocar `top`/`left` por separado. El radio baja a la vez,
+     a cero: por eso al final es un panel recto, no un teléfono enorme. */
+  .hg__tarjeta {
+    position: relative; z-index: 1; flex-shrink: 0; margin-top: auto;
+    width: calc(var(--ancho-chico, 300px) + var(--progreso, 0) * (100vw - var(--ancho-chico, 300px)));
+    height: calc(var(--alto-chico, 650px) + var(--progreso, 0) * (100svh - var(--alto-chico, 650px)));
+    border-radius: calc(42px * (1 - var(--progreso, 0)));
+    padding: calc(10px * (1 - var(--progreso, 0)));
+    background: linear-gradient(152deg, #3a3a3d, #0a0a0b 34%, #17171a 68%, #3a3a3d);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(0, 0, 0, .6);
+    overflow: hidden;
+  }
+  /* El bisel metálico se disuelve en negro por encima, con una capa que
+     sube de opacidad con el progreso. Sin esto, al llenar la pantalla
+     se vería un marco de teléfono gigante en vez de un panel negro. */
+  .hg__tarjeta::before {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    background: #05050350;
+    opacity: var(--progreso, 0);
+  }
+  .hg__isla {
+    position: absolute; top: 19px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 22px; border-radius: 12px; background: #070708; z-index: 3;
+    opacity: clamp(0, calc(1 - var(--progreso, 0) * 4), 1);
+  }
+
+  .hg__pantalla {
+    position: relative; z-index: 1; width: 100%; height: 100%;
+    border-radius: calc(33px * (1 - var(--progreso, 0)));
+    background: #0b0a06; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* El logo chico y nítido, que se difumina y agranda hasta volverse
+     el resplandor de fondo. `--progreso` maneja las tres cosas a la
+     vez —opacidad, desenfoque, escala—, así que es un solo movimiento
+     continuo, no un cambio en dos pasos. */
+  .hg__logo {
+    position: absolute; z-index: 2; width: min(150px, 42%); height: auto;
+    opacity: clamp(0, calc(1 - var(--progreso, 0) * 2.3), 1);
+    filter: blur(calc(var(--progreso, 0) * 40px));
+    transform: scale(calc(1 + var(--progreso, 0) * .7));
+    transition: opacity .15s linear;
+  }
+  /* El resplandor: el MISMO logo, mucho más grande y siempre borroso,
+     que aparece a partir de la mitad del recorrido. Es el «blur con el
+     fondo negro y el logo» que pediste — un resplandor ambiental
+     detrás de la cuadrícula, no una mancha que compita con ella. */
+  .hg__logo-brillo {
+    /* En `vw`, no en `%` del contenedor: un `%` sobre un absoluto
+       dentro de la tarjeta que a su vez está creciendo por `calc()`
+       resolvía siempre al 100% del contenedor en vez del 140% pedido
+       —posible límite del motor con tantos `calc()` anidados—. En
+       viewport no depende de ese cálculo y el resplandor sigue
+       leyéndose grande igual. */
+    position: absolute; z-index: 0; width: 100vw; left: 50%; height: auto;
+    transform: translateX(-50%);
+    filter: blur(70px); pointer-events: none;
+    opacity: clamp(0, calc((var(--progreso, 0) - .35) * 1.1), .4);
+  }
+
+  /* Los 19 logos, en cuadrícula, crecen recién en la última parte del
+     recorrido —antes la tarjeta es muy chica para que se lean—. */
+  .hg__portales {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+    gap: clamp(10px, 2vw, 18px);
+    width: min(1040px, 88vw); max-height: 78%; overflow: hidden;
+    opacity: clamp(0, calc((var(--progreso, 0) - .58) * 2.6), 1);
+    transform: translateY(calc((1 - var(--progreso, 0)) * 22px));
+    transition: opacity .15s linear;
+  }
+  .hg__chip {
+    aspect-ratio: 1; border-radius: 14px;
+    background: rgba(247, 244, 236, .06); border: 1px solid rgba(201, 168, 76, .16);
+    display: flex; align-items: center; justify-content: center; padding: 14%;
+  }
+  .hg__chip img { width: 100%; height: 100%; object-fit: contain; }
+
+  @media (max-width: 640px) {
+    .hg__portales { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  }
+
+  /* ── Sin animación: todo en su lugar final, sin scroll-jacking ── */
+  @media (prefers-reduced-motion: reduce) {
+    .hg__espacio { height: auto; }
+    .hg__fijo {
+      position: static; height: auto; padding: calc(var(--nav-h) + 8vh) 0 var(--s6);
+      gap: var(--s5);
+    }
+    .hg__intro { position: static; opacity: 1; transform: none; }
+    .hg__tarjeta {
+      width: var(--ancho-chico, 300px); height: var(--alto-chico, 650px);
+      border-radius: 42px;
+    }
+    .hg__logo { opacity: 1; filter: none; transform: none; }
+    .hg__logo-brillo { display: none; }
+    .hg__portales {
+      position: static; margin-top: var(--s4); opacity: 1; transform: none;
+      max-height: none; width: min(920px, 90vw);
+    }
+    .hg__viva { animation: none; }
+  }
+</style>
