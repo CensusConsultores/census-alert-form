@@ -369,6 +369,25 @@ const AVISOS = [
     color: #A79878; order: -1; }
   .v-tt b { font-size: 10.5px; font-weight: 600; }
 
+  /* ── Móvil: dejar de llenar el 100 % ────────────────────────────── */
+  /* `margin-top: auto` en escritorio pega el pie al borde exacto de la
+     pantalla —el "100 % lleno" era la meta, y ahí no hay nada tapándolo—.
+     En móvil una tarjeta flota sobre los últimos 60 px del teléfono
+     (Recibes.astro, SOLAPE_MOVIL), y con el pie pegado al borde ese
+     solape le tapaba el texto casi entero: quedaban 8 px de sus 68 de
+     alto por encima de la tarjeta, el resto detrás del cristal.
+     La única forma real de arreglarlo es que el contenido termine ANTES
+     del borde: no se puede "reservar" el hueco con padding porque el pie
+     ya llegaba exacto al fondo del `flex:1`, así que un padding-bottom
+     no encoge nada, solo lo empuja a desbordar por debajo igual. Quitar
+     el `auto` deja al pie seguir al último elemento con un margen
+     normal, y el resto del alto queda en blanco —el hueco donde posa
+     la tarjeta—. */
+  @media (max-width: 899px) {
+    .v-pie--fin { margin-top: 12px; }
+    .v-tiendas { margin-top: 12px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .vista { transition: none; }
     .vista.is-on > *, .vista.is-on .v-cuerpo > *,

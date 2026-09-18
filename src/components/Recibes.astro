@@ -141,7 +141,7 @@ const PUNTOS = [
     // ese espacio de verdad en el flujo (`padding-bottom` en `.rec`): si
     // no, ese sobrante cae fuera de la sección y el fondo oscuro no lo
     // cubre —se ve la sección siguiente asomando detrás de la tarjeta—.
-    const SOLAPE_MOVIL = 60;      // px del teléfono que la tarjeta tapa
+    const SOLAPE_MOVIL = 52;      // px del teléfono que la tarjeta tapa
     const RESERVA_PUNTOS = 40;    // hueco bajo la tarjeta para los puntos
 
     function posicionarMovil() {
@@ -391,6 +391,12 @@ const PUNTOS = [
     .rec { position: relative; gap: 0; }
     .rec__vis { order: -1; }
     .marco { max-width: 320px; }
+    /* Proporción real de iPhone (19.5:9), más alta que la 17.6:9 de
+       escritorio. Ahí el contenido llena el 100 % del alto a propósito
+       (nada lo tapa); aquí la tarjeta flotante necesita margen real al
+       fondo, y solo se consigue con más alto de pantalla, no recortando
+       texto. Solo en móvil: en escritorio seguiría llenando exacto. */
+    .marco__pantalla { aspect-ratio: 9 / 19.5; }
 
     /* La lista ya no ocupa flujo: se posa sobre el bajo del teléfono.
        `pointer-events` solo en la tarjeta, para no capturar el deslizado
