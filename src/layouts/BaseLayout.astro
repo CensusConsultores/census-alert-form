@@ -3,6 +3,7 @@ import "../styles/global.css";
 import Banner from "../components/Banner.astro";
 import Footer from "../components/Footer.astro";
 import LoadingSplash from "../components/LoadingSplash.astro";
+import Analitica from "../components/Analitica.astro";
 
 interface Props {
   title: string;
@@ -56,6 +57,7 @@ const imagenAbs = new URL("/og-census-alert.jpg", Astro.site);
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0f0f0c" />
+    <Analitica />
   </head>
   <body>
     {showSplash && <LoadingSplash />}

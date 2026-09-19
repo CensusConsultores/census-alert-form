@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import LoadingSplash from "../components/LoadingSplash.astro";
+import Analitica from "../components/Analitica.astro";
 
 interface Props {
   title?: string;
@@ -15,7 +16,7 @@ const {
   title = "Census Alert · Monitoreo de deudas del SRI, IESS y Supercías en Ecuador",
   // Bajo los 160 caracteres: Google corta ahí y la frase debe cerrar sola.
   description =
-    "Vigilamos 19 portales públicos del Ecuador todos los días y te avisamos el mismo día. Deudas del SRI, mora del IESS, causas judiciales, multas y sanciones.",
+    "Vigilamos 29 fuentes públicas oficiales del Ecuador todos los días y te avisamos el mismo día. Deudas del SRI, mora del IESS, causas judiciales, multas y sanciones.",
   imagen = "/og-census-alert.jpg",
   noindex = false,
 } = Astro.props;
@@ -138,6 +139,7 @@ const imagenAbs = new URL(imagen, Astro.site);
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Petrona:ital,wght@0,300..600;1,300..500&display=swap"
       rel="stylesheet"
     />
+    <Analitica />
   </head>
   <body class="landing-body">
     <LoadingSplash />

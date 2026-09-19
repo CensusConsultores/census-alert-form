@@ -1,0 +1,171 @@
+---
+// ── Analítica de censusalert.com ───────────────────────────────────────
+//
+// No hay terceros. Los eventos van a la misma API de Census Alert que
+// atiende la aplicación, y se ven en el panel de Analítica del admin.
+//
+// POR QUÉ `sendBeacon` Y NO `fetch`
+//
+// sendBeacon viaja como petición simple —texto plano, sin cabeceras raras—,
+// así que no dispara preflight y no hay nada que configurar en CORS. Y el
+// navegador lo entrega aunque la pestaña ya se esté cerrando, que es
+// justamente cuando se manda el evento de salida.
+//
+// QUÉ SE GUARDA Y QUÉ NO
+//
+// De cada visita se guarda una huella que el servidor calcula y que cambia
+// todos los días. Nunca la IP, nunca un nombre, nunca un correo. No hay
+// cookie —el identificador de la visita vive en sessionStorage y muere al
+// cerrar la pestaña— así que tampoco hace falta banner. No se graba la
+// pantalla de nadie.
+const API = "https://census-alert-webapp.onrender.com/api/telemetria/evento";
+---
+
+<script is:inline define:vars={{ API }}>
+(function () {
+  // Respetar «no me rastrees» no cuesta nada y es coherente con lo que
+  // vendemos.
+  try {
+    if (navigator.doNotTrack === "1" || window.doNotTrack === "1") return;
+  } catch (e) {}
+
+  var sesion;
+  try {
+    sesion = sessionStorage.getItem("ca_s");
+    if (!sesion) {
+      sesion = (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+      sessionStorage.setItem("ca_s", sesion);
+    }
+  } catch (e) {
+    // Sin sessionStorage (modo privado estricto): una visita suelta, sin
+    // continuidad. Vale más eso que no medir nada.
+    sesion = "x" + Math.random().toString(36).slice(2, 12);
+  }
+
+  var enviar = function (tipo, detalle, valor) {
+    var carga = {
+      s: sesion,
+      t: tipo,
+      r: location.pathname.slice(0, 200)
+    };
+    if (detalle) carga.d = String(detalle).slice(0, 140);
+    if (typeof valor === "number") carga.v = valor;
+    if (tipo === "inicio" && document.referrer) carga.ref = document.referrer.slice(0, 300);
+
+    try {
+      var cuerpo = new Blob([JSON.stringify(carga)], { type: "text/plain" });
+      if (navigator.sendBeacon && navigator.sendBeacon(API, cuerpo)) return;
+    } catch (e) {}
+    try {
+      fetch(API, { method: "POST", body: JSON.stringify(carga), keepalive: true });
+    } catch (e) {}
+  };
+
+  enviar("inicio");
+
+  // Latido: «sigo aquí». Solo con la pestaña a la vista, para no contar como
+  // presente a quien dejó la página abierta en segundo plano.
+  setInterval(function () {
+    if (document.visibilityState === "visible") enviar("senal");
+  }, 30000);
+
+  var visto = {};
+  var unaVez = function (k) { if (visto[k]) return false; visto[k] = 1; return true; };
+
+  // 1 · Hasta dónde bajó.
+  var hitos = [25, 50, 75, 100], ultimo = 0, t;
+  addEventListener("scroll", function () {
+    clearTimeout(t);
+    t = setTimeout(function () {
+      var h = document.documentElement;
+      var alto = h.scrollHeight - h.clientHeight;
+      if (alto <= 0) return;
+      var pct = Math.round((h.scrollTop / alto) * 100);
+      for (var i = 0; i < hitos.length; i++) {
+        if (pct >= hitos[i] && hitos[i] > ultimo) {
+          ultimo = hitos[i];
+          enviar("scroll", null, hitos[i]);
+        }
+      }
+    }, 200);
+  }, { passive: true });
+
+  // 2 · Qué secciones miró de verdad: 40 % visible, una sola vez.
+  var secciones = {
+    cuando: "Cuándo sirve",
+    recibes: "Qué recibes",
+    servicios: "Servicios",
+    precios: "Precios",
+    faq: "Preguntas frecuentes"
+  };
+  if (window.IntersectionObserver) {
+    var io = new IntersectionObserver(function (entradas) {
+      for (var i = 0; i < entradas.length; i++) {
+        var e = entradas[i];
+        if (e.isIntersecting && unaVez("sec:" + e.target.id)) {
+          enviar("seccion", secciones[e.target.id] || e.target.id);
+        }
+      }
+    }, { threshold: 0.4 });
+    Object.keys(secciones).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+  }
+
+  // 3 · Acordeón «Qué recibes» y botones de WhatsApp, en un solo oyente.
+  var pantallas = {
+    correo: "El correo de cada mañana",
+    informe: "El informe en PDF",
+    causa: "El detalle de una causa",
+    red: "La red de relacionados",
+    bolsillo: "En tu bolsillo"
+  };
+  document.addEventListener("click", function (e) {
+    if (!e.target || !e.target.closest) return;
+
+    var punto = e.target.closest("[data-punto]");
+    if (punto) {
+      var id = punto.getAttribute("data-punto");
+      enviar("pantalla", pantallas[id] || id);
+      return;
+    }
+
+    var wa = e.target.closest('a[href*="wa.me"]');
+    if (wa) {
+      var texto = (wa.textContent || "").trim() || "Sin nombre";
+      // El mismo texto en dos lugares distintos son dos decisiones distintas:
+      // el del menú se toca antes de leer, el del cierre después.
+      var zona = wa.closest("section.cierre") ? " (cierre)"
+               : wa.closest("nav") ? " (menú)"
+               : "";
+      enviar("cta", texto + zona);
+    }
+  });
+
+  // 4 · Qué pregunta abrió. Dice qué le preocupa antes de escribirnos.
+  var faqs = document.querySelectorAll("details.faq__item");
+  for (var j = 0; j < faqs.length; j++) {
+    (function (d) {
+      d.addEventListener("toggle", function () {
+        if (!d.open) return;
+        var s = d.querySelector("summary");
+        var q = (s && s.textContent ? s.textContent : "").trim().slice(0, 140);
+        if (q) enviar("pregunta", q);
+      });
+    })(faqs[j]);
+  }
+
+  // 5 · Cuánto se quedó, en rangos.
+  var t0 = Date.now();
+  var salio = false;
+  addEventListener("pagehide", function () {
+    if (salio) return;
+    salio = true;
+    var s = Math.round((Date.now() - t0) / 1000);
+    var r = s < 10 ? "0-10s" : s < 30 ? "10-30s" : s < 60 ? "30-60s"
+          : s < 180 ? "1-3min" : "+3min";
+    enviar("salida", r, s);
+  });
+})();
+</script>
