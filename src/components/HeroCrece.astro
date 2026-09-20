@@ -19,6 +19,8 @@ interface Props {
   portales: Fuente[];
   ctaComoFunciona: string;
 }
+import { ICONOS } from "./iconos-fuentes";
+
 const { portales, ctaComoFunciona } = Astro.props;
 ---
 
@@ -53,7 +55,10 @@ const { portales, ctaComoFunciona } = Astro.props;
           </div>
           <div class="hg__portales" role="list" aria-label="Portales que se consultan a diario">
             {portales.map((p) => (
-              <img src={`/logos/${p.s}.${p.e}`} alt={p.n} title={p.n} role="listitem" loading="lazy" />
+              <span class="hg__sello" role="listitem" title={p.n}>
+                <span class="hg__sello-ico" set:html={ICONOS[p.s] ? `<svg viewBox="0 0 1254 1254" fill="currentColor" aria-hidden="true">${ICONOS[p.s]}</svg>` : ""} />
+                <span class="hg__sello-n">{p.n}</span>
+              </span>
             ))}
           </div>
         </div>
@@ -343,16 +348,23 @@ const { portales, ctaComoFunciona } = Astro.props;
     transition: opacity .15s linear;
     will-change: opacity, transform;
   }
-  .hg__portales img {
+  /* Antes esto era el sello oficial a secas. Ahora es ícono propio y el
+     nombre en texto: decir de dónde sale el dato es obligación nuestra;
+     vestir el escudo de quien lo publica, no. */
+  .hg__sello {
     flex: 0 0 calc((100% - var(--hg-h) * 5) / 6);
-    height: clamp(30px, 3.6vw, 46px);
-    min-width: 0; min-height: 0; object-fit: contain;
-    /* `invert` + gris: los sellos oscuros (FBI, OFAC, BASC) se leían
-       como manchas negras sobre el fondo negro sin él. */
-    filter: grayscale(1) invert(1) contrast(.86) opacity(.55);
-    transition: filter .3s var(--out);
+    min-width: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    color: rgba(247, 229, 170, .58);
+    transition: color .3s var(--out);
   }
-  .hg__portales img:hover { filter: none; }
+  .hg__sello:hover { color: #F7E5AA; }
+  .hg__sello-ico { display: block; line-height: 0; }
+  .hg__sello-ico svg { width: clamp(26px, 3vw, 38px); height: clamp(26px, 3vw, 38px); display: block; }
+  .hg__sello-n {
+    font-size: clamp(9.5px, 1vw, 11.5px); line-height: 1.25; text-align: center;
+    letter-spacing: .01em; max-width: 13ch;
+  }
 
   .hg__cab-fuentes {
     position: relative; z-index: 2; text-align: center; margin-bottom: clamp(16px, 3vh, 32px);
@@ -372,7 +384,7 @@ const { portales, ctaComoFunciona } = Astro.props;
 
   @media (max-width: 640px) {
     .hg__portales { --hg-h: 14px; }
-    .hg__portales img { flex: 0 0 calc((100% - var(--hg-h) * 3) / 4); }
+    .hg__sello { flex: 0 0 calc((100% - var(--hg-h) * 3) / 4); }
   }
 
   /* ── Sin animación: todo en su lugar final, sin scroll-jacking ── */
