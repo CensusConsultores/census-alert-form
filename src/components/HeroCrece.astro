@@ -360,7 +360,14 @@ const { portales, ctaComoFunciona } = Astro.props;
   }
   .hg__sello:hover { color: #F7E5AA; }
   .hg__sello-ico { display: block; line-height: 0; }
-  .hg__sello-ico svg { width: clamp(26px, 3vw, 38px); height: clamp(26px, 3vw, 38px); display: block; }
+  /* `:global` NO es decorativo aquí. El <svg> entra por set:html y Astro
+     no le pone su atributo de scope, asi que una regla normal compila a
+     `svg[data-astro-cid-…]` y no casa con nada: el icono queda sin tamano,
+     se va al tamano por defecto y el contenedor lo recorta. Sin esto, los
+     19 iconos estan en el HTML y no se ven. */
+  .hg__sello-ico :global(svg) {
+    width: clamp(26px, 3vw, 38px); height: clamp(26px, 3vw, 38px); display: block;
+  }
   .hg__sello-n {
     font-size: clamp(9.5px, 1vw, 11.5px); line-height: 1.25; text-align: center;
     letter-spacing: .01em; max-width: 13ch;
