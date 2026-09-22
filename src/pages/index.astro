@@ -62,9 +62,9 @@ const SERVICIOS = [
              "También a los accionistas y a las compañías vinculadas",
              "Avisa si venden acciones, cambia el representante o entra en liquidación"] },
   { n: "02", titulo: "Informe consolidado", q: "Para antes de firmar.",
-    d: "Un RUC o una cédula, y en minutos un PDF con lo que consta en 29 fuentes oficiales.",
+    d: "Un RUC o una cédula, y en minutos un PDF con lo que consta en 31 fuentes oficiales.",
     puntos: ["Ficha societaria completa: kárdex, actos jurídicos, cumplimiento",
-             "Un análisis de todo lo hallado, no 29 respuestas sueltas",
+             "Un análisis de todo lo hallado, no 31 respuestas sueltas",
              "Dice qué fuente no se pudo verificar, en vez de darla por limpia"] },
   { n: "03", titulo: "Menciones en expedientes", q: "Lo que no hace nadie más.",
     d: "No nos quedamos en el listado de causas: leemos el texto y establecemos en qué calidad aparece la persona.",
@@ -84,7 +84,7 @@ const FAQ = [
   },
   {
     q: "¿En qué se diferencia del informe consolidado?",
-    a: "El monitoreo es vigilancia diaria y continua sobre una cartera de RUC o cédulas. El informe consolidado es una consulta puntual, de una sola vez, contra 29 fuentes, entregada en PDF. Uno sirve para vigilar después de contratar; el otro, para revisar antes de firmar.",
+    a: "El monitoreo es vigilancia diaria y continua sobre una cartera de RUC o cédulas. El informe consolidado es una consulta puntual, de una sola vez, contra 31 fuentes, entregada en PDF. Uno sirve para vigilar después de contratar; el otro, para revisar antes de firmar.",
   },
   {
     q: "¿De dónde saca los datos Census Alert?",
@@ -100,7 +100,7 @@ const FAQ = [
   },
 ];
 
-// Los 19 sellos de la sección de cobertura. El orden agrupa por materia:
+// Los 21 sellos de la sección de cobertura. El orden agrupa por materia:
 // primero lo tributario y laboral, luego judicial, control, y al final las
 // listas internacionales.
 const PORTALES = [
@@ -124,6 +124,7 @@ const PORTALES = [
   { s: "fbi",         n: "FBI",                              e: "webp" },
   { s: "eumw",        n: "ENFAST — Unión Europea",           e: "webp" },
   { s: "basc",        n: "BASC",                             e: "svg"  },
+  { s: "contraloria", n: "Contraloría General del Estado",   e: "svg"  },
 ];
 ---
 
@@ -257,7 +258,7 @@ const PORTALES = [
         <div class="prod__cab">
           <h3>Informe consolidado</h3>
           <p class="prod__q">Una consulta, una vez.</p>
-          <p class="prod__d">Cédula o RUC ante el catálogo de 29 fuentes, en PDF.</p>
+          <p class="prod__d">Cédula o RUC ante el catálogo de 31 fuentes, en PDF.</p>
         </div>
         <ul class="tarifa">
           {INFORMES.map((x) => (
