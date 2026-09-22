@@ -280,18 +280,21 @@ import LegalLayout from "../layouts/LegalLayout.astro";
 
   <p><strong>7.1. Qué se automatiza</strong></p>
   <p>
-    Census Alert clasifica los hallazgos de cada fuente, calcula un
-    <strong>indicador orientativo de riesgo</strong> y genera un resumen redactado
-    automáticamente con apoyo de modelos de lenguaje. Esta política lo declara de forma
-    expresa porque ese indicador constituye una valoración de aspectos personales y, por
-    tanto, una forma de perfilamiento en el sentido de la LOPDP.
+    Census Alert <strong>clasifica automáticamente el resultado de cada fuente</strong>
+    —si registró algo, si no registró nada, si no respondió, o si no aplica—, destaca
+    cuántas fuentes registraron algo, y <strong>genera un resumen redactado
+    automáticamente</strong> con apoyo de modelos de lenguaje. Esta política lo declara de
+    forma expresa porque clasificar y resumir automáticamente lo que las fuentes dicen de
+    una persona constituye una valoración de aspectos personales y, por tanto, una forma de
+    perfilamiento en el sentido de la LOPDP.
   </p>
 
   <p><strong>7.2. Salvaguardas aplicadas</strong></p>
   <ul>
     <li>
-      La metodología del indicador —variables, umbrales, exclusiones y fuentes— está
-      documentada y es revisable.
+      Las reglas de clasificación son <strong>deterministas</strong>: las define el
+      sistema, fuente por fuente, y no las decide el modelo de lenguaje. CENSUS explica la
+      lógica general aplicada a quien la solicite, conforme al numeral 7.3.
     </li>
     <li>
       Las cifras, fechas, montos, estados y coincidencias provienen de datos estructurados
@@ -304,12 +307,8 @@ import LegalLayout from "../layouts/LegalLayout.astro";
     </li>
     <li>
       CENSUS no adopta decisiones sobre las personas consultadas. Quien decide es el
-      usuario, y los Términos y Condiciones le prohíben decidir únicamente sobre la base
-      del indicador automatizado, sin verificación humana del dato de origen.
-    </li>
-    <li>
-      Se realizan pruebas periódicas de exactitud y consistencia, en particular tras cada
-      cambio de modelo o de instrucciones.
+      usuario, y los Términos y Condiciones le prohíben decidir únicamente sobre la base de
+      la clasificación automatizada, sin verificación humana del dato de origen.
     </li>
   </ul>
 
