@@ -1,0 +1,110 @@
+---
+// Página de no-encontrado.
+//
+// Sin este archivo Astro no genera `404.html`, y Cloudflare Pages acaba
+// sirviendo la portada entera —117 KB, con estado 200— en CUALQUIER ruta
+// inventada. Dos costes reales: Google puede indexar infinitas URL
+// duplicadas de la misma página, y cualquier archivo que falte (una
+// imagen, un PDF) «se descarga» como HTML en vez de fallar, así que el
+// error queda mudo en lugar de ser visible.
+//
+// noindex es deliberado: la página de error nunca debe aparecer en
+// buscadores, aunque sí debe ser rastreable para que Google entienda el
+// 404 y saque la URL del índice.
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const DESTINOS = [
+  { h: "/",                        t: "Portada",              d: "Qué vigila Census Alert y cuánto cuesta" },
+  { h: "/debida-diligencia",       t: "Debida diligencia",    d: "Verificar una contraparte antes de firmar" },
+  { h: "/terminos-y-condiciones",  t: "Términos y Condiciones", d: "Condiciones del servicio" },
+  { h: "/tratamiento-de-datos",    t: "Política de Datos",    d: "Cómo tratamos la información" },
+];
+---
+
+<BaseLayout
+  title="Página no encontrada · Census Alert"
+  description="La dirección que buscas no existe en censusalert.com."
+  showSplash={false}
+  noindex={true}
+>
+  <main class="e404">
+    <p class="e404__kick">Error 404</p>
+    <h1 class="e404__h1">Esta dirección no existe.</h1>
+    <p class="e404__lead">
+      El enlace puede estar mal copiado o apuntar a una página que ya no
+      publicamos. Desde aquí puedes seguir:
+    </p>
+
+    <ul class="e404__lista">
+      {DESTINOS.map((x) => (
+        <li>
+          <a href={x.h}>
+            <span class="e404__t">{x.t}</span>
+            <span class="e404__d">{x.d}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .e404 {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 96px 24px 120px;
+  }
+  .e404__kick {
+    margin: 0 0 14px;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--c-gold-dark, #8a7433);
+  }
+  .e404__h1 {
+    margin: 0 0 18px;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  .e404__lead {
+    margin: 0 0 40px;
+    font-size: 17px;
+    line-height: 1.6;
+    opacity: 0.82;
+  }
+  .e404__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .e404__lista a {
+    display: block;
+    padding: 16px 18px;
+    border: 1px solid rgba(201, 168, 76, 0.22);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.18s ease, transform 0.18s ease;
+  }
+  .e404__lista a:hover {
+    border-color: rgba(201, 168, 76, 0.55);
+    transform: translateY(-1px);
+  }
+  .e404__t {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .e404__d {
+    display: block;
+    font-size: 14px;
+    opacity: 0.66;
+  }
+
+  @media (max-width: 560px) {
+    .e404 { padding: 64px 20px 88px; }
+  }
+</style>

@@ -1,0 +1,211 @@
+---
+// Guía para el comprador regulado: oficial de cumplimiento, gerente de
+// riesgos, estudio jurídico que asesora a sujetos obligados.
+//
+// Nota deliberada sobre el contenido: esta página describe el RÉGIMEN en
+// términos prácticos y no cita artículos, plazos ni montos concretos. La
+// normativa de prevención y sus resoluciones cambian, y una cifra
+// desactualizada en una página de un despacho tributario hace más daño
+// que la falta de detalle. El detalle normativo se resuelve en la
+// asesoría, no en la landing.
+import GuiaLayout from "../layouts/GuiaLayout.astro";
+import { FUENTES, INSTITUCIONES, PRECIO_VIGILANCIA_DESDE } from "../config.js";
+
+const toc = [
+  { id: "que-es",       t: "Qué es un sujeto obligado" },
+  { id: "que-exige",    t: "Qué exige el régimen, en la práctica" },
+  { id: "ddc",          t: "Debida diligencia del cliente: los tres niveles" },
+  { id: "listas",       t: "Listas restrictivas: el control que más se falla" },
+  { id: "continuo",     t: "Monitoreo continuo y señales de alerta" },
+  { id: "evidencia",    t: "Lo que de verdad se examina: la evidencia" },
+];
+
+const faq = [
+  {
+    q: "¿Mi empresa es sujeto obligado?",
+    a: "Depende de la actividad. El régimen ecuatoriano alcanza, entre otros, a entidades del sistema financiero y de la economía popular y solidaria, aseguradoras, casas de valores, notarías, registradores, inmobiliarias y constructoras, concesionarias de vehículos, comerciantes de metales y piedras preciosas, casinos y operadores de juego, y quienes prestan servicios societarios o fiduciarios. El listado se define por normativa y se actualiza, así que conviene confirmarlo con el organismo de control del sector.",
+  },
+  {
+    q: "¿Qué diferencia hay entre KYC y debida diligencia del cliente?",
+    a: "KYC («know your customer», conoce a tu cliente) es el componente de identificación y conocimiento del cliente dentro de la debida diligencia. La debida diligencia es más amplia: incluye el KYC, pero también el perfil transaccional, la identificación del beneficiario final, el cruce contra listas y el monitoreo continuo de la relación.",
+  },
+  {
+    q: "¿Basta con revisar al cliente cuando lo doy de alta?",
+    a: "No. El régimen exige diligencia continua sobre la relación comercial. Una verificación de alta que nunca se actualiza es exactamente el hallazgo que un examen de cumplimiento busca: acredita que había un procedimiento y que dejó de aplicarse.",
+  },
+  {
+    q: "¿Census Alert es un sistema de prevención de lavado de activos?",
+    a: "No. Census Alert es una herramienta de verificación y monitoreo sobre fuentes públicas oficiales: automatiza la parte mecánica del control y deja evidencia fechada de cada revisión. El sistema de prevención —políticas, manual, matriz de riesgo, oficial de cumplimiento, reportes— es responsabilidad del sujeto obligado, y Census Consultores puede asesorarlo por separado.",
+  },
+  {
+    q: "¿Los informes sirven como evidencia frente a un examen?",
+    a: "Sirven como respaldo de que la verificación se hizo, con fecha y con el detalle de lo que cada fuente mostraba ese día, incluida la constancia de las fuentes que no se pudieron consultar. No sustituyen certificaciones oficiales ni el criterio del oficial de cumplimiento.",
+  },
+];
+
+const relacionadas = [
+  { h: "/debida-diligencia", t: "Debida diligencia en Ecuador", d: "La guía completa, también para quien no es sujeto obligado" },
+  { h: "/debida-diligencia-de-proveedores", t: "Debida diligencia de proveedores", d: "El mismo control, aplicado a la cadena de suministro" },
+  { h: "/consultar-causas-judiciales-ecuador", t: "Consultar causas judiciales", d: "Cómo buscar juicios por cédula o RUC" },
+];
+---
+
+<GuiaLayout
+  title="Compliance y UAFE en Ecuador: sujetos obligados · Census Alert"
+  description="Qué exige el régimen de prevención de lavado de activos en Ecuador a los sujetos obligados: debida diligencia del cliente, listas restrictivas y monitoreo continuo."
+  h1="Compliance en Ecuador: qué exige el régimen a los sujetos obligados"
+  lead="Para un sujeto obligado, la debida diligencia no es una buena práctica: es una obligación examinable. Esta guía explica, sin citar artículos, qué es lo que de verdad se revisa cuando llega el examen y dónde suelen estar los hallazgos."
+  crumb="Compliance y UAFE"
+  updated="Actualizado en 2026"
+  toc={toc}
+  faq={faq}
+  relacionadas={relacionadas}
+  ctaMensaje="Vengo de la guía de compliance. Somos sujeto obligado y quiero automatizar la debida diligencia."
+  ctaTitulo="Automatiza la parte mecánica del control"
+  ctaTexto={`Cruce diario de tu cartera contra ${FUENTES} fuentes de ${INSTITUCIONES} instituciones, incluidas OFAC, ONU y ENFAST, con evidencia fechada de cada revisión.`}
+>
+
+  <h2 id="que-es">Qué es un sujeto obligado</h2>
+
+  <p>
+    Un <strong>sujeto obligado</strong> es una persona o empresa a la que la
+    normativa ecuatoriana de prevención de lavado de activos y financiamiento
+    de delitos le impone un deber activo: identificar a sus clientes, entender
+    con quién está tratando, vigilar la relación y reportar a la
+    <strong>UAFE</strong> lo que corresponda.
+  </p>
+
+  <p>
+    No es una categoría voluntaria ni depende del tamaño de la empresa. Depende
+    de la <em>actividad</em>. Y el incumplimiento no se mide por el daño
+    causado: se mide por la ausencia del control. Se puede sancionar a una
+    empresa que nunca movió un dólar sospechoso, simplemente porque no tenía
+    implementado lo que debía tener.
+  </p>
+
+  <h2 id="que-exige">Qué exige el régimen, en la práctica</h2>
+
+  <p>
+    Dejando de lado la arquitectura formal —manual, políticas, oficial de
+    cumplimiento, matriz de riesgo, capacitación, reportes—, el trabajo
+    cotidiano se reduce a cuatro cosas que hay que poder demostrar:
+  </p>
+
+  <ol>
+    <li><strong>Identificar</strong> al cliente y a su beneficiario final, con documentación.</li>
+    <li><strong>Verificar</strong> lo que se pueda verificar contra fuentes independientes, en lugar de aceptar la declaración del cliente.</li>
+    <li><strong>Vigilar</strong> la relación de forma continua, no solo al inicio.</li>
+    <li><strong>Documentar</strong> todo lo anterior con fecha, de forma que un tercero pueda reconstruir qué se supo y cuándo.</li>
+  </ol>
+
+  <div class="guia__nota">
+    <p>
+      La palabra que sostiene todo el régimen es <strong>evidencia</strong>. Un
+      control que se ejecuta pero no deja rastro es, a efectos de un examen,
+      un control que no existió.
+    </p>
+  </div>
+
+  <h2 id="ddc">Debida diligencia del cliente: los tres niveles</h2>
+
+  <p>
+    El régimen no pide el mismo esfuerzo para todos los clientes. Pide que el
+    esfuerzo sea <em>proporcional al riesgo</em>, y que esa proporción esté
+    justificada por escrito:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Nivel</th><th>Cuándo aplica</th><th>Qué implica</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Simplificada</strong></td>
+        <td>Riesgo bajo, debidamente justificado</td>
+        <td>Identificación y verificación básica, con cruce de listas</td>
+      </tr>
+      <tr>
+        <td><strong>Estándar</strong></td>
+        <td>La generalidad de los clientes</td>
+        <td>Identificación, beneficiario final, perfil y monitoreo</td>
+      </tr>
+      <tr>
+        <td><strong>Reforzada</strong></td>
+        <td>Riesgo alto: PEP, jurisdicciones de riesgo, estructuras opacas, operaciones inusuales</td>
+        <td>Todo lo anterior, más origen de fondos, aprobación de alta dirección y vigilancia intensificada</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    El error frecuente no es aplicar mal un nivel: es no poder explicar por qué
+    se asignó ese nivel. La matriz de riesgo existe para responder esa pregunta.
+  </p>
+
+  <h2 id="listas">Listas restrictivas: el control que más se falla</h2>
+
+  <p>
+    De todos los controles, el cruce contra listas restrictivas es el más
+    sencillo de ejecutar y el que más veces aparece como hallazgo. Las razones
+    son casi siempre las mismas tres:
+  </p>
+
+  <ul>
+    <li><strong>Se cruza solo a la empresa</strong>, no a sus representantes legales, accionistas ni beneficiarios finales. El listado casi nunca está a nombre de la sociedad.</li>
+    <li><strong>Se cruza una sola vez</strong>, al dar de alta. Las listas se actualizan constantemente: un cliente limpio en marzo puede estar listado en octubre.</li>
+    <li><strong>Se cruza contra una sola lista.</strong> OFAC es la más conocida, pero no es la única que aplica: están también las de Naciones Unidas y las europeas.</li>
+  </ul>
+
+  <p>
+    Census Alert cruza OFAC, listas de sanciones de Naciones Unidas, ENFAST de
+    la Unión Europea, FBI, BASC y Policía Nacional, y lo hace todos los días
+    sobre toda la cartera vigilada, no solo en el alta.
+  </p>
+
+  <h2 id="continuo">Monitoreo continuo y señales de alerta</h2>
+
+  <p>
+    El monitoreo continuo suele entenderse como vigilancia del comportamiento
+    transaccional, y lo es. Pero hay una capa anterior, más barata y que casi
+    nadie cubre: <strong>lo que el Estado publica sobre ese cliente</strong>
+    mientras la relación está viva.
+  </p>
+
+  <p>Señales que aparecen en fuentes públicas y que deberían mover el nivel de riesgo:</p>
+
+  <ul>
+    <li>Aparición de deuda firme con el SRI donde antes no había.</li>
+    <li>Cambio de estado del RUC, o calificación como contribuyente fantasma.</li>
+    <li>Mora patronal sostenida en el IESS.</li>
+    <li>Nuevas causas judiciales, sobre todo penales o como demandado.</li>
+    <li>Noticias del delito registradas en Fiscalía.</li>
+    <li>Cambios societarios en la Superintendencia de Compañías.</li>
+    <li>Aparición en cualquier lista restrictiva.</li>
+  </ul>
+
+  <h2 id="evidencia">Lo que de verdad se examina: la evidencia</h2>
+
+  <p>
+    Cuando llega una revisión, la pregunta rara vez es «¿tienen un manual?».
+    Casi siempre es más incómoda: <em>«muéstrenme la verificación de este
+    cliente en particular, en la fecha en que lo dieron de alta»</em>.
+  </p>
+
+  <p>
+    Ahí es donde se cae el cumplimiento de papel. El manual existe, la política
+    existe, el oficial de cumplimiento existe — y la carpeta del cliente tiene
+    una copia de la cédula y nada más. Por eso importa que cada revisión quede
+    registrada con fecha, con el detalle de qué dijo cada fuente y, muy
+    especialmente, <strong>con constancia expresa de las fuentes que no se
+    pudieron consultar ese día</strong>. Un informe que da por limpia una fuente
+    caída no es evidencia: es un riesgo adicional.
+  </p>
+
+  <p>
+    La vigilancia diaria cuesta desde <strong>US$ {PRECIO_VIGILANCIA_DESDE} al
+    mes</strong> por vigilado, sin contratos ni mínimos. Para una cartera
+    regulada, es la forma más barata de convertir un control que se ejecuta «a
+    veces» en uno que deja rastro todos los días.
+  </p>
+
+</GuiaLayout>

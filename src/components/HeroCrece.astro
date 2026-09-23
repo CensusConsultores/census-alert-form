@@ -20,6 +20,8 @@ interface Props {
   ctaComoFunciona: string;
 }
 import { ICONOS } from "./iconos-fuentes";
+// Las cifras salen de config.js, no escritas a mano: ver la nota allí.
+import { FUENTES, INSTITUCIONES } from "../config.js";
 
 const { portales, ctaComoFunciona } = Astro.props;
 ---
@@ -30,15 +32,19 @@ const { portales, ctaComoFunciona } = Astro.props;
   <div class="hg__espacio">
     <section class="hg__fijo">
       <div class="hg__intro">
-        <p class="hg__kick">Monitoreo integral</p>
-        <h1 class="hg__h1">Census Alert</h1>
-        <p class="hg__sub">Vigilancia total diaria de las fuentes públicas del Estado.</p>
+        <p class="hg__kick">Debida diligencia · Compliance · Ecuador</p>
+        <h1 class="hg__h1">Debida diligencia de clientes y proveedores</h1>
+        <p class="hg__sub">
+          Verifica a tus contrapartes contra {FUENTES} fuentes oficiales de
+          {INSTITUCIONES} instituciones del Estado ecuatoriano y listas
+          internacionales. Informe desde US$&nbsp;2,99.
+        </p>
         <div class="hg__ctas">
           <a href={ctaComoFunciona} class="hg__bt hg__bt--l">Ver cómo funciona</a>
         </div>
         <p class="hg__pie">
           <span class="hg__viva" aria-hidden="true"></span>
-          {portales.length} portales oficiales · Revisión diaria
+          {FUENTES} fuentes · {portales.length} instituciones · Revisión diaria
         </p>
       </div>
 

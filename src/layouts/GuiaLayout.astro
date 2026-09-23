@@ -1,0 +1,301 @@
+---
+// Layout de las guías de captación.
+//
+// Son las páginas que existen para que Google tenga QUÉ indexar. La
+// portada sola no puede posicionar: 1.000 palabras, una URL y ninguna
+// mención a «debida diligencia» o «compliance». Cada guía ataca una
+// búsqueda concreta, responde de verdad —gratis y bien— y remata en el
+// producto.
+//
+// Tres cosas que aquí son estructura, no adorno:
+//   · BreadcrumbList y Article en JSON-LD: es lo que pinta la miga de
+//     pan en el resultado de Google en vez de la URL cruda.
+//   · FAQPage: las preguntas pueden salir desplegables bajo el
+//     resultado, lo que roba sitio a la competencia en la misma página.
+//   · El bloque de guías relacionadas: sin enlaces internos, Google
+//     trata cada guía como una isla y ninguna hereda autoridad.
+import BaseLayout from "./BaseLayout.astro";
+import { wa, PRECIO_INFORME_DESDE } from "../config.js";
+
+export interface Faq { q: string; a: string }
+export interface Enlace { h: string; t: string; d?: string }
+
+interface Props {
+  /** <title>. Va con la keyword delante y la marca al final. */
+  title: string;
+  /** Meta description. Bajo 160 caracteres: Google corta ahí. */
+  description: string;
+  /** El <h1> visible. Puede diferir del title. */
+  h1: string;
+  /** Párrafo de entrada, en voz alta y directa. */
+  lead: string;
+  crumb: string;
+  updated: string;
+  /** Índice: [{ id, t }] con el id del <h2> correspondiente. */
+  toc?: { id: string; t: string }[];
+  faq?: Faq[];
+  relacionadas?: Enlace[];
+  /** Mensaje con el que se abre WhatsApp desde esta guía. */
+  ctaMensaje: string;
+  ctaTitulo: string;
+  ctaTexto: string;
+}
+
+const {
+  title, description, h1, lead, crumb, updated,
+  toc = [], faq = [], relacionadas = [],
+  ctaMensaje, ctaTitulo, ctaTexto,
+} = Astro.props;
+
+const url = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site).href;
+const ctaHref = wa(ctaMensaje);
+
+const migas = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Inicio", item: new URL("/", Astro.site).href },
+    { "@type": "ListItem", position: 2, name: crumb, item: url },
+  ],
+};
+
+const articulo = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: h1,
+  description,
+  inLanguage: "es-EC",
+  mainEntityOfPage: url,
+  author: {
+    "@type": "Organization",
+    name: "Census Consultores · Asesores Legales y Tributarios",
+    url: "https://censusalert.com/",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Census Alert",
+    url: "https://censusalert.com/",
+  },
+};
+
+const faqLd = faq.length
+  ? {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faq.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    }
+  : null;
+---
+
+<BaseLayout title={title} description={description} wrapClass="legal" showSplash={false}>
+  <main class="guia">
+    <nav class="guia__migas" aria-label="Ruta de navegación">
+      <a href="/">Inicio</a> &nbsp;›&nbsp; <span>{crumb}</span>
+    </nav>
+
+    <h1 class="guia__h1">{h1}</h1>
+    <p class="guia__lead">{lead}</p>
+    <p class="guia__fecha">{updated}</p>
+
+    {toc.length > 0 && (
+      <aside class="guia__toc" aria-label="Contenido de la guía">
+        <p class="guia__toc-t">En esta guía</p>
+        <ol>
+          {toc.map((x) => <li><a href={`#${x.id}`}>{x.t}</a></li>)}
+        </ol>
+      </aside>
+    )}
+
+    <div class="guia__cuerpo">
+      <slot />
+    </div>
+
+    <aside class="guia__cta">
+      <p class="guia__cta-k">Census Alert</p>
+      <p class="guia__cta-h">{ctaTitulo}</p>
+      <p class="guia__cta-d">{ctaTexto}</p>
+      <a href={ctaHref} target="_blank" rel="noopener" class="guia__cta-b">
+        Escribir por WhatsApp
+      </a>
+      <p class="guia__cta-p">
+        Informe consolidado desde US$ {PRECIO_INFORME_DESDE} + IVA ·
+        Sin contratos ni mínimos · <a href="/#precios">Ver todas las tarifas</a>
+      </p>
+    </aside>
+
+    {faq.length > 0 && (
+      <section class="guia__faq" aria-labelledby="faq-h">
+        <h2 id="faq-h">Preguntas frecuentes</h2>
+        {faq.map((f) => (
+          <details class="guia__q">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </section>
+    )}
+
+    {relacionadas.length > 0 && (
+      <nav class="guia__rel" aria-labelledby="rel-h">
+        <h2 id="rel-h">Seguir leyendo</h2>
+        <ul>
+          {relacionadas.map((r) => (
+            <li>
+              <a href={r.h}>
+                <span class="guia__rel-t">{r.t}</span>
+                {r.d && <span class="guia__rel-d">{r.d}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(migas)} />
+  <script type="application/ld+json" set:html={JSON.stringify(articulo)} />
+  {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
+</BaseLayout>
+
+<style is:global>
+  .guia {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 28px 64px;
+    line-height: 1.68;
+  }
+
+  .guia__migas { font-size: 13px; color: #8d8578; margin-bottom: 22px; }
+  .guia__migas a { color: var(--c-gold-dark); text-decoration: none; font-weight: 600; }
+  .guia__migas a:hover { text-decoration: underline; }
+
+  .guia__h1 {
+    font-size: clamp(27px, 4.6vw, 38px);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    color: var(--c-bg-dark);
+    margin: 0 0 16px;
+  }
+  .guia__lead {
+    font-size: 18.5px;
+    line-height: 1.55;
+    color: #3d382c;
+    margin: 0 0 14px;
+  }
+  .guia__fecha {
+    font-size: 13px; color: #8d8578; font-style: italic;
+    margin: 0 0 30px; padding-bottom: 20px; border-bottom: 1px solid #ece7db;
+  }
+
+  /* ── Índice ──────────────────────────────────────────────────── */
+  .guia__toc {
+    background: #faf8f0;
+    border-left: 3px solid var(--c-gold);
+    padding: 16px 22px;
+    margin: 0 0 36px;
+    border-radius: 0 6px 6px 0;
+  }
+  .guia__toc-t {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--c-gold-dark); font-weight: 700; margin: 0 0 8px;
+  }
+  .guia__toc ol { margin: 0; padding-left: 20px; font-size: 14.5px; }
+  .guia__toc li { margin-bottom: 5px; }
+  .guia__toc a { color: #5a4a1f; text-decoration: none; }
+  .guia__toc a:hover { color: var(--c-gold-dark); text-decoration: underline; }
+
+  /* ── Cuerpo ──────────────────────────────────────────────────── */
+  .guia__cuerpo h2 {
+    font-size: 23px;
+    color: var(--c-bg-dark);
+    letter-spacing: -0.01em;
+    margin: 42px 0 14px;
+    padding-top: 6px;
+    scroll-margin-top: 90px;
+  }
+  .guia__cuerpo h3 {
+    font-size: 17.5px; color: #2f2a20; margin: 28px 0 10px;
+  }
+  .guia__cuerpo p { font-size: 16.5px; color: #3a3529; margin: 0 0 15px; }
+  .guia__cuerpo ul, .guia__cuerpo ol {
+    font-size: 16.5px; color: #3a3529; padding-left: 24px; margin: 0 0 16px;
+  }
+  .guia__cuerpo li { margin-bottom: 8px; }
+  .guia__cuerpo strong { color: #241f16; }
+  .guia__cuerpo a { color: var(--c-gold-dark); text-decoration: underline; }
+
+  .guia__cuerpo table {
+    width: 100%; border-collapse: collapse; margin: 0 0 22px; font-size: 15px;
+  }
+  .guia__cuerpo th, .guia__cuerpo td {
+    border-bottom: 1px solid #ece7db; padding: 10px 12px; text-align: left;
+    vertical-align: top;
+  }
+  .guia__cuerpo th {
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--c-gold-dark); font-weight: 700;
+  }
+
+  .guia__nota {
+    background: #faf8f0; border-left: 3px solid var(--c-gold);
+    padding: 15px 20px; margin: 0 0 22px; border-radius: 0 6px 6px 0;
+  }
+  .guia__nota p { margin: 0; font-size: 15.5px; }
+
+  /* ── CTA ─────────────────────────────────────────────────────── */
+  .guia__cta {
+    background: var(--c-bg-dark); color: #f0e8d0;
+    padding: 30px 30px 26px; border-radius: 12px; margin: 48px 0 0;
+  }
+  .guia__cta-k {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--c-gold); margin: 0 0 8px;
+  }
+  .guia__cta-h { font-size: 22px; font-weight: 700; color: #fff; margin: 0 0 8px; line-height: 1.25; }
+  .guia__cta-d { font-size: 15.5px; color: #cdc6ab; margin: 0 0 20px; }
+  .guia__cta-b {
+    display: inline-block; background: var(--c-gold); color: var(--c-bg-dark);
+    padding: 13px 28px; border-radius: 6px; font-weight: 700; font-size: 15px;
+    text-decoration: none;
+  }
+  .guia__cta-b:hover { background: #b8962f; }
+  .guia__cta-p { font-size: 13px; color: #a8a189; margin: 16px 0 0; }
+  .guia__cta-p a { color: var(--c-gold); text-decoration: none; }
+
+  /* ── FAQ ─────────────────────────────────────────────────────── */
+  .guia__faq { margin: 50px 0 0; }
+  .guia__faq h2 { font-size: 23px; color: var(--c-bg-dark); margin: 0 0 18px; }
+  .guia__q { border-bottom: 1px solid #ece7db; padding: 4px 0; }
+  .guia__q summary {
+    cursor: pointer; padding: 13px 0; font-weight: 600; font-size: 16px;
+    color: #2f2a20; list-style: none;
+  }
+  .guia__q summary::-webkit-details-marker { display: none; }
+  .guia__q summary::before { content: "+ "; color: var(--c-gold-dark); font-weight: 700; }
+  .guia__q[open] summary::before { content: "− "; }
+  .guia__q p { margin: 0 0 15px; font-size: 15.5px; color: #3a3529; }
+
+  /* ── Relacionadas ────────────────────────────────────────────── */
+  .guia__rel { margin: 50px 0 0; }
+  .guia__rel h2 { font-size: 23px; color: var(--c-bg-dark); margin: 0 0 16px; }
+  .guia__rel ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .guia__rel a {
+    display: block; padding: 15px 18px; border: 1px solid #ece7db;
+    border-radius: 10px; text-decoration: none; color: inherit;
+    transition: border-color .18s ease, transform .18s ease;
+  }
+  .guia__rel a:hover { border-color: var(--c-gold); transform: translateY(-1px); }
+  .guia__rel-t { display: block; font-weight: 600; color: #2f2a20; margin-bottom: 3px; }
+  .guia__rel-d { display: block; font-size: 14px; color: #7d7567; }
+
+  @media (max-width: 620px) {
+    .guia { padding: 28px 20px 48px; }
+    .guia__lead { font-size: 17px; }
+    .guia__cuerpo p, .guia__cuerpo ul, .guia__cuerpo ol { font-size: 16px; }
+    .guia__cta { padding: 24px 22px 22px; }
+  }
+</style>

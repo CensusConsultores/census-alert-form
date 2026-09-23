@@ -1,0 +1,167 @@
+---
+// Guía de volumen (frente A). Ataca una búsqueda muy frecuente en
+// Ecuador, resuelve el trámite de verdad y gratis, y remata en el
+// producto para quien tiene que hacerlo muchas veces.
+import GuiaLayout from "../layouts/GuiaLayout.astro";
+import { FUENTES, INSTITUCIONES, PRECIO_INFORME_DESDE } from "../config.js";
+
+const toc = [
+  { id: "paso-a-paso", t: "Cómo consultar la deuda, paso a paso" },
+  { id: "tipos",       t: "Deuda firme, impugnada y facilidades de pago" },
+  { id: "leer",        t: "Cómo leer el resultado" },
+  { id: "no-dice",     t: "Lo que esta consulta NO te dice" },
+  { id: "muchos",      t: "Si tienes que consultar muchos RUC" },
+];
+
+const faq = [
+  {
+    q: "¿Se puede consultar la deuda del SRI de otra persona o empresa?",
+    a: "Sí. La consulta de obligaciones pendientes por RUC o cédula es pública y gratuita en el portal del SRI, y no requiere clave ni autorización del consultado. Es información que el Estado publica precisamente para que el tráfico comercial pueda verificarla.",
+  },
+  {
+    q: "¿Es legal verificar a un cliente o proveedor sin avisarle?",
+    a: "Consultar fuentes públicas oficiales es legítimo. Lo que sí tiene reglas es qué haces después con esa información: almacenarla, tratarla o cederla entra en el ámbito de la Ley Orgánica de Protección de Datos Personales, y conviene tener base legal y una política de tratamiento.",
+  },
+  {
+    q: "¿Cada cuánto se actualiza la información del SRI?",
+    a: "El portal refleja el estado a la fecha de la consulta. Por eso una consulta de hace tres meses no dice nada sobre hoy: una deuda puede declararse firme en cualquier momento, y una que estaba impugnada puede resolverse en contra del contribuyente.",
+  },
+  {
+    q: "El RUC aparece como «contribuyente fantasma». ¿Qué significa?",
+    a: "Es una calificación del SRI para contribuyentes cuyas transacciones no se respaldan en operaciones reales. Facturar con alguien en esa situación puede comprometer la deducibilidad del gasto y el crédito tributario. Es uno de los hallazgos más graves que puede arrojar una verificación.",
+  },
+];
+
+const relacionadas = [
+  { h: "/debida-diligencia", t: "Debida diligencia en Ecuador", d: "Las 31 fuentes que hay que revisar, no solo el SRI" },
+  { h: "/consultar-causas-judiciales-ecuador", t: "Consultar causas judiciales", d: "Cómo buscar juicios por cédula o RUC" },
+  { h: "/debida-diligencia-de-proveedores", t: "Debida diligencia de proveedores", d: "Cómo homologar sin frenar a compras" },
+];
+---
+
+<GuiaLayout
+  title="Cómo consultar deudas del SRI por RUC o cédula · Census Alert"
+  description="Guía paso a paso para consultar las obligaciones pendientes de una empresa o persona en el SRI: qué significa deuda firme, impugnada y facilidades de pago."
+  h1="Cómo consultar las deudas del SRI por RUC o cédula"
+  lead="La consulta es pública, gratuita y toma dos minutos. Lo que casi nadie hace bien es interpretar el resultado: entre una deuda firme y una impugnada hay una diferencia enorme, y el portal no te la explica."
+  crumb="Consultar deudas del SRI"
+  updated="Actualizado en 2026"
+  toc={toc}
+  faq={faq}
+  relacionadas={relacionadas}
+  ctaMensaje="Vengo de la guía del SRI. Quiero un informe consolidado de un RUC."
+  ctaTitulo="El SRI es solo una de las fuentes"
+  ctaTexto={`Un informe consolidado cruza ${FUENTES} fuentes de ${INSTITUCIONES} instituciones —SRI, IESS, Función Judicial, Supercías, Fiscalía, listas internacionales— en un solo PDF.`}
+>
+
+  <h2 id="paso-a-paso">Cómo consultar la deuda, paso a paso</h2>
+
+  <p>
+    La consulta de obligaciones pendientes del <strong>Servicio de Rentas
+    Internas</strong> es pública: no necesitas clave, ni ser el titular, ni
+    autorización de nadie.
+  </p>
+
+  <ol>
+    <li>Entra al portal del SRI (<a href="https://www.sri.gob.ec" target="_blank" rel="noopener nofollow">sri.gob.ec</a>) y busca la sección de consultas públicas.</li>
+    <li>Abre la consulta de <strong>deudas y obligaciones pendientes</strong>.</li>
+    <li>Ingresa el <strong>RUC</strong> (13 dígitos) o la <strong>cédula</strong> (10 dígitos) de la persona o empresa.</li>
+    <li>Completa el código de verificación y consulta.</li>
+    <li><strong>Guarda el resultado en PDF con la fecha visible.</strong> Sin fecha, la consulta no prueba nada más adelante.</li>
+  </ol>
+
+  <p>
+    Mientras estás ahí, vale la pena hacer también la consulta del
+    <strong>estado del RUC</strong> y la del <strong>contribuyente</strong>:
+    un RUC suspendido o una calificación de contribuyente fantasma pesan más
+    que el monto de la deuda.
+  </p>
+
+  <h2 id="tipos">Deuda firme, impugnada y facilidades de pago</h2>
+
+  <p>
+    El portal puede devolver varias categorías y no significan lo mismo. Esta
+    es la lectura práctica:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Qué dice</th><th>Qué significa</th><th>Cómo leerlo</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Deuda firme</strong></td>
+        <td>Obligación exigible, sin recurso pendiente que la suspenda</td>
+        <td>La señal más seria. Es cobrable y puede derivar en medidas de cobro sobre cuentas y bienes.</td>
+      </tr>
+      <tr>
+        <td><strong>Deuda impugnada</strong></td>
+        <td>El contribuyente la discute en vía administrativa o judicial</td>
+        <td>No implica insolvencia ni mala fe: puede ser una discrepancia técnica legítima. Pero indica un litigio tributario abierto.</td>
+      </tr>
+      <tr>
+        <td><strong>Facilidades de pago</strong></td>
+        <td>Deuda reconocida, con un plan de pagos vigente</td>
+        <td>Señal mixta: reconoce que debía, pero está pagando. Lo relevante es si cumple el plan.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="guia__nota">
+    <p>
+      Un error común es tratar cualquier resultado como una alerta roja. Una
+      deuda impugnada de una empresa grande puede ser rutina. Una deuda firme
+      pequeña en una empresa que te va a dar crédito a 90 días, no.
+    </p>
+  </div>
+
+  <h2 id="leer">Cómo leer el resultado</h2>
+
+  <p>Tres preguntas que conviene hacerse siempre, en este orden:</p>
+
+  <ol>
+    <li><strong>¿Es firme o está discutida?</strong> Define si hay una obligación exigible hoy.</li>
+    <li><strong>¿Cuánto pesa respecto al tamaño de la empresa?</strong> US$ 5.000 en una compañía de dos empleados y en una de doscientos no son el mismo dato.</li>
+    <li><strong>¿Desde cuándo?</strong> Una deuda antigua que no se mueve dice más sobre la voluntad de pago que una reciente.</li>
+  </ol>
+
+  <h2 id="no-dice">Lo que esta consulta NO te dice</h2>
+
+  <p>
+    Aquí está el límite real de mirar solo el SRI. Una empresa puede salir
+    completamente limpia en esta consulta y aun así tener:
+  </p>
+
+  <ul>
+    <li>Mora patronal acumulada en el <strong>IESS</strong>.</li>
+    <li>Demandas laborales o de cobranza activas en la <strong>Función Judicial</strong>.</li>
+    <li>Noticias del delito registradas en <strong>Fiscalía</strong>.</li>
+    <li>Sanciones o valores adeudados en la <strong>Superintendencia de Compañías</strong>.</li>
+    <li>Inhabilitación en el <strong>SERCOP</strong>.</li>
+    <li>Presencia en listas restrictivas internacionales (<strong>OFAC</strong>, <strong>ONU</strong>).</li>
+  </ul>
+
+  <p>
+    Por eso una verificación seria no es una consulta: son {FUENTES} consultas
+    en {INSTITUCIONES} instituciones. Está desarrollado en
+    <a href="/debida-diligencia">la guía de debida diligencia</a>.
+  </p>
+
+  <h2 id="muchos">Si tienes que consultar muchos RUC</h2>
+
+  <p>
+    Para un RUC suelto, el portal del SRI hace el trabajo y no necesitas nada
+    más. El problema aparece cuando la consulta deja de ser puntual: una
+    cartera de clientes con crédito, una lista de proveedores a homologar, un
+    proceso de compra recurrente.
+  </p>
+
+  <p>
+    Ahí el cuello de botella no es el SRI: es que cada RUC exige repetir el
+    recorrido por las {INSTITUCIONES} instituciones, y repetirlo otra vez cada
+    vez que quieras saber si algo cambió. Census Alert automatiza ese recorrido
+    y entrega un PDF fechado desde <strong>US$ {PRECIO_INFORME_DESDE} + IVA</strong>,
+    o vigila la cartera todos los días y avisa el mismo día que algo aparece.
+  </p>
+
+</GuiaLayout>

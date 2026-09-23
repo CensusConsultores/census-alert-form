@@ -1,0 +1,156 @@
+---
+// Guía de volumen (frente A). «Consultar causas judiciales» y «saber si
+// una empresa tiene juicios» son de las búsquedas más frecuentes del
+// nicho en Ecuador.
+import GuiaLayout from "../layouts/GuiaLayout.astro";
+import { FUENTES, INSTITUCIONES, PRECIO_INFORME_DESDE } from "../config.js";
+
+const toc = [
+  { id: "paso-a-paso", t: "Cómo buscar causas en la Función Judicial" },
+  { id: "actor",       t: "Actor o demandado: por qué importa la diferencia" },
+  { id: "leer",        t: "Cómo leer una causa sin ser abogado" },
+  { id: "errores",     t: "Los tres errores que dejan juicios sin encontrar" },
+  { id: "fiscalia",    t: "La Función Judicial no es la única fuente" },
+];
+
+const faq = [
+  {
+    q: "¿Se pueden consultar los juicios de una persona o empresa sin ser parte?",
+    a: "Sí. La consulta de causas del sistema de la Función Judicial es pública y gratuita, y permite buscar por número de documento o por nombre. El contenido de ciertos procesos está reservado por ley, pero la existencia de la causa y sus datos básicos son consultables.",
+  },
+  {
+    q: "¿Aparecen todos los juicios?",
+    a: "No necesariamente. Los procesos con reserva legal —violencia intrafamiliar, adolescentes infractores, adopciones, entre otros— no se muestran o se muestran restringidos. Tampoco aparecen los arbitrajes, que son privados, ni los procesos administrativos que no van a la función judicial.",
+  },
+  {
+    q: "Encontré una causa. ¿Eso significa que la empresa es mala paga?",
+    a: "No por sí solo. Hay que mirar la materia, la calidad en que interviene y la fecha. Una empresa que demanda a sus deudores (actor en cobranzas) está cobrando, no siendo demandada. Una empresa con varias demandas laborales recientes como demandada es otra historia.",
+  },
+  {
+    q: "¿Cada cuánto debería repetir la consulta?",
+    a: "Si la relación comercial está viva y hay crédito de por medio, lo razonable es un monitoreo continuo: las causas nuevas se ingresan todos los días y una consulta de hace dos meses ya no describe la situación actual.",
+  },
+];
+
+const relacionadas = [
+  { h: "/debida-diligencia", t: "Debida diligencia en Ecuador", d: "Las 31 fuentes que hay que revisar antes de firmar" },
+  { h: "/consultar-deudas-sri-por-ruc", t: "Consultar deudas del SRI", d: "Deuda firme, impugnada y facilidades de pago" },
+  { h: "/compliance-uafe-sujetos-obligados", t: "Compliance y UAFE", d: "Qué se exige a los sujetos obligados" },
+];
+---
+
+<GuiaLayout
+  title="Cómo consultar causas judiciales en Ecuador por cédula o RUC · Census Alert"
+  description="Guía para buscar juicios de una persona o empresa en la Función Judicial del Ecuador: cómo consultar por actor y demandado y cómo interpretar el resultado."
+  h1="Cómo consultar causas judiciales en Ecuador por cédula o RUC"
+  lead="Saber si una empresa tiene juicios es gratis y público. Lo difícil no es encontrar el buscador: es buscar de forma que no se te escape la mitad, e interpretar lo que sale sin sacar la conclusión equivocada."
+  crumb="Consultar causas judiciales"
+  updated="Actualizado en 2026"
+  toc={toc}
+  faq={faq}
+  relacionadas={relacionadas}
+  ctaMensaje="Vengo de la guía de causas judiciales. Quiero un informe consolidado."
+  ctaTitulo="Los juicios son una señal, no la única"
+  ctaTexto={`Un informe consolidado cruza ${FUENTES} fuentes de ${INSTITUCIONES} instituciones y te dice también qué debe, a quién y desde cuándo.`}
+>
+
+  <h2 id="paso-a-paso">Cómo buscar causas en la Función Judicial</h2>
+
+  <p>
+    El sistema de consulta de procesos del <strong>Consejo de la
+    Judicatura</strong> es público y gratuito:
+  </p>
+
+  <ol>
+    <li>Entra al portal de la <a href="https://www.funcionjudicial.gob.ec" target="_blank" rel="noopener nofollow">Función Judicial</a> y abre la consulta de causas.</li>
+    <li>Elige buscar por <strong>número de documento</strong> (cédula, RUC o pasaporte) en lugar de por nombre. El nombre genera homónimos y falsos positivos.</li>
+    <li><strong>Haz la búsqueda dos veces:</strong> una marcando <em>actor</em> y otra marcando <em>demandado</em>. Este es el paso que más se salta.</li>
+    <li>Revisa cada resultado: materia, judicatura, fecha de ingreso y estado.</li>
+    <li>Guarda el resultado con la fecha visible.</li>
+  </ol>
+
+  <h2 id="actor">Actor o demandado: por qué importa la diferencia</h2>
+
+  <p>
+    Es la distinción que cambia por completo la lectura de un informe, y la que
+    más se malinterpreta:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Calidad</th><th>Qué significa</th><th>Cómo leerlo</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Actor</strong> (demandante)</td>
+        <td>Es quien inició el proceso</td>
+        <td>Suele ser neutro o incluso positivo: una empresa que demanda a sus morosos está gestionando su cartera.</td>
+      </tr>
+      <tr>
+        <td><strong>Demandado</strong></td>
+        <td>Es contra quien se dirige el proceso</td>
+        <td>Es la señal relevante. Y el volumen importa: una demanda laboral pasa; ocho en dos años, no.</td>
+      </tr>
+      <tr>
+        <td><strong>Interviniente / tercero</strong></td>
+        <td>Participa sin ser parte principal</td>
+        <td>Depende del proceso. Conviene mirarlo con detalle antes de darle peso.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    La materia pesa tanto como la calidad. Ordenadas por lo que suelen
+    significar para una relación comercial:
+  </p>
+
+  <ul>
+    <li><strong>Penal</strong> — la más grave, sobre todo en delitos económicos.</li>
+    <li><strong>Laboral, como demandado</strong> — indica conflictividad interna y, muchas veces, problemas de caja.</li>
+    <li><strong>Ejecutivo / cobranzas, como demandado</strong> — alguien ya está cobrándole por vía judicial.</li>
+    <li><strong>Coactiva</strong> — cobro forzoso de una entidad pública.</li>
+    <li><strong>Civil y contractual</strong> — depende mucho del caso concreto.</li>
+  </ul>
+
+  <h2 id="leer">Cómo leer una causa sin ser abogado</h2>
+
+  <p>Cuatro datos bastan para una primera lectura útil:</p>
+
+  <ol>
+    <li><strong>Número de causa.</strong> Los primeros dígitos identifican la unidad judicial y el año de ingreso. Un juicio de hace ocho años todavía abierto dice algo distinto de uno de hace tres meses.</li>
+    <li><strong>Materia.</strong> Define la gravedad relativa.</li>
+    <li><strong>Calidad en que interviene.</strong> Actor o demandado, según lo anterior.</li>
+    <li><strong>Movimientos recientes.</strong> Una causa sin actuaciones en años suele estar muerta en la práctica; una con movimientos este mes está viva.</li>
+  </ol>
+
+  <h2 id="errores">Los tres errores que dejan juicios sin encontrar</h2>
+
+  <ul>
+    <li><strong>Buscar solo por nombre.</strong> Con homónimos encuentras juicios ajenos y, peor, te pierdes los propios si el nombre está registrado con otra grafía. Busca por documento.</li>
+    <li><strong>Buscar solo como demandado.</strong> Pierdes la mitad del retrato: no ves si esa empresa está persiguiendo judicialmente a media ciudad.</li>
+    <li><strong>Buscar solo a la empresa.</strong> Los procesos que de verdad importan aparecen muchas veces a nombre del <strong>representante legal</strong> o de los accionistas, no de la sociedad. Si no los buscas a ellos, no los ves.</li>
+  </ul>
+
+  <h2 id="fiscalia">La Función Judicial no es la única fuente</h2>
+
+  <p>
+    Una causa penal puede estar en fase de investigación previa en
+    <strong>Fiscalía</strong> sin haber llegado aún a la Función Judicial. Son
+    dos consultas distintas, y quedarse solo en la primera da una falsa
+    sensación de limpieza.
+  </p>
+
+  <p>
+    Lo mismo ocurre en la otra dirección: una empresa sin un solo juicio puede
+    tener deuda firme con el SRI, mora patronal en el IESS y estar inhabilitada
+    en el SERCOP. Los juicios son una señal, no el retrato completo.
+  </p>
+
+  <p>
+    Un informe consolidado de Census Alert cruza las {FUENTES} fuentes de las
+    {INSTITUCIONES} instituciones —incluidas Función Judicial y Fiscalía,
+    buscando por actor y por demandado— y lo entrega en un PDF fechado desde
+    <strong>US$ {PRECIO_INFORME_DESDE} + IVA</strong>.
+  </p>
+
+</GuiaLayout>

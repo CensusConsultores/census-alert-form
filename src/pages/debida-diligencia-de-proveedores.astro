@@ -1,0 +1,192 @@
+---
+// Guía B2B. Apunta al comprador corporativo: compras, homologación de
+// proveedores, cadena de suministro.
+import GuiaLayout from "../layouts/GuiaLayout.astro";
+import { FUENTES, INSTITUCIONES, PRECIO_INFORME_DESDE, PRECIO_VIGILANCIA_DESDE } from "../config.js";
+
+const toc = [
+  { id: "por-que",     t: "Por qué el proveedor es el riesgo que no ves" },
+  { id: "que-revisar", t: "Qué revisar antes de homologar" },
+  { id: "filtro",      t: "Cómo montar el filtro sin frenar a compras" },
+  { id: "niveles",     t: "No todos los proveedores merecen lo mismo" },
+  { id: "continuo",    t: "Homologar no es una foto, es una película" },
+];
+
+const faq = [
+  {
+    q: "¿Qué documentos debo pedirle al proveedor y qué debo verificar por mi cuenta?",
+    a: "Lo que el proveedor entrega —RUC, nombramiento, certificados— prueba lo que él quiere probar. Lo que verificas tú en los portales oficiales prueba lo que hay. Pide los documentos para la identidad y la representación; verifica por tu cuenta la deuda tributaria, la mora patronal, los juicios, el estado societario y las listas restrictivas.",
+  },
+  {
+    q: "¿Cada cuánto debo revisar a un proveedor ya homologado?",
+    a: "Depende de la criticidad. Para un proveedor crítico o con crédito abierto, el monitoreo continuo es lo razonable: el riesgo aparece después de la homologación, no antes. Para proveedores puntuales de bajo monto, una reverificación anual suele bastar.",
+  },
+  {
+    q: "Mi empresa contrata con el Estado. ¿Eso cambia algo?",
+    a: "Sí, y bastante. Un proveedor inhabilitado o con incumplimientos registrados en el SERCOP puede contaminar tu propia participación en procesos públicos. La verificación del estado en SERCOP y en Contraloría deja de ser opcional.",
+  },
+  {
+    q: "¿Y si el proveedor es una persona natural?",
+    a: "El procedimiento es el mismo, con la cédula en vez del RUC, y con dos fuentes que pesan más: pensiones alimenticias y causas judiciales como demandado. En personas naturales el historial judicial suele ser más revelador que el tributario.",
+  },
+];
+
+const relacionadas = [
+  { h: "/debida-diligencia", t: "Debida diligencia en Ecuador", d: "La guía completa: qué es, cuándo obliga y qué fuentes revisar" },
+  { h: "/compliance-uafe-sujetos-obligados", t: "Compliance y UAFE", d: "Si tu empresa es sujeto obligado, esto no es opcional" },
+  { h: "/consultar-deudas-sri-por-ruc", t: "Consultar deudas del SRI por RUC", d: "El procedimiento oficial, paso a paso" },
+];
+---
+
+<GuiaLayout
+  title="Debida diligencia de proveedores en Ecuador · Census Alert"
+  description="Cómo verificar y homologar proveedores en Ecuador: qué revisar, cómo montar el filtro sin frenar a compras y por qué la verificación anual no alcanza."
+  h1="Debida diligencia de proveedores: cómo homologar sin frenar a compras"
+  lead="El proveedor que te deja tirado rara vez avisa. Lo que sí hace, casi siempre, es dejar rastro en los portales del Estado meses antes: una deuda firme, una mora patronal, una demanda. Esta guía explica cómo mirar esos rastros de forma sistemática."
+  crumb="Debida diligencia de proveedores"
+  updated="Actualizado en 2026"
+  toc={toc}
+  faq={faq}
+  relacionadas={relacionadas}
+  ctaMensaje="Vengo de la guía de proveedores. Quiero verificar mi cartera de proveedores."
+  ctaTitulo="Homologa tu cartera completa"
+  ctaTexto={`Pásanos la lista de RUC y te devolvemos un informe por cada proveedor. Después, vigilancia diaria desde US$ ${PRECIO_VIGILANCIA_DESDE} al mes por vigilado.`}
+>
+
+  <h2 id="por-que">Por qué el proveedor es el riesgo que no ves</h2>
+
+  <p>
+    Al cliente lo miras porque te debe dinero. Al proveedor no lo miras porque
+    es él quien te debe entregar. Ese descuido tiene tres formas de salir caro:
+  </p>
+
+  <ul>
+    <li><strong>Interrupción de suministro.</strong> Un proveedor con embargos o con cuentas retenidas por el SRI deja de operar sin previo aviso. Si es proveedor único de un insumo crítico, tu línea se para con él.</li>
+    <li><strong>Contagio reputacional y regulatorio.</strong> Si tu empresa es sujeto obligado, o si contratas con el Estado, la situación de tu proveedor deja de ser asunto suyo y pasa a ser tuyo.</li>
+    <li><strong>Anticipos perdidos.</strong> El anticipo a un proveedor con juicios de cobranza acumulados es, en la práctica, un crédito sin garantía a alguien que ya no está pagando a otros.</li>
+  </ul>
+
+  <div class="guia__nota">
+    <p>
+      El patrón que se repite: la empresa homologa al proveedor en enero con
+      documentación impecable, y el problema aparece en septiembre. Nadie volvió
+      a mirar. La carpeta de homologación seguía diciendo que todo estaba bien
+      porque describía enero.
+    </p>
+  </div>
+
+  <h2 id="que-revisar">Qué revisar antes de homologar</h2>
+
+  <p>
+    Separa lo que el proveedor te entrega de lo que verificas tú. Lo primero
+    prueba su versión; lo segundo, los hechos.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Lo que pides al proveedor</th><th>Lo que verificas tú</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>RUC, nombramiento del representante legal, certificado bancario, referencias comerciales</td>
+        <td>Estado del RUC y del contribuyente en el SRI</td>
+      </tr>
+      <tr>
+        <td>Declaración de no estar en listas restrictivas</td>
+        <td>OFAC, ONU, ENFAST de la UE — por empresa <em>y</em> por representante legal</td>
+      </tr>
+      <tr>
+        <td>Certificado de cumplimiento de obligaciones patronales</td>
+        <td>Mora patronal en el IESS y actas del Ministerio del Trabajo</td>
+      </tr>
+      <tr>
+        <td>Declaración de no tener litigios relevantes</td>
+        <td>Causas en la Función Judicial, como actor y como demandado, y noticias del delito en Fiscalía</td>
+      </tr>
+      <tr>
+        <td>Nombramiento y escrituras vigentes</td>
+        <td>Estado societario y valores adeudados en la Superintendencia de Compañías</td>
+      </tr>
+      <tr>
+        <td>—</td>
+        <td>Estado y habilitación en SERCOP, si participas en contratación pública</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    La columna de la derecha son {FUENTES} consultas en {INSTITUCIONES}
+    instituciones. A mano, entre 40 y 90 minutos por proveedor.
+  </p>
+
+  <h2 id="filtro">Cómo montar el filtro sin frenar a compras</h2>
+
+  <p>
+    El error clásico de cumplimiento es diseñar un filtro tan exigente que
+    compras acaba saltándoselo. Un filtro que se incumple es peor que no
+    tenerlo, porque además genera la ilusión de que existe. Lo que funciona:
+  </p>
+
+  <ol>
+    <li><strong>Fija un umbral de monto.</strong> Por debajo de cierta cifra anual, verificación básica. Por encima, completa. Escríbelo en la política.</li>
+    <li><strong>Pon la verificación antes de la orden de compra, no antes del pago.</strong> Verificar cuando ya recibiste el bien no es un filtro, es un trámite.</li>
+    <li><strong>Define qué es un hallazgo bloqueante</strong> y qué es un hallazgo que solo exige aprobación de un nivel superior. Sin esa distinción, todo hallazgo escala y el sistema se atasca.</li>
+    <li><strong>Deja rastro con fecha.</strong> El informe archivado, fechado, es lo que te respalda en una auditoría. La memoria de quien verificó, no.</li>
+    <li><strong>Automatiza la parte mecánica.</strong> El criterio es humano; el recorrido por los portales no tiene por qué serlo.</li>
+  </ol>
+
+  <h2 id="niveles">No todos los proveedores merecen lo mismo</h2>
+
+  <p>
+    Aplicar la verificación completa a los 400 proveedores por igual garantiza
+    que no se aplique a ninguno. Un esquema por niveles es más realista y es,
+    además, lo que espera un examen de cumplimiento:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Nivel</th><th>Quién entra</th><th>Qué se hace</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Simplificada</strong></td>
+        <td>Compras puntuales de monto bajo, sin crédito</td>
+        <td>Identidad, estado del RUC y listas restrictivas</td>
+      </tr>
+      <tr>
+        <td><strong>Estándar</strong></td>
+        <td>Proveedores recurrentes con crédito</td>
+        <td>Verificación completa al homologar y reverificación anual</td>
+      </tr>
+      <tr>
+        <td><strong>Reforzada</strong></td>
+        <td>Proveedores críticos, monto alto, anticipos, o con exposición pública</td>
+        <td>Verificación completa, monitoreo continuo y revisión de accionistas y representantes</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="continuo">Homologar no es una foto, es una película</h2>
+
+  <p>
+    La homologación anual describe el día en que se hizo. Todo lo que pasa
+    después —que es donde vive el riesgo— queda fuera. Un proveedor homologado
+    en enero puede acumular en el mismo año una deuda firme, tres meses de mora
+    patronal y dos demandas, y tu carpeta seguirá diciendo que está en regla.
+  </p>
+
+  <p>
+    La alternativa práctica no es homologar más veces al año: es vigilar todos
+    los días y que el sistema avise solo cuando algo cambia. Census Alert
+    revisa cada madrugada la cartera que le indiques y manda un correo el mismo
+    día que aparece algo. Si no cambió nada, no hay correo.
+  </p>
+
+  <p>
+    El informe puntual cuesta desde <strong>US$ {PRECIO_INFORME_DESDE} + IVA</strong>
+    y la vigilancia desde <strong>US$ {PRECIO_VIGILANCIA_DESDE} al mes</strong>
+    por vigilado, sin contratos ni mínimos. Para una cartera de 100 proveedores,
+    eso es menos de lo que cuesta la hora de la persona que los revisaría a mano.
+  </p>
+
+</GuiaLayout>

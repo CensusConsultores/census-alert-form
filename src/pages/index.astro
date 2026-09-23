@@ -3,6 +3,7 @@ import LandingLayout from "../layouts/LandingLayout.astro";
 import Recibes from "../components/Recibes.astro";
 import RecibesVistas from "../components/RecibesVistas.astro";
 import HeroCrece from "../components/HeroCrece.astro";
+import { FUENTES, INSTITUCIONES } from "../config.js";
 
 // Todos los CTA van a WhatsApp, al mismo número que usan el correo 360 y
 // la webapp (593978863448): un número distinto en la landing sería otro
@@ -34,7 +35,7 @@ const VIGILANCIA = [
   { n: "12 meses de vigilancia", precio: "19,12", antes: "23,88", dto: "−20%", unidad: "1,59 al mes" },
 ];
 
-// Las mismas 19 fuentes de siempre, pero agrupadas por la pregunta que
+// Las mismas fuentes de siempre, pero agrupadas por la pregunta que
 // responden en vez de listadas en una cuadrícula plana —eso ya sale en el
 // remate del hero—. Cuatro preguntas, no seis situaciones: es lo que la
 // gente de verdad se pregunta antes de firmar, no un catálogo de momentos.
@@ -62,9 +63,9 @@ const SERVICIOS = [
              "También a los accionistas y a las compañías vinculadas",
              "Avisa si venden acciones, cambia el representante o entra en liquidación"] },
   { n: "02", titulo: "Informe consolidado", q: "Para antes de firmar.",
-    d: "Un RUC o una cédula, y en minutos un PDF con lo que consta en 31 fuentes oficiales.",
+    d: `Un RUC o una cédula, y en minutos un PDF con lo que consta en ${FUENTES} fuentes oficiales de ${INSTITUCIONES} instituciones.`,
     puntos: ["Ficha societaria completa: kárdex, actos jurídicos, cumplimiento",
-             "Un análisis de todo lo hallado, no 31 respuestas sueltas",
+             `Un análisis de todo lo hallado, no ${FUENTES} respuestas sueltas`,
              "Dice qué fuente no se pudo verificar, en vez de darla por limpia"] },
   { n: "03", titulo: "Menciones en expedientes", q: "Lo que no hace nadie más.",
     d: "No nos quedamos en el listado de causas: leemos el texto y establecemos en qué calidad aparece la persona.",
@@ -84,7 +85,7 @@ const FAQ = [
   },
   {
     q: "¿En qué se diferencia del informe consolidado?",
-    a: "El monitoreo es vigilancia diaria y continua sobre una cartera de RUC o cédulas. El informe consolidado es una consulta puntual, de una sola vez, contra 31 fuentes, entregada en PDF. Uno sirve para vigilar después de contratar; el otro, para revisar antes de firmar.",
+    a: `El monitoreo es vigilancia diaria y continua sobre una cartera de RUC o cédulas. El informe consolidado es una consulta puntual, de una sola vez, contra ${FUENTES} fuentes de ${INSTITUCIONES} instituciones, entregada en PDF. Uno sirve para vigilar después de contratar; el otro, para revisar antes de firmar.`,
   },
   {
     q: "¿De dónde saca los datos Census Alert?",
@@ -100,7 +101,9 @@ const FAQ = [
   },
 ];
 
-// Los 21 sellos de la sección de cobertura. El orden agrupa por materia:
+// Las 21 INSTITUCIONES de la sección de cobertura (las 31 fuentes se
+// reparten entre ellas: varias consultas cuelgan del mismo organismo).
+// El orden agrupa por materia:
 // primero lo tributario y laboral, luego judicial, control, y al final las
 // listas internacionales.
 const PORTALES = [
@@ -258,7 +261,7 @@ const PORTALES = [
         <div class="prod__cab">
           <h3>Informe consolidado</h3>
           <p class="prod__q">Una consulta, una vez.</p>
-          <p class="prod__d">Cédula o RUC ante el catálogo de 31 fuentes, en PDF.</p>
+          <p class="prod__d">Cédula o RUC ante el catálogo de {FUENTES} fuentes, en PDF.</p>
         </div>
         <ul class="tarifa">
           {INFORMES.map((x) => (
@@ -369,6 +372,19 @@ const PORTALES = [
 <footer class="pie-sitio">
   <div class="wrap pie-sitio__in">
     <img src="/logo-census.svg" alt="Census Consultores" class="pie-sitio__logo" />
+
+    {/* Las guías cuelgan de aquí a propósito. Sin un enlace desde la
+        portada, Google las descubre por el sitemap pero no les pasa
+        autoridad: quedan como islas y no posicionan. */}
+    <nav class="pie-guias" aria-label="Guías">
+      <p class="pie-guias__t">Guías</p>
+      <a href="/debida-diligencia">Debida diligencia en Ecuador</a>
+      <a href="/debida-diligencia-de-proveedores">Debida diligencia de proveedores</a>
+      <a href="/compliance-uafe-sujetos-obligados">Compliance y UAFE</a>
+      <a href="/consultar-deudas-sri-por-ruc">Consultar deudas del SRI</a>
+      <a href="/consultar-causas-judiciales-ecuador">Consultar causas judiciales</a>
+    </nav>
+
     <div class="pie-sitio__links">
       <a href="/terminos-y-condiciones">Términos y Condiciones</a>
       <a href="/tratamiento-de-datos">Política de Datos</a>
@@ -926,6 +942,13 @@ a { color: inherit; text-decoration: none; }
 .pie-sitio { border-top: 1px solid var(--linea); padding: var(--s5) 0 var(--s4); }
 .pie-sitio__in { display: flex; flex-direction: column; align-items: center; gap: var(--s3); text-align: center; }
 .pie-sitio__logo { height: 46px; width: auto; opacity: .75; }
+.pie-guias { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  gap: var(--s2) var(--s3); max-width: 72ch; }
+.pie-guias__t { flex-basis: 100%; font-size: 11px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--oro); opacity: .8; margin: 0 0 2px; }
+.pie-guias a { font-size: var(--t0); color: var(--tenue); transition: color .2s var(--out); }
+.pie-guias a:hover { color: var(--oro); }
+
 .pie-sitio__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s3); }
 .pie-sitio__links a { font-size: var(--t0); color: var(--tenue); transition: color .2s var(--out); }
 .pie-sitio__links a:hover { color: var(--oro); }

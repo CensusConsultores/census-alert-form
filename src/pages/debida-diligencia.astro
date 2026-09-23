@@ -1,0 +1,236 @@
+---
+// Guía pilar. Es la página que debe posicionar para «debida diligencia
+// Ecuador» y la que recibe los enlaces internos de las demás.
+import GuiaLayout from "../layouts/GuiaLayout.astro";
+import { FUENTES, INSTITUCIONES, PRECIO_INFORME_DESDE } from "../config.js";
+
+const toc = [
+  { id: "que-es",        t: "Qué es la debida diligencia (y qué no)" },
+  { id: "cuando",        t: "Cuándo tu empresa está obligada a hacerla" },
+  { id: "fuentes",       t: `Las ${FUENTES} fuentes que hay que revisar en Ecuador` },
+  { id: "paso-a-paso",   t: "Cómo hacerla a mano, paso a paso" },
+  { id: "cuanto-cuesta", t: "Cuánto cuesta hacerla a mano" },
+  { id: "continua",      t: "El error de hacerla una sola vez" },
+];
+
+const faq = [
+  {
+    q: "¿Cuál es la diferencia entre debida diligencia y due diligence?",
+    a: "Ninguna: son el mismo concepto en español y en inglés. En Ecuador la normativa usa «debida diligencia», y el mercado usa indistintamente «due diligence», sobre todo para operaciones societarias. En prevención de lavado de activos se habla de «debida diligencia del cliente» o «conoce a tu cliente» (KYC).",
+  },
+  {
+    q: "¿La debida diligencia se hace una vez o de forma continua?",
+    a: "Las dos cosas. Se hace una verificación inicial antes de contratar y después se mantiene un monitoreo continuo, porque el riesgo aparece después de firmar: una empresa limpia el lunes puede tener una deuda firme con el SRI o una demanda laboral el jueves. La normativa de prevención de lavado exige precisamente que la diligencia sea continua sobre la relación comercial, no un trámite de una sola vez.",
+  },
+  {
+    q: "¿Puedo hacer la debida diligencia yo mismo, gratis?",
+    a: "Sí. Todas las fuentes que consulta Census Alert son portales públicos y gratuitos del Estado ecuatoriano. Lo que cuesta es el tiempo: recorrer las fuentes de las 21 instituciones para un solo RUC toma entre 40 y 90 minutos, y hay que repetirlo cada vez que se quiera saber si algo cambió.",
+  },
+  {
+    q: "¿Qué pasa si una fuente no se puede consultar ese día?",
+    a: "Los portales del Estado se caen o entran en mantenimiento con frecuencia. Lo correcto es que el informe lo diga expresamente, marcando esa fuente como «sin verificar» en vez de darla por limpia. Un informe que no distingue entre «revisado y sin novedades» y «no se pudo revisar» no sirve como respaldo.",
+  },
+  {
+    q: "¿Un informe de debida diligencia sirve como prueba?",
+    a: "Sirve como respaldo de que la verificación se hizo, con fecha y con el detalle de lo que cada fuente mostraba ese día. No sustituye una certificación oficial de cada institución ni un criterio legal: es el punto de partida documentado sobre el cual se decide, y frente a un examen de cumplimiento es la evidencia de que hubo diligencia.",
+  },
+];
+
+const relacionadas = [
+  { h: "/debida-diligencia-de-proveedores", t: "Debida diligencia de proveedores", d: "Cómo montar el filtro de homologación sin frenar a compras" },
+  { h: "/compliance-uafe-sujetos-obligados", t: "Compliance y UAFE: sujetos obligados", d: "Qué exige el régimen de prevención de lavado en Ecuador" },
+  { h: "/consultar-deudas-sri-por-ruc", t: "Consultar deudas del SRI por RUC", d: "El procedimiento oficial, paso a paso" },
+  { h: "/consultar-causas-judiciales-ecuador", t: "Consultar causas judiciales en Ecuador", d: "Cómo buscar juicios por cédula o RUC en la Función Judicial" },
+];
+---
+
+<GuiaLayout
+  title="Debida diligencia en Ecuador: guía práctica 2026 · Census Alert"
+  description="Qué es la debida diligencia, cuándo es obligatoria en Ecuador y las 31 fuentes oficiales que hay que revisar antes de firmar con un cliente o proveedor."
+  h1="Debida diligencia en Ecuador: qué es, cuándo es obligatoria y cómo se hace"
+  lead="Verificar a una contraparte antes de firmar no es desconfianza: es lo que separa un contrato de un problema. Esta guía explica qué revisar, dónde, y cómo hacerlo sin que se convierta en un trabajo de media jornada por cada RUC."
+  crumb="Debida diligencia"
+  updated="Actualizado en 2026"
+  toc={toc}
+  faq={faq}
+  relacionadas={relacionadas}
+  ctaMensaje="Vengo de la guía de debida diligencia. Quisiera un informe consolidado."
+  ctaTitulo="La misma verificación, en minutos"
+  ctaTexto={`Consultamos las ${FUENTES} fuentes de ${INSTITUCIONES} instituciones por ti y te entregamos un PDF con lo que consta en cada una, con fecha.`}
+>
+
+  <h2 id="que-es">Qué es la debida diligencia (y qué no)</h2>
+
+  <p>
+    La <strong>debida diligencia</strong> es el conjunto de verificaciones que
+    una empresa hace sobre una contraparte —un cliente, un proveedor, un socio,
+    un empleado con firma autorizada— <strong>antes</strong> de entrar en una
+    relación comercial con ella, y las que mantiene <strong>mientras</strong>
+    esa relación dura.
+  </p>
+
+  <p>
+    No es una investigación privada ni un informe de crédito. No accede a
+    información reservada, no consulta bases compradas y no emite un juicio de
+    valor sobre nadie. Consiste en algo más aburrido y más útil: ir a los
+    portales donde el Estado publica información sobre personas y empresas, y
+    dejar por escrito qué decía cada uno en una fecha determinada.
+  </p>
+
+  <div class="guia__nota">
+    <p>
+      Una confusión frecuente: la debida diligencia <em>no</em> es la consulta
+      al buró de crédito. El buró dice si alguien paga sus créditos bancarios.
+      No dice si tiene una deuda firme con el SRI, una demanda laboral en
+      curso, mora patronal en el IESS, una sanción de la Superintendencia de
+      Compañías o una denuncia en Fiscalía. Esas cuatro últimas son las que
+      suelen acabar en el problema.
+    </p>
+  </div>
+
+  <h2 id="cuando">Cuándo tu empresa está obligada a hacerla</h2>
+
+  <p>Hay dos situaciones distintas y conviene no mezclarlas:</p>
+
+  <h3>1. Obligación legal</h3>
+
+  <p>
+    Si tu empresa es <strong>sujeto obligado</strong> bajo el régimen
+    ecuatoriano de prevención de lavado de activos y financiamiento de delitos,
+    la debida diligencia del cliente no es opcional: es parte del sistema de
+    prevención que debes tener implementado y que la
+    <strong>UAFE</strong> (Unidad de Análisis Financiero y Económico) y tu
+    organismo de control pueden examinar. Entran en esa categoría, entre otros,
+    las entidades financieras y de economía popular y solidaria, aseguradoras,
+    casas de valores, notarías, inmobiliarias y constructoras, concesionarias
+    de vehículos, comerciantes de metales y piedras preciosas, y quienes
+    prestan servicios societarios y fiduciarios.
+  </p>
+
+  <p>
+    <a href="/compliance-uafe-sujetos-obligados">La guía sobre UAFE y sujetos
+    obligados</a> entra en detalle sobre qué implica esto en la práctica.
+  </p>
+
+  <h3>2. Obligación de sentido común</h3>
+
+  <p>
+    El resto de las empresas no tiene una norma que se lo exija, pero sí tiene
+    el problema. Los casos típicos:
+  </p>
+
+  <ul>
+    <li><strong>Antes de dar crédito.</strong> Facturar a 30, 60 o 90 días a alguien que ya arrastra deuda firme con el SRI es financiar a un deudor.</li>
+    <li><strong>Antes de homologar un proveedor.</strong> Un proveedor con mora patronal en el IESS o inhabilitado en el SERCOP te contamina la cadena si tú contratas con el Estado.</li>
+    <li><strong>Antes de arrendar.</strong> Un inquilino con juicios de pensiones alimenticias o cobranzas acumuladas es un desalojo futuro.</li>
+    <li><strong>Antes de comprar una empresa o entrar como socio.</strong> Las contingencias tributarias y laborales no aparecen en el balance que te entregan.</li>
+    <li><strong>Antes de contratar a alguien con poder de firma o manejo de caja.</strong></li>
+  </ul>
+
+  <h2 id="fuentes">Las {FUENTES} fuentes que hay que revisar en Ecuador</h2>
+
+  <p>
+    Una debida diligencia seria en Ecuador no se resuelve con dos consultas.
+    Son <strong>{FUENTES} fuentes repartidas en {INSTITUCIONES} instituciones</strong>
+    —varias consultas cuelgan del mismo organismo— y cada una responde una
+    pregunta distinta. Agrupadas por lo que de verdad quieres saber:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>La pregunta</th><th>Dónde se responde</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>¿Puede pagar?</strong></td>
+        <td>SRI (deuda firme, deuda impugnada, facilidades de pago, estado del RUC), IESS (mora patronal), Ministerio del Trabajo, valores adeudados a la Superintendencia de Compañías, SERCOP, ANT y ATM Guayaquil (multas de tránsito), prediales municipales y pensiones alimenticias.</td>
+      </tr>
+      <tr>
+        <td><strong>¿Está en juicios?</strong></td>
+        <td>Función Judicial (causas por actor y por demandado), Fiscalía General del Estado (noticias del delito), y el detalle de cada proceso: materia, judicatura, fecha y calidad en que interviene.</td>
+      </tr>
+      <tr>
+        <td><strong>¿Existe y está en regla?</strong></td>
+        <td>Superintendencia de Compañías (estado societario, cumplimiento de obligaciones), Superintendencia de Bancos, SEPS, SENAE, Contraloría General del Estado y Ministerio del Interior.</td>
+      </tr>
+      <tr>
+        <td><strong>¿Está en alguna lista restrictiva?</strong></td>
+        <td>OFAC (Tesoro de EE. UU.), listas de sanciones de Naciones Unidas, ENFAST de la Unión Europea, FBI, BASC y Policía Nacional.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Esa última fila es la que más se olvida y la que más caro sale en una
+    revisión de cumplimiento: contratar con alguien listado es un incumplimiento
+    en sí mismo, con independencia de que la operación haya sido impecable.
+  </p>
+
+  <h2 id="paso-a-paso">Cómo hacerla a mano, paso a paso</h2>
+
+  <p>
+    Se puede hacer gratis. Todos los portales son públicos. El procedimiento
+    honesto, para un solo RUC:
+  </p>
+
+  <ol>
+    <li><strong>Confirma la identidad.</strong> RUC o cédula, razón social exacta y estado del contribuyente. Un RUC suspendido o un «contribuyente fantasma» cambia la conversación entera.</li>
+    <li><strong>Revisa lo tributario.</strong> Deuda firme e impugnada en el SRI, y si tiene facilidades de pago vigentes. <a href="/consultar-deudas-sri-por-ruc">El procedimiento detallado está aquí</a>.</li>
+    <li><strong>Revisa lo laboral.</strong> Mora patronal en el IESS y actas o sanciones del Ministerio del Trabajo.</li>
+    <li><strong>Busca juicios.</strong> En la Función Judicial, por actor y por demandado, con el número de documento. <a href="/consultar-causas-judiciales-ecuador">Cómo hacerlo bien</a>.</li>
+    <li><strong>Revisa lo societario.</strong> Estado en la Superintendencia de Compañías, cumplimiento de obligaciones y valores adeudados.</li>
+    <li><strong>Cruza las listas internacionales.</strong> OFAC, ONU, UE. Buscando también por nombre de representante legal y accionistas, no solo por la empresa.</li>
+    <li><strong>Documenta con fecha.</strong> Capturas o PDF de cada consulta. Sin fecha, la verificación no prueba nada.</li>
+  </ol>
+
+  <h2 id="cuanto-cuesta">Cuánto cuesta hacerla a mano</h2>
+
+  <p>
+    Este es el cálculo que casi nadie hace. Recorrer las {FUENTES} fuentes para
+    <strong>un</strong> RUC, documentando cada una, toma entre
+    <strong>40 y 90 minutos</strong> a una persona que ya sabe dónde buscar.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Escenario</th><th>Tiempo al mes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>10 contrapartes nuevas al mes</td><td>entre 7 y 15 horas</td></tr>
+      <tr><td>30 contrapartes nuevas al mes</td><td>entre 20 y 45 horas</td></tr>
+      <tr><td>Cartera de 100 en monitoreo continuo</td><td>inviable a mano</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Y ese cálculo es para la verificación inicial. El monitoreo continuo —volver
+    a mirar cada semana si algo cambió— multiplica el trabajo por el número de
+    revisiones, no por el número de contrapartes.
+  </p>
+
+  <p>
+    Census Alert hace ese recorrido de forma automatizada y entrega el
+    resultado en un PDF con fecha, desde <strong>US$ {PRECIO_INFORME_DESDE} + IVA</strong>
+    por informe. No es información distinta de la que puedes conseguir tú: es la
+    misma, sin las horas.
+  </p>
+
+  <h2 id="continua">El error de hacerla una sola vez</h2>
+
+  <p>
+    La debida diligencia que se hace el día de la firma y nunca más es la que
+    falla. El riesgo no está en el momento de contratar, está en los meses
+    siguientes: la deuda con el SRI se declara firme en marzo, la demanda
+    laboral entra en junio, la mora patronal empieza en agosto. Para entonces
+    ya facturaste, ya entregaste y ya diste crédito.
+  </p>
+
+  <p>
+    Por eso la normativa de prevención habla de diligencia <em>continua</em>
+    sobre la relación comercial. Y por eso el producto que de verdad resuelve
+    el problema no es el informe puntual, sino la vigilancia diaria: revisar
+    cada madrugada la cartera de clientes, proveedores y contrapartes, y avisar
+    el mismo día que algo aparece.
+  </p>
+
+</GuiaLayout>

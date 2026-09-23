@@ -14,11 +14,12 @@ convierte eso en un aviso del mismo día.
 
 ## Los dos productos
 
-- **Monitoreo**: vigilancia diaria de 12 portales para una cartera de
-  empresas o personas. Si no cambió nada, no se envía correo. Para después
-  de firmar un contrato.
+- **Monitoreo**: vigilancia diaria de 31 fuentes en 21 instituciones sobre
+  una cartera de empresas o personas. Si no cambió nada, no se envía
+  correo. Para después de firmar un contrato.
 - **Informe consolidado**: una consulta puntual sobre un RUC o una cédula
-  contra 29 fuentes, entregada como PDF. Para antes de firmar.
+  contra 31 fuentes de 21 instituciones, entregada como PDF. Para antes
+  de firmar.
 
 ## Qué se monitorea
 
@@ -75,6 +76,16 @@ mismos datos, sin introducir información adicional.
 
 - [Portada](https://censusalert.com): qué hace, las dos formas de usarlo y
   la lista completa de fuentes.
+- [Debida diligencia en Ecuador](https://censusalert.com/debida-diligencia):
+  qué es, cuándo es obligatoria y las 31 fuentes que hay que revisar.
+- [Debida diligencia de proveedores](https://censusalert.com/debida-diligencia-de-proveedores):
+  cómo homologar y vigilar la cadena de suministro.
+- [Compliance y UAFE](https://censusalert.com/compliance-uafe-sujetos-obligados):
+  qué exige el régimen de prevención a los sujetos obligados.
+- [Consultar deudas del SRI](https://censusalert.com/consultar-deudas-sri-por-ruc):
+  el trámite oficial y cómo leer deuda firme, impugnada y facilidades.
+- [Consultar causas judiciales](https://censusalert.com/consultar-causas-judiciales-ecuador):
+  cómo buscar por actor y demandado en la Función Judicial.
 - [Términos y condiciones](https://censusalert.com/terminos-y-condiciones)
 - [Política de tratamiento de datos](https://censusalert.com/tratamiento-de-datos)
 
