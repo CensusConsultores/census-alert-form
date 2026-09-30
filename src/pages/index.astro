@@ -20,6 +20,11 @@ const DESDE = "Hola, les escribo desde censusalert.com.";
 const CTA_GENERAL   = wa(`${DESDE} Quisiera información sobre Census Alert.`);
 const CTA_MONITOREO = wa(`${DESDE} Quiero contratar el monitoreo diario.`);
 const CTA_INFORME   = wa(`${DESDE} Quiero pedir un informe consolidado.`);
+const CTA_CORPORATIVA = wa(`${DESDE} Necesito más de 250 informes al año y quiero una cotización de la tarifa corporativa.`);
+
+// Hasta cuántos informes al año rigen los precios publicados. De ahí en
+// adelante no se publica precio: se cotiza por empresa.
+const TOPE_PUBLICO = 250;
 
 // Los dos productos. Ya no hay planes por suscripción: se paga por
 // informe o por mes de vigilancia, y ambos son compras sueltas.
@@ -93,7 +98,7 @@ const FAQ = [
   },
   {
     q: "¿Cuánto cuesta el servicio?",
-    a: "El informe consolidado y el monitoreo se cobran por uso: se compran informes o meses de vigilancia y se aplican al RUC o la cédula que se necesite, sin suscripción y sin renovación automática. El detalle de tarifas está en la sección de Precios de esta página.",
+    a: "El informe consolidado y el monitoreo se cobran por uso: se compran informes o meses de vigilancia y se aplican al RUC o la cédula que se necesite, sin suscripción y sin renovación automática. Los precios publicados rigen hasta 250 informes al año; desde ahí aplica una tarifa corporativa que se cotiza a medida. El detalle está en la sección de Precios de esta página.",
   },
   {
     q: "¿Qué pasa si una fuente no se pudo consultar?",
@@ -316,6 +321,17 @@ const PORTALES = [
         <a href={CTA_MONITOREO} target="_blank" rel="noopener" class="bt">Contratar vigilancia</a>
       </article>
     </div>
+
+    <aside class="corp rv" aria-labelledby="corp-t">
+      <div class="corp__t">
+        <span class="corp__tag">Desde {TOPE_PUBLICO} informes al año</span>
+        <h3 id="corp-t">Tarifa corporativa</h3>
+        <p>Los precios de arriba rigen hasta {TOPE_PUBLICO} informes al año.
+          Si tu empresa necesita más, preparamos una cotización a medida,
+          con contrato anual y un precio por informe según tu volumen.</p>
+      </div>
+      <a href={CTA_CORPORATIVA} target="_blank" rel="noopener" class="bt">Pedir cotización</a>
+    </aside>
 
     <p class="precios__pie rv">
       Los precios son netos: la tienda cobra el IVA aparte y la factura la
@@ -636,6 +652,19 @@ a { color: inherit; text-decoration: none; }
 .unidad, .nota-t { display: block; font-size: var(--t0); color: var(--papel-2); margin-top: 2px; }
 
 .prod .bt { margin-top: auto; text-align: center; }
+
+/* La tarifa corporativa: una franja, no una tercera tarjeta. No lleva
+   cifra porque desde 250 informes al año el precio se cotiza. */
+.corp { position: relative; z-index: 1; margin-top: var(--s4); padding: var(--s4);
+  border: 1px solid rgba(168, 124, 30, .4); border-radius: var(--radio);
+  background: var(--papel-alto); display: grid; gap: var(--s3); align-items: center; }
+@media (min-width: 880px) { .corp { grid-template-columns: 1fr auto; } }
+.corp h3 { margin-top: 4px; }
+.corp p { margin-top: 6px; max-width: 62ch; color: var(--papel-2);
+  font-size: var(--t1); line-height: 1.6; }
+.corp__tag { font-size: var(--t0); letter-spacing: .04em; text-transform: uppercase;
+  color: #8B6914; font-weight: 600; }
+.corp .bt { text-align: center; }
 .precios__pie { margin-top: var(--s4); font-size: var(--t0); color: var(--papel-2);
   line-height: 1.6; max-width: 62ch; }
 
