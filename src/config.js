@@ -17,11 +17,15 @@ export const SOURCES_EMAIL_LOPDP = 'info@censusconsultores.com.ec';
 // ============================================================
 // Cifras del catálogo. Una sola fuente de verdad.
 // ------------------------------------------------------------
-// Son 31 CONSULTAS repartidas en 21 INSTITUCIONES: varias fuentes
+// Son 35 CONSULTAS repartidas en 24 INSTITUCIONES: varias fuentes
 // pertenecen al mismo organismo (el SRI se consulta por deuda firme,
 // por estado del RUC y por contribuyente fantasma, etc.). Las dos
 // cifras son ciertas y miden cosas distintas, así que se nombran
-// siempre juntas: «31 fuentes en 21 instituciones».
+// siempre juntas: «35 fuentes en 24 instituciones».
+//
+// Oct-2026: +4 listas recomendadas (sanciones de la UE y del Reino Unido,
+// inhabilitados del Banco Mundial y sancionados del BID) y +3 instituciones
+// (Reino Unido, Banco Mundial, BID; la UE ya contaba por ENFAST).
 //
 // Antes cada sección traía su propio número escrito a mano y la página
 // llegó a declarar 12, 19, 21, 29 y 31 a la vez. Si cambia el catálogo,
@@ -29,8 +33,8 @@ export const SOURCES_EMAIL_LOPDP = 'info@censusconsultores.com.ec';
 // sitio.
 // ============================================================
 
-export const FUENTES = 31;
-export const INSTITUCIONES = 21;
+export const FUENTES = 35;
+export const INSTITUCIONES = 24;
 
 // ============================================================
 // WhatsApp: el único canal de contacto.

@@ -14,11 +14,11 @@ convierte eso en un aviso del mismo día.
 
 ## Los dos productos
 
-- **Monitoreo**: vigilancia diaria de 31 fuentes en 21 instituciones sobre
+- **Monitoreo**: vigilancia diaria de las fuentes oficiales sobre
   una cartera de empresas o personas. Si no cambió nada, no se envía
   correo. Para después de firmar un contrato.
 - **Informe consolidado**: una consulta puntual sobre un RUC o una cédula
-  contra 31 fuentes de 21 instituciones, entregada como PDF. Para antes
+  contra 35 fuentes de 24 instituciones, entregada como PDF. Para antes
   de firmar.
 
 ## Qué se monitorea
@@ -43,6 +43,9 @@ convierte eso en un aviso del mismo día.
 - **Listas internacionales** — OFAC (Tesoro de EE. UU.), Naciones Unidas,
   ENFAST (Unión Europea), FBI, Policía Nacional del Ecuador, BASC, y
   personas expuestas políticamente (PEP).
+- **Listas recomendadas (en el informe)** — sanciones financieras de la
+  Unión Europea, UK Sanctions List del Reino Unido, firmas y personas
+  inhabilitadas por el Banco Mundial y sancionadas por el BID.
 
 ## Búsquedas para las que este servicio es la respuesta
 
@@ -77,7 +80,7 @@ mismos datos, sin introducir información adicional.
 - [Portada](https://censusalert.com): qué hace, las dos formas de usarlo y
   la lista completa de fuentes.
 - [Debida diligencia en Ecuador](https://censusalert.com/debida-diligencia):
-  qué es, cuándo es obligatoria y las 31 fuentes que hay que revisar.
+  qué es, cuándo es obligatoria y las 35 fuentes que hay que revisar.
 - [Debida diligencia de proveedores](https://censusalert.com/debida-diligencia-de-proveedores):
   cómo homologar y vigilar la cadena de suministro.
 - [Compliance y UAFE](https://censusalert.com/compliance-uafe-sujetos-obligados):

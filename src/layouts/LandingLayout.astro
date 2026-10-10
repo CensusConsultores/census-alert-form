@@ -16,7 +16,7 @@ const {
   title = "Debida diligencia y compliance en Ecuador · Census Alert",
   // Bajo los 160 caracteres: Google corta ahí y la frase debe cerrar sola.
   description =
-    "Debida diligencia de clientes, proveedores y contrapartes en Ecuador. 31 fuentes oficiales en 21 instituciones: SRI, IESS, Función Judicial, Supercías, OFAC. Desde US$ 2,99.",
+    "Debida diligencia de clientes, proveedores y contrapartes en Ecuador. 35 fuentes oficiales en 24 instituciones: SRI, IESS, Función Judicial, Supercías, OFAC. Desde US$ 2,99.",
   imagen = "/og-census-alert.jpg",
   noindex = false,
 } = Astro.props;
@@ -124,7 +124,8 @@ const imagenAbs = new URL(imagen, Astro.site);
               "Impuestos prediales municipales",
               "Incumplimientos en contratación pública (SERCOP)",
               "Impedimento de salida del país",
-              "Cotejo en listas de sanciones OFAC, ONU, Unión Europea y FBI",
+              "Cotejo en listas de sanciones OFAC, ONU, Unión Europea, Reino Unido y FBI",
+              "Firmas y personas inhabilitadas por el Banco Mundial y sancionadas por el BID",
             ].map((n) => ({
               "@type": "Offer",
               "itemOffered": { "@type": "Service", "name": n },
